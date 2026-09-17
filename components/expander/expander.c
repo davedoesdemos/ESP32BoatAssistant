@@ -17,8 +17,8 @@ esp_err_t expander_output_init(i2c_master_dev_handle_t expander_handle)
 esp_err_t expander_set_pins(i2c_master_dev_handle_t expander_handle2, uint8_t expander_pins)
 {
     esp_err_t ret;
-    // Pull the backlight pin high to light the screen backlight
+    // push expander pin config
     ret = i2c_master_transmit(expander_handle2, &expander_pins, 1, I2C_MASTER_TIMEOUT_MS);
-    printf("OFFPull the backlight pin high to light the screen backlight\n");
+    //printf("OFFPull the backlight pin high to light the screen backlight\n");
     return ret;
 }

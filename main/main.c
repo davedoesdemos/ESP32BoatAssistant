@@ -13,6 +13,9 @@
 #include "backlight.h"
 #include "driver/i2c_master.h"
 
+static lv_subject_t sensor_reading_subj;
+uint8_t expander_pins = 0x00;
+
 static const char *TAG = "button app";
 
 //CH422 Expander pin masks for Waveshare 4.3b
@@ -25,6 +28,36 @@ typedef struct {
     i2c_master_dev_handle_t expander_dev_handle;
     i2c_master_dev_handle_t expander_dev_handle2;
 }  i2c_config;
+
+i2c_config i2c_settings = {NULL, NULL, NULL};
+
+//dynamically update sensor data for label
+void update_sensor_data(int new_value) {
+    lv_subject_set_int(&sensor_reading_subj, new_value);
+}
+
+// Timer callback function checked periodically by LVGL
+static void backlight_check_timer_cb(lv_timer_t * timer) {
+    static bool backlight_is_on = true;
+    
+    // Get inactive time from the default display
+    // Note: For LVGL v8, use: uint32_t idle_time = lv_disp_get_inactive_time(NULL);
+    uint32_t idle_time = lv_display_get_inactive_time(lv_display_get_default());
+
+    if (idle_time >= BACKLIGHT_TIMEOUT_MS) {
+        if (backlight_is_on) {
+            printf("backlight on");
+            expander_pins = set_backlight_state(false, expander_pins, i2c_settings.expander_dev_handle2); // Turn off backlight
+            backlight_is_on = false;
+        }
+    } else {
+        if (!backlight_is_on) {
+            printf("backlight off");
+            expander_pins = set_backlight_state(true, expander_pins, i2c_settings.expander_dev_handle2);  // Turn back on if there is user activity
+            backlight_is_on = true;
+        }
+    }
+}
 
 static void reset_btn_text_timer_cb(lv_timer_t * timer)
 {
@@ -62,11 +95,10 @@ static void btn_event_cb(lv_event_t * e)
 void app_main(void)
 {
     //Set up pins on expander
-    uint8_t expander_pins = 0x00;
     expander_pins |= BACKLIGHT_PIN_MASK;
     expander_pins |= DISPLAY_RESET_PIN_MASK;
     expander_pins |= TOUCH_RESET_PIN_MASK;
-    i2c_config i2c_settings = {NULL, NULL, NULL};
+    //i2c_config i2c_settings = {NULL, NULL, NULL};
 
     //Initialise the i2c bus
     if (init_i2c_bus(&i2c_settings.global_bus_handle) != ESP_OK) {
@@ -207,9 +239,12 @@ void app_main(void)
         lv_label_set_text(label, "Click Me");
         lv_obj_center(label);
 
-        lv_obj_t *label2 = lv_label_create(screen2);
-        lv_label_set_text(label2, "Hello Jude!");
-        lv_obj_center(label2);
+        lv_subject_init_int(&sensor_reading_subj, 0);
+
+        lv_obj_t *labelsensor = lv_label_create(screen2);
+        lv_label_bind_text(labelsensor, &sensor_reading_subj, "Sensor: %d PSI");
+        //lv_label_set_text(labelsensor, "Hello Jude!");
+        lv_obj_center(labelsensor);
 
         lv_obj_t *label3 = lv_label_create(screen3);
         lv_label_set_text(label3, "Screen 3!");
@@ -229,7 +264,10 @@ void app_main(void)
         lv_arc_set_rotation(temp_arc1, 135);     // Start from bottom-left
         lv_arc_set_bg_angles(temp_arc1, 0, 270); // 270-degree partial circle
         lv_arc_set_range(temp_arc1, -10, 50);    // Temp range e.g., -10°C to 50°C
-        lv_arc_set_value(temp_arc1, 22);         // Example value: 22°C
+        
+        //lv_label_bind_text(labelsensor, &sensor_reading_subj, "Sensor: %d PSI");
+        lv_arc_bind_value(temp_arc1, &sensor_reading_subj);
+        //lv_arc_set_value(temp_arc1, 22);         // Example value: 22°C
     
         // Style the Temperature Arc (Red theme)
         lv_obj_set_style_arc_color(temp_arc1, lv_palette_main(LV_PALETTE_RED), LV_PART_INDICATOR);
@@ -318,6 +356,8 @@ void app_main(void)
     // esp_lv_adapter handles it automatically in the background.
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(1000));
+        update_sensor_data((rand() % (45 - 1 + 1)) + 1);
+        lv_timer_create(backlight_check_timer_cb, 200, NULL);
         //expander_pins = backlight_on(i2c_settings.expander_dev_handle2, expander_pins);
         //vTaskDelay(pdMS_TO_TICKS(1000));
         //expander_pins = backlight_off(i2c_settings.expander_dev_handle2, expander_pins);
