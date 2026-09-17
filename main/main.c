@@ -6,12 +6,12 @@
 #include "esp_lcd_panel_rgb.h"
 #include "esp_lcd_touch.h"
 #include "esp_lcd_touch_gt911.h"  // Example with GT911
+#include "driver/i2c_master.h"
 #include "rgblcd43b.h"
 #include "esp_lv_adapter.h"  // Includes display & input adapters
 #include "i2c.h"
 #include "expander.h"
 #include "backlight.h"
-#include "driver/i2c_master.h"
 
 static lv_subject_t sensor_reading_subj;
 uint8_t expander_pins = 0x00;
@@ -22,6 +22,8 @@ static const char *TAG = "button app";
 #define TOUCH_RESET_PIN_MASK (1 << 1)
 #define BACKLIGHT_PIN_MASK (1 << 2)
 #define DISPLAY_RESET_PIN_MASK (1<<3)
+
+static lv_obj_t * slider_label;
 
 typedef struct {
     i2c_master_bus_handle_t global_bus_handle;
@@ -34,6 +36,35 @@ i2c_config i2c_settings = {NULL, NULL, NULL};
 //dynamically update sensor data for label
 void update_sensor_data(int new_value) {
     lv_subject_set_int(&sensor_reading_subj, new_value);
+}
+
+
+//Event callback triggered when the slider value changes
+static void slider_event_cb(lv_event_t * e)
+{
+    lv_obj_t * slider = lv_event_get_target(e);
+    int32_t seconds = 0;
+    /* Get current slider position (which represents seconds) */
+    int32_t value_sec = lv_slider_get_value(slider);
+
+    if(value_sec <= 50) {
+            // Linear map from 10s to 60s over the first half of the slider
+            seconds = 10 + (value_sec * (60 - 10) / 50);
+        } else {
+            // Linear map from 60s to 300s over the second half of the slider
+            seconds = 60 + ((value_sec - 50) * (300 - 60) / 50);
+        }
+    
+    /* Dynamic calculation: Update your system variable when user moves the knob */
+    BACKLIGHT_TIMEOUT_MS = seconds * 1000;
+    
+    /* Dynamically format and update the label text string */
+    char buf[32];
+    snprintf(buf, sizeof(buf), "%d s", (int)seconds);
+    lv_label_set_text(slider_label, buf);
+    
+    /* Realign the label beneath the slider */
+    lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 }
 
 // Timer callback function checked periodically by LVGL
@@ -208,6 +239,7 @@ void app_main(void)
         lv_obj_t *screen3 = lv_tileview_add_tile(tileview, 2, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
         lv_obj_t *screen4 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_TOP);
 
+        //ALL SCREENS
         //Create a status bar
         lv_obj_t * status_bar = lv_obj_create(base_screen);
         lv_obj_set_size(status_bar, LV_HOR_RES, 25);
@@ -226,7 +258,8 @@ void app_main(void)
         lv_obj_t * lbl_time = lv_label_create(status_bar);
         lv_label_set_text(lbl_time, "12:00");
 
-        //Create a button on the active screen
+        //SCREEN 1
+        //Create a button on the first screen
         lv_obj_t * btn = lv_btn_create(screen1);
         lv_obj_set_size(btn, 150, 60);
         lv_obj_center(btn);
@@ -241,16 +274,32 @@ void app_main(void)
 
         lv_subject_init_int(&sensor_reading_subj, 0);
 
+        //SCREEN 2
         lv_obj_t *labelsensor = lv_label_create(screen2);
         lv_label_bind_text(labelsensor, &sensor_reading_subj, "Sensor: %d PSI");
         //lv_label_set_text(labelsensor, "Hello Jude!");
         lv_obj_center(labelsensor);
 
-        lv_obj_t *label3 = lv_label_create(screen3);
-        lv_label_set_text(label3, "Screen 3!");
-        lv_obj_center(label3);
+        //SCREEN 3 - Settings
 
-        //screen 4 for temp and humidity
+        lv_obj_t *label3 = lv_label_create(screen3);
+        lv_label_set_text(label3, "Backlight Timeout");
+        lv_obj_center(label3);
+        lv_obj_t * slider = lv_slider_create(screen3);
+        lv_obj_set_width(slider, 300);                          /* Set width in pixels */
+        lv_obj_center(slider);                                  /* Align perfectly to display center */
+        lv_slider_set_range(slider, 0, 100);                    /* Min value: 0, Max value: 100 */
+        lv_slider_set_value(slider, 0, LV_ANIM_OFF);
+        lv_obj_add_event_cb(slider, slider_event_cb, LV_EVENT_VALUE_CHANGED, NULL);
+        slider_label = lv_label_create(screen3);
+        //set the label
+        int32_t initial_seconds = BACKLIGHT_TIMEOUT_MS / 1000;
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%d s", (int)initial_seconds);
+        lv_label_set_text(slider_label, buf);
+        lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+
+        //SCREEN 4 for temp and humidity
         lv_obj_t *container_left = lv_obj_create(screen4);
         lv_obj_remove_style_all(container_left); // Remove background/borders for a clean look
         lv_obj_set_size(container_left, 180, 200);

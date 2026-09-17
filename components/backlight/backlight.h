@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 #include <driver/i2c_master.h>
+#include "expander.h"
+
 #define BACKLIGHT_PIN_MASK (1 << 2)
-#define BACKLIGHT_TIMEOUT_MS  10000
+
+extern uint32_t BACKLIGHT_TIMEOUT_MS; //default backlight timeout 10 seconds
 
 uint8_t backlight_on(i2c_master_dev_handle_t expander_handle, uint8_t expander_pins);
 uint8_t backlight_off(i2c_master_dev_handle_t expander_handle, uint8_t expander_pins);
