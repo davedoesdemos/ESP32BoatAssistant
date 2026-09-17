@@ -286,7 +286,7 @@ void app_main(void)
         lv_label_set_text(label3, "Backlight Timeout");
         lv_obj_center(label3);
         lv_obj_t * slider = lv_slider_create(screen3);
-        lv_obj_set_width(slider, 300);                          /* Set width in pixels */
+        lv_obj_set_width(slider, 400);                          /* Set width in pixels */
         lv_obj_center(slider);                                  /* Align perfectly to display center */
         lv_slider_set_range(slider, 0, 100);                    /* Min value: 0, Max value: 100 */
         lv_slider_set_value(slider, 0, LV_ANIM_OFF);
