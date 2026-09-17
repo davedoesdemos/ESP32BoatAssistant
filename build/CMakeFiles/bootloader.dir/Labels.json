@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/CMakeFiles/bootloader"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/CMakeFiles/bootloader.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/CMakeFiles/bootloader-complete.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+		},
+		{
+			"file" : "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"bootloader"
+		],
+		"name" : "bootloader"
+	}
+}
