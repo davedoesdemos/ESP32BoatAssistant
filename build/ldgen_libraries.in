@@ -163,6 +163,7 @@ $<TARGET_FILE:idf::wifi_provisioning>
 $<TARGET_FILE:__idf_json>
 $<TARGET_FILE:idf::rgblcd43b>
 $<TARGET_FILE:__idf_esp_lcd>
+$<TARGET_FILE:idf::lvgl__lvgl>
 $<TARGET_FILE:idf::i2c>
 $<TARGET_FILE:idf::espressif__esp_lcd_touch>
 $<TARGET_FILE:idf::espressif__esp_lcd_touch_gt911>
@@ -171,7 +172,9 @@ $<TARGET_FILE:idf::expander>
 $<TARGET_FILE:__idf_i2c>
 $<TARGET_FILE:idf::backlight>
 $<TARGET_FILE:__idf_expander>
-$<TARGET_FILE:idf::lvgl__lvgl>
+$<TARGET_FILE:idf::gui>
+$<TARGET_FILE:__idf_lvgl__lvgl>
+$<TARGET_FILE:__idf_backlight>
 $<TARGET_FILE:idf::espressif__button>
 $<TARGET_FILE:idf::espressif__zlib>
 $<TARGET_FILE:idf::espressif__libpng>
@@ -180,7 +183,6 @@ $<TARGET_FILE:lvgl_docoder_lib>
 $<TARGET_FILE:idf::espressif__esp_mmap_assets>
 $<TARGET_FILE:idf::espressif__esp_lv_fs>
 $<TARGET_FILE:__idf_espressif__esp_mmap_assets>
-$<TARGET_FILE:__idf_lvgl__lvgl>
 $<TARGET_FILE:freetype>
 $<TARGET_FILE:idf::espressif__knob>
 $<TARGET_FILE:idf::espressif__esp_lvgl_adapter>
@@ -190,5 +192,5 @@ $<TARGET_FILE:__idf_espressif__knob>
 $<TARGET_FILE:idf::main>
 $<TARGET_FILE:__idf_rgblcd43b>
 $<TARGET_FILE:__idf_espressif__esp_lcd_touch_gt911>
-$<TARGET_FILE:__idf_backlight>
+$<TARGET_FILE:__idf_gui>
 $<TARGET_FILE:__idf_espressif__esp_lvgl_adapter>
