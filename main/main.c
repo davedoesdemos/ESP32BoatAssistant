@@ -8,12 +8,13 @@
 #include "esp_lcd_touch.h"
 #include "esp_lcd_touch_gt911.h"  // Example with GT911
 #include "driver/i2c_master.h"
-#include "rgblcd43b.h"
 #include "esp_lv_adapter.h"  // Includes display & input adapters
+//my libraries
 #include "i2c.h"
 #include "expander.h"
 #include "backlight.h"
 #include "gui.h"
+#include "rgblcd43b.h"
 
 static lv_subject_t sensor_reading_subj;
 uint8_t expander_pins = 0x00;
