@@ -5,6 +5,9 @@ idf_component_register(
         "expander/expander.c"
         "gui/gui.c"
         "gui/screens/screen_settings.c"
+        "gui/screens/screen_environment.c"
+        "gui/screens/screen_1.c"
+        "gui/screens/screen_2.c"
         "i2c/i2c.c"
         "rgblcd43b/rgblcd43b"
     INCLUDE_DIRS 

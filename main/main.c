@@ -16,7 +16,6 @@
 #include "gui.h"
 #include "rgblcd43b.h"
 
-static lv_subject_t sensor_reading_subj;
 uint8_t expander_pins = 0x00;
 
 //logging
@@ -36,14 +35,6 @@ typedef struct {
 }  i2c_config;
 
 i2c_config i2c_settings = {NULL, NULL, NULL};
-
-//dynamically update sensor data for label
-void update_sensor_data(int new_value) {
-    lv_subject_set_int(&sensor_reading_subj, new_value);
-}
-
-
-
 
 // Timer callback function checked periodically by LVGL
 static void backlight_check_timer_cb(lv_timer_t * timer) {
@@ -68,38 +59,6 @@ static void backlight_check_timer_cb(lv_timer_t * timer) {
     }
 }
 
-static void reset_btn_text_timer_cb(lv_timer_t * timer)
-{
-    // Retrieve the label pointer we passed into the timer user_data
-    lv_obj_t * label = (lv_obj_t *)lv_timer_get_user_data(timer);
-    
-    if (label != NULL) {
-        lv_label_set_text(label, "Click Me");
-    }
-    
-    // Delete the timer so it only fires once
-    lv_timer_del(timer);
-}
-
-static void btn_event_cb(lv_event_t * e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t * btn = lv_event_get_target(e);
-
-    // Check if the button was clicked/released
-    if(code == LV_EVENT_CLICKED) {
-        // Get the label object which is the first child of the button
-        lv_obj_t * label = lv_obj_get_child(btn, 0);
-        if (label != NULL) {
-            lv_label_set_text(label, "Touched!");
-            // 2. Create a one-shot timer to revert the text after 2000 milliseconds (2 seconds)
-            lv_timer_t * timer = lv_timer_create(reset_btn_text_timer_cb, 2000, label);
-            
-            // 3. Configure the timer to only run once
-            lv_timer_set_repeat_count(timer, 1);
-        }
-    }
-}
 
 void app_main(void)
 {
@@ -212,11 +171,13 @@ void app_main(void)
         lv_obj_align(tileview, LV_ALIGN_CENTER, 0, 0);
 
         //create tiles to act as screens
-        lv_obj_t *screen1 = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT);
-        lv_obj_t *screen2 = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_RIGHT);
-        lv_obj_t *screen3 = lv_tileview_add_tile(tileview, 2, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
-        lv_obj_t *screen4 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_TOP);
-
+        lv_obj_t *screen_1 = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT);
+        lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_RIGHT);
+        lv_obj_t *screen_settings = lv_tileview_add_tile(tileview, 2, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
+        lv_obj_t *screen_2 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_TOP);
+        
+        //init sensor reading sub
+        lv_subject_init_int(&sensor_reading_subj, 0);
         //ALL SCREENS
         //Create a status bar
         lv_obj_t * status_bar = lv_obj_create(base_screen);
@@ -237,129 +198,14 @@ void app_main(void)
         lv_label_set_text(lbl_time, "12:00");
 
         //SCREEN 1
-        //Create a button on the first screen
-        lv_obj_t * btn = lv_btn_create(screen1);
-        lv_obj_set_size(btn, 150, 60);
-        lv_obj_center(btn);
-        
-        //Assign the touch/click event callback to the button
-        lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_CLICKED, NULL);
-
-        //Create a label inside the button
-        lv_obj_t * label = lv_label_create(btn);
-        lv_label_set_text(label, "Click Me");
-        lv_obj_center(label);
-
-        lv_subject_init_int(&sensor_reading_subj, 0);
-
+        screen_1_layout(screen_1);
         //SCREEN 2
-        lv_obj_t *labelsensor = lv_label_create(screen2);
-        lv_label_bind_text(labelsensor, &sensor_reading_subj, "Sensor: %d PSI");
-        //lv_label_set_text(labelsensor, "Hello Jude!");
-        lv_obj_center(labelsensor);
-
+        screen_2_layout(screen_2);
         //SCREEN 3 - Settings
-
-        screen_settings_layout(screen3);
-
+        screen_settings_layout(screen_settings);
         //SCREEN 4 for temp and humidity
-        lv_obj_t *container_left = lv_obj_create(screen4);
-        lv_obj_remove_style_all(container_left); // Remove background/borders for a clean look
-        lv_obj_set_size(container_left, 180, 200);
-        lv_obj_align(container_left, LV_ALIGN_CENTER, -90, 0);
+        screen_environment_layout(screen_environment);
 
-        // 2. Outer Arc: Temperature (Size: 150x150)
-        lv_obj_t *temp_arc1 = lv_arc_create(container_left);
-        lv_obj_set_size(temp_arc1, 150, 150);
-        lv_obj_set_style_pad_all(temp_arc1, 0, LV_PART_MAIN);
-        lv_obj_align(temp_arc1, LV_ALIGN_TOP_MID, 0, 10);
-        lv_arc_set_rotation(temp_arc1, 135);     // Start from bottom-left
-        lv_arc_set_bg_angles(temp_arc1, 0, 270); // 270-degree partial circle
-        lv_arc_set_range(temp_arc1, -10, 50);    // Temp range e.g., -10°C to 50°C
-        
-        //lv_label_bind_text(labelsensor, &sensor_reading_subj, "Sensor: %d PSI");
-        lv_arc_bind_value(temp_arc1, &sensor_reading_subj);
-        //lv_arc_set_value(temp_arc1, 22);         // Example value: 22°C
-    
-        // Style the Temperature Arc (Red theme)
-        lv_obj_set_style_arc_color(temp_arc1, lv_palette_main(LV_PALETTE_RED), LV_PART_INDICATOR);
-        lv_obj_set_style_bg_color(temp_arc1, lv_palette_main(LV_PALETTE_RED), LV_PART_KNOB | LV_STATE_DEFAULT);
-        lv_obj_remove_flag(temp_arc1, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
-
-        // 3. Inner Arc: Humidity (Size: 110x110)
-        lv_obj_t *humid_arc1 = lv_arc_create(container_left);
-        lv_obj_set_size(humid_arc1, 110, 110);
-        lv_obj_align(humid_arc1, LV_ALIGN_CENTER, 0, -15); // Adjust slightly upward to sit inside nicely
-        lv_arc_set_rotation(humid_arc1, 135);
-        lv_arc_set_bg_angles(humid_arc1, 0, 270);
-        lv_arc_set_range(humid_arc1, 0, 100);    // Humidity range 0-100%
-        lv_arc_set_value(humid_arc1, 60);         // Example value: 60%
-        
-        // Style the Humidity Arc (Blue theme)
-        lv_obj_set_style_arc_color(humid_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_INDICATOR);
-        lv_obj_set_style_bg_color(humid_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_KNOB | LV_STATE_DEFAULT);
-        lv_obj_remove_flag(humid_arc1, LV_OBJ_FLAG_CLICKABLE); // Make it read-only
-
-        // 4. Centred Text Label for values
-        lv_obj_t *val_label1 = lv_label_create(container_left);
-        lv_label_set_text_fmt(val_label1, "#ff0000 22°C#\n#0000ff 60%%#");
-        lv_obj_set_style_text_align(val_label1, LV_TEXT_ALIGN_CENTER, 0);
-        lv_label_set_recolor(val_label1, true); // Allows using #hex color# inline
-        lv_obj_align(val_label1, LV_ALIGN_CENTER, 0, -15);
-
-        // 5. Bottom Title Label (e.g., "Room 1")
-        lv_obj_t *title_label1 = lv_label_create(container_left);
-        lv_label_set_text(title_label1, "Indoor");
-        lv_obj_align(title_label1, LV_ALIGN_BOTTOM_MID, 0, 0);
-
-
-        lv_obj_t *container_right = lv_obj_create(screen4);
-        lv_obj_remove_style_all(container_right); // Remove background/borders for a clean look
-        lv_obj_set_size(container_right, 180, 200);
-        lv_obj_align(container_right, LV_ALIGN_CENTER, 90, 0);
-
-        // 2. Outer Arc: Temperature (Size: 150x150)
-        lv_obj_t *temp_arc2 = lv_arc_create(container_right);
-        lv_obj_set_size(temp_arc2, 150, 150);
-        lv_obj_set_style_pad_all(temp_arc2, 0, LV_PART_MAIN);
-        lv_obj_align(temp_arc2, LV_ALIGN_TOP_MID, 0, 10);
-        lv_arc_set_rotation(temp_arc2, 135);     // Start from bottom-left
-        lv_arc_set_bg_angles(temp_arc2, 0, 270); // 270-degree partial circle
-        lv_arc_set_range(temp_arc2, -10, 50);    // Temp range e.g., -10°C to 50°C
-        lv_arc_set_value(temp_arc2, 28);         // Example value: 22°C
-    
-        // Style the Temperature Arc (Red theme)
-        lv_obj_set_style_arc_color(temp_arc2, lv_palette_main(LV_PALETTE_RED), LV_PART_INDICATOR);
-        lv_obj_set_style_bg_color(temp_arc2, lv_palette_main(LV_PALETTE_RED), LV_PART_KNOB | LV_STATE_DEFAULT);
-        lv_obj_remove_flag(temp_arc2, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
-
-        // 3. Inner Arc: Humidity (Size: 110x110)
-        lv_obj_t *humid_arc2 = lv_arc_create(container_right);
-        lv_obj_set_size(humid_arc2, 110, 110);
-        lv_obj_align(humid_arc2, LV_ALIGN_CENTER, 0, -15); // Adjust slightly upward to sit inside nicely
-        lv_arc_set_rotation(humid_arc2, 135);
-        lv_arc_set_bg_angles(humid_arc2, 0, 270);
-        lv_arc_set_range(humid_arc2, 0, 100);    // Humidity range 0-100%
-        lv_arc_set_value(humid_arc2, 88);         // Example value: 60%
-        
-        // Style the Humidity Arc (Blue theme)
-        lv_obj_set_style_arc_color(humid_arc2, lv_palette_main(LV_PALETTE_BLUE), LV_PART_INDICATOR);
-        lv_obj_set_style_bg_color(humid_arc2, lv_palette_main(LV_PALETTE_BLUE), LV_PART_KNOB | LV_STATE_DEFAULT);
-        lv_obj_remove_flag(humid_arc2, LV_OBJ_FLAG_CLICKABLE); // Make it read-only
-
-        // 4. Centred Text Label for values
-        lv_obj_t *val_label2 = lv_label_create(container_right);
-        lv_label_set_text_fmt(val_label2, "#ff0000 28°C#\n#0000ff 88%%#");
-        lv_obj_set_style_text_align(val_label2, LV_TEXT_ALIGN_CENTER, 0);
-        lv_label_set_recolor(val_label2, true); // Allows using #hex color# inline
-        lv_obj_align(val_label2, LV_ALIGN_CENTER, 0, -15);
-
-        // 5. Bottom Title Label (e.g., "Room 1")
-        lv_obj_t *title_label2 = lv_label_create(container_right);
-        lv_label_set_text(title_label2, "Outdoor");
-        lv_obj_align(title_label2, LV_ALIGN_BOTTOM_MID, 0, 0);
-
- 
         //finish and show everything
         esp_lv_adapter_unlock();
     }
