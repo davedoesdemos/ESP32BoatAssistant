@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lvgl.h"
+#include <lvgl.h>
 #include <esp_err.h>
 #include <esp_log.h>
 #include "esp_check.h"        // Dependent header file
@@ -13,7 +13,7 @@
 #include "i2c.h"
 #include "expander.h"
 #include "backlight.h"
-#include "screens/screen_settings.h"
+#include "gui.h"
 
 static lv_subject_t sensor_reading_subj;
 uint8_t expander_pins = 0x00;
@@ -26,7 +26,7 @@ static const char *TAG = "boat assistant";
 #define BACKLIGHT_PIN_MASK (1 << 2)
 #define DISPLAY_RESET_PIN_MASK (1<<3)
 
-static lv_obj_t * slider_label;
+//static lv_obj_t * slider_label;
 
 typedef struct {
     i2c_master_bus_handle_t global_bus_handle;

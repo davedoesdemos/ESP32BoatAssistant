@@ -569,17 +569,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/rgblcd43b/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/lvgl__lvgl/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/i2c/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
@@ -590,21 +580,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lcd_touch_gt911/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/expander/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/backlight/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/gui/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
