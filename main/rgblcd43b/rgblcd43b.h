@@ -1,6 +1,10 @@
 #ifndef RGBLCD43B_H
-
 #define RGBLCD43B_H
+
+#include <stdio.h>
+#include "esp_check.h"        // Dependent header file
+#include "esp_lcd_panel_ops.h"
+#include "esp_lcd_panel_rgb.h"
 
 //define the pins and other configs for the RGB LCD panel in the Waveshare4.3b
 #define RGB_LCD_DATA_WIDTH 16

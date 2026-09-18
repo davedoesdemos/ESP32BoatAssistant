@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <esp_err.h>
-#include <esp_log.h>
-#include <driver/i2c_master.h>
 #include "i2c.h"
 
 //logging

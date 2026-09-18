@@ -1,10 +1,8 @@
-#include <stdio.h>
-#include "esp_check.h"        // Dependent header file
-#include "esp_lcd_panel_ops.h"
-#include "esp_lcd_panel_rgb.h"
 #include "rgblcd43b.h"
 
-static const char *TAG = "rgblcd43b";
+//logging
+static const char *TAG = "boat assistant rgblcd43b";
+
 //https://github.com/waveshareteam/ESP32-S3-Touch-LCD-4.3B/blob/master/examples/ESP-IDF/09_lvgl_v9_demo/components/waveshare_rgb_lcd_port.c
 esp_err_t rgblcd_panel_init(uint8_t frame_buffer_count, esp_lcd_panel_handle_t *out_panel_handle)
 {

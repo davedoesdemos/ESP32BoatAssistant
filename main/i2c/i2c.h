@@ -1,6 +1,11 @@
 #ifndef I2C_H
 #define I2C_H
 
+#include <stdio.h>
+#include <esp_err.h>
+#include <esp_log.h>
+#include <driver/i2c_master.h>
+
 // Master I2C Settings
 #define I2C_MASTER_SDA_IO           8       // Hardware Pin SDA
 #define I2C_MASTER_SCL_IO           9       // Hardware Pin SCL

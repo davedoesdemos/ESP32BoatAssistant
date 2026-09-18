@@ -1,5 +1,4 @@
 #include "screen_settings.h"
-#include "backlight.h"
 
 static lv_obj_t * slider_label;
 

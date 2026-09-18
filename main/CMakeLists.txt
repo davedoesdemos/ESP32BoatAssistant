@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "main.c"
         "backlight/backlight.c"
+        "display/display.c"
         "expander/expander.c"
         "gui/gui.c"
         "gui/screens/screen_settings.c"
@@ -13,6 +14,7 @@ idf_component_register(
     INCLUDE_DIRS 
         "."
         "backlight"
+        "display"
         "expander"
         "gui"
         "gui/screens"

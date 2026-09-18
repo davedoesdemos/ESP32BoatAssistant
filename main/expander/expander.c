@@ -1,6 +1,7 @@
-#include <stdio.h>
 #include "expander.h"
-#include "i2c.h"
+
+//logging
+static const char *TAG = "boat assistant expander";
 
 i2c_master_dev_handle_t expander_dev_handle = NULL;
 i2c_master_dev_handle_t expander_dev_handle2 = NULL;
@@ -31,4 +32,21 @@ esp_err_t expander_set_pins(i2c_master_dev_handle_t expander_handle2, uint8_t ex
     ret = i2c_master_transmit(expander_handle2, &expander_pins, 1, I2C_MASTER_TIMEOUT_MS);
     //printf("OFFPull the backlight pin high to light the screen backlight\n");
     return ret;
+}
+
+void expander_init(){
+    //initialise expander hardware1
+    if (init_i2c_device(CH422G_I2C_ADDR ,global_bus_handle, &expander_dev_handle) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to attach Expander 1");
+        return;
+    }
+    expander_output_init(expander_dev_handle);
+    ESP_LOGI(TAG, "Expander 1 (0x%02X) registered.", CH422G_I2C_ADDR);
+
+    //initialise expander hardware2
+    if (init_i2c_device(CH422G_I2C_ADDR2 ,global_bus_handle, &expander_dev_handle2) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to attach I2C peripheral device!");
+        return;
+    }
+    ESP_LOGI(TAG, "Expander 2 (0x%02X) registered.", CH422G_I2C_ADDR2);
 }

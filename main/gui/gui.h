@@ -3,6 +3,9 @@
 
 #include <lvgl.h>
 #include "esp_lv_adapter.h"  // Includes display & input adapters
+
+#include "backlight.h"
+#include "expander.h"
 #include "screens/screen_settings.h"
 #include "screens/screen_environment.h"
 #include "screens/screen_1.h"

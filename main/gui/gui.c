@@ -1,6 +1,7 @@
 #include "gui.h"
-#include "backlight.h"
-#include "expander.h"
+
+//logging
+static const char *TAG = "boat assistant gui";
 
 // Timer callback function checked periodically by LVGL
 void backlight_check_timer_cb(lv_timer_t * timer) {

@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "lvgl",
-    "project_version":    "20615c1-dirty",
+    "project_version":    "05bd2bf-dirty",
     "project_path":       "/Users/lustyd/Documents/repos/ESP32BoatAssistant",
     "idf_path":           "/Users/lustyd/.espressif/v5.5.5/esp-idf",
     "build_dir":          "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build",
@@ -1450,8 +1450,8 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
             "file": "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/main/libmain.a",
-            "sources": [ "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/main.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/backlight/backlight.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/expander/expander.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/gui.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_settings.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_environment.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_1.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_2.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/i2c/i2c.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/rgblcd43b/rgblcd43b" ],
-            "include_dirs": [ ".", "backlight", "expander", "gui", "gui/screens", "i2c", "rgblcd43b" ]
+            "sources": [ "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/main.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/backlight/backlight.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/display/display.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/expander/expander.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/gui.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_settings.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_environment.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_1.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_2.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/i2c/i2c.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/rgblcd43b/rgblcd43b" ],
+            "include_dirs": [ ".", "backlight", "display", "expander", "gui", "gui/screens", "i2c", "rgblcd43b" ]
         },
         "mbedtls": {
             "alias": "idf::mbedtls",
@@ -3163,7 +3163,7 @@
             "priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
-            "include_dirs": [ ".", "backlight", "expander", "gui", "gui/screens", "i2c", "rgblcd43b" ]
+            "include_dirs": [ ".", "backlight", "display", "expander", "gui", "gui/screens", "i2c", "rgblcd43b" ]
         },
         "espressif__button": {
             "alias": "idf::espressif__button",

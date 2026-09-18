@@ -1,5 +1,6 @@
 #include "backlight.h"
-#include "expander.h"
+//logging
+static const char *TAG = "boat assistant backlight";
 
 uint32_t BACKLIGHT_TIMEOUT_MS = 10000; //default backlight timeout 10 seconds
 
