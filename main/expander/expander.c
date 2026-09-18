@@ -2,6 +2,16 @@
 #include "expander.h"
 #include "i2c.h"
 
+i2c_master_dev_handle_t expander_dev_handle = NULL;
+i2c_master_dev_handle_t expander_dev_handle2 = NULL;
+
+    //Set up pins on expander code replaced with 0x0E below
+    //expander_pins = 0x00;
+    //expander_pins |= BACKLIGHT_PIN_MASK;
+    //expander_pins |= DISPLAY_RESET_PIN_MASK;
+    //expander_pins |= TOUCH_RESET_PIN_MASK;
+uint8_t expander_pins = 0x0E;
+
 esp_err_t expander_output_init(i2c_master_dev_handle_t expander_handle)
 {
     esp_err_t ret;

@@ -4,6 +4,11 @@
 #include <driver/i2c_master.h>
 #include "i2c.h"
 
+//logging
+static const char *TAG = "boat assistant i2c";
+
+i2c_master_bus_handle_t global_bus_handle = NULL;
+
 // Initialise the physical I2C Bus
 esp_err_t init_i2c_bus(i2c_master_bus_handle_t *out_bus_handle)
 {
@@ -31,4 +36,13 @@ esp_err_t init_i2c_device(int device_address, i2c_master_bus_handle_t bus_handle
 
     // Link this component target to the existing bus
     return i2c_master_bus_add_device(bus_handle, &dev_config, out_dev_handle);
+}
+
+void i2c_init(){
+        //Initialise the i2c bus
+    if (init_i2c_bus(&global_bus_handle) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize I2C Master Bus!");
+        return;
+    }
+    ESP_LOGI(TAG, "I2C Master Bus initialized successfully.");
 }

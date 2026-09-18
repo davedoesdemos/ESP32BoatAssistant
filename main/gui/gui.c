@@ -1,4 +1,29 @@
 #include "gui.h"
+#include "backlight.h"
+#include "expander.h"
+
+// Timer callback function checked periodically by LVGL
+void backlight_check_timer_cb(lv_timer_t * timer) {
+    static bool backlight_is_on = true;
+    
+    // Get inactive time from the default display
+    // Note: For LVGL v8, use: uint32_t idle_time = lv_disp_get_inactive_time(NULL);
+    uint32_t idle_time = lv_display_get_inactive_time(lv_display_get_default());
+
+    if (idle_time >= BACKLIGHT_TIMEOUT_MS) {
+        if (backlight_is_on) {
+            printf("backlight on");
+            expander_pins = set_backlight_state(false, expander_pins, expander_dev_handle2); // Turn off backlight
+            backlight_is_on = false;
+        }
+    } else {
+        if (!backlight_is_on) {
+            printf("backlight off");
+            expander_pins = set_backlight_state(true, expander_pins, expander_dev_handle2);  // Turn back on if there is user activity
+            backlight_is_on = true;
+        }
+    }
+}
 
 void screen_init(lv_display_t *disp) {
         //Start the adapter task

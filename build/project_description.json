@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "lvgl",
-    "project_version":    "dc802bf-dirty",
+    "project_version":    "20615c1-dirty",
     "project_path":       "/Users/lustyd/Documents/repos/ESP32BoatAssistant",
     "idf_path":           "/Users/lustyd/.espressif/v5.5.5/esp-idf",
     "build_dir":          "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build",

@@ -16,75 +16,24 @@
 #include "gui.h"
 #include "rgblcd43b.h"
 
-uint8_t expander_pins = 0x00;
-
 //logging
-static const char *TAG = "boat assistant";
-
-//CH422 Expander pin masks for Waveshare 4.3b
-#define TOUCH_RESET_PIN_MASK (1 << 1)
-#define BACKLIGHT_PIN_MASK (1 << 2)
-#define DISPLAY_RESET_PIN_MASK (1<<3)
-
-//static lv_obj_t * slider_label;
-
-typedef struct {
-    i2c_master_bus_handle_t global_bus_handle;
-    i2c_master_dev_handle_t expander_dev_handle;
-    i2c_master_dev_handle_t expander_dev_handle2;
-}  i2c_config;
-
-i2c_config i2c_settings = {NULL, NULL, NULL};
-
-// Timer callback function checked periodically by LVGL
-static void backlight_check_timer_cb(lv_timer_t * timer) {
-    static bool backlight_is_on = true;
-    
-    // Get inactive time from the default display
-    // Note: For LVGL v8, use: uint32_t idle_time = lv_disp_get_inactive_time(NULL);
-    uint32_t idle_time = lv_display_get_inactive_time(lv_display_get_default());
-
-    if (idle_time >= BACKLIGHT_TIMEOUT_MS) {
-        if (backlight_is_on) {
-            printf("backlight on");
-            expander_pins = set_backlight_state(false, expander_pins, i2c_settings.expander_dev_handle2); // Turn off backlight
-            backlight_is_on = false;
-        }
-    } else {
-        if (!backlight_is_on) {
-            printf("backlight off");
-            expander_pins = set_backlight_state(true, expander_pins, i2c_settings.expander_dev_handle2);  // Turn back on if there is user activity
-            backlight_is_on = true;
-        }
-    }
-}
-
+static const char *TAG = "boat assistant main";
 
 void app_main(void)
 {
-    //Set up pins on expander
-    expander_pins |= BACKLIGHT_PIN_MASK;
-    expander_pins |= DISPLAY_RESET_PIN_MASK;
-    expander_pins |= TOUCH_RESET_PIN_MASK;
-    //i2c_config i2c_settings = {NULL, NULL, NULL};
+    i2c_init();
 
-    //Initialise the i2c bus
-    if (init_i2c_bus(&i2c_settings.global_bus_handle) != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to initialize I2C Master Bus!");
-        return;
-    }
-    ESP_LOGI(TAG, "I2C Master Bus initialized successfully.");
 
     //initialise expander hardware1
-    if (init_i2c_device(CH422G_I2C_ADDR ,i2c_settings.global_bus_handle, &i2c_settings.expander_dev_handle) != ESP_OK) {
+    if (init_i2c_device(CH422G_I2C_ADDR ,global_bus_handle, &expander_dev_handle) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to attach Expander 1");
         return;
     }
-    expander_output_init(i2c_settings.expander_dev_handle);
+    expander_output_init(expander_dev_handle);
     ESP_LOGI(TAG, "Expander 1 (0x%02X) registered.", CH422G_I2C_ADDR);
 
     //initialise expander hardware2
-    if (init_i2c_device(CH422G_I2C_ADDR2 ,i2c_settings.global_bus_handle, &i2c_settings.expander_dev_handle2) != ESP_OK) {
+    if (init_i2c_device(CH422G_I2C_ADDR2 ,global_bus_handle, &expander_dev_handle2) != ESP_OK) {
         ESP_LOGE(TAG, "Failed to attach I2C peripheral device!");
         return;
     }
@@ -93,16 +42,16 @@ void app_main(void)
     // Hardware reset the GT911 before init
     // Pull Reset Low, wait, pull High
     expander_pins &= ~TOUCH_RESET_PIN_MASK; 
-    expander_set_pins(i2c_settings.expander_dev_handle2, expander_pins);
+    expander_set_pins(expander_dev_handle2, expander_pins);
     vTaskDelay(pdMS_TO_TICKS(20)); 
     expander_pins |= TOUCH_RESET_PIN_MASK;
-    expander_set_pins(i2c_settings.expander_dev_handle2, expander_pins);
+    expander_set_pins(expander_dev_handle2, expander_pins);
     vTaskDelay(pdMS_TO_TICKS(100)); // Give GT911 time to boot up
 
     // Initialize touch IO (I2C)
     esp_lcd_panel_io_handle_t io_handle = NULL;
     esp_lcd_panel_io_i2c_config_t io_config = ESP_LCD_TOUCH_IO_I2C_GT911_CONFIG();
-    ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(i2c_settings.global_bus_handle, &io_config, &io_handle));
+    ESP_ERROR_CHECK(esp_lcd_new_panel_io_i2c(global_bus_handle, &io_config, &io_handle));
 
     // Configure touch panel
     esp_lcd_touch_config_t tp_cfg = {
@@ -157,8 +106,6 @@ void app_main(void)
     lv_indev_t *touch = esp_lv_adapter_register_touch(&touch_cfg);
     assert(touch != NULL);
 
-
-
     screen_init(disp);
     
     // Keep app_main alive. Do NOT poll touch coordinates here; 
@@ -167,8 +114,8 @@ void app_main(void)
         vTaskDelay(pdMS_TO_TICKS(1000));
         update_sensor_data((rand() % (45 - 1 + 1)) + 1);
         lv_timer_create(backlight_check_timer_cb, 200, NULL);
-        //expander_pins = backlight_on(i2c_settings.expander_dev_handle2, expander_pins);
+        //expander_pins = backlight_on(expander_dev_handle2, expander_pins);
         //vTaskDelay(pdMS_TO_TICKS(1000));
-        //expander_pins = backlight_off(i2c_settings.expander_dev_handle2, expander_pins);
+        //expander_pins = backlight_off(expander_dev_handle2, expander_pins);
     }
 }
