@@ -1,3 +1,4 @@
+#include "nvs_flash.h"
 //#include <stdio.h>
 //#include <lvgl.h>
 //#include <esp_err.h>
@@ -19,16 +20,27 @@
 #include "display.h"
 #include "gui.h"
 #include "rgblcd43b.h"
+#include "wifiscan.h"
 
 //logging
 static const char *TAG = "boat assistant main";
 
 void app_main(void)
 {
+    // Initialise Non-Volatile Storage and reset if there is a problem
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
+    
+    // initialise the rest of the system
     i2c_init();
     expander_init();
     touch_reset();
     touch_init();
+    wifi_global_init();
     display_init();
     screen_init(disp);
     
@@ -38,8 +50,5 @@ void app_main(void)
         vTaskDelay(pdMS_TO_TICKS(1000));
         update_sensor_data((rand() % (45 - 1 + 1)) + 1);
         lv_timer_create(backlight_check_timer_cb, 200, NULL);
-        //expander_pins = backlight_on(expander_dev_handle2, expander_pins);
-        //vTaskDelay(pdMS_TO_TICKS(1000));
-        //expander_pins = backlight_off(expander_dev_handle2, expander_pins);
     }
 }

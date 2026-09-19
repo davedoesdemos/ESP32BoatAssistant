@@ -4,9 +4,12 @@ idf_component_register(
         "backlight/backlight.c"
         "display/display.c"
         "expander/expander.c"
+        "wifi/wifiscan.c"
+        "wifi/wifistation.c"
         "gui/gui.c"
         "gui/screens/screen_settings.c"
         "gui/screens/screen_environment.c"
+        "gui/screens/screen_wifi.c"
         "gui/screens/screen_1.c"
         "gui/screens/screen_2.c"
         "i2c/i2c.c"
@@ -16,6 +19,7 @@ idf_component_register(
         "backlight"
         "display"
         "expander"
+        "wifi"
         "gui"
         "gui/screens"
         "i2c"
@@ -27,4 +31,6 @@ idf_component_register(
         esp_lcd_touch_gt911
         esp_driver_i2c
         esp_common
+        esp_wifi
+        nvs_flash
     )
