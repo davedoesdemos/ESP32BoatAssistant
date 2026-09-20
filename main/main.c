@@ -21,6 +21,7 @@
 #include "gui.h"
 #include "rgblcd43b.h"
 #include "wifiscan.h"
+#include "nmea2k.h"
 
 //logging
 static const char *TAG = "boat assistant main";
@@ -43,6 +44,7 @@ void app_main(void)
     wifi_global_init();
     display_init();
     screen_init(disp);
+    init_nmea2000_bus();
     
     // Keep app_main alive. Do NOT poll touch coordinates here; 
     // esp_lv_adapter handles it automatically in the background.

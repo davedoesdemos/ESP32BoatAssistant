@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "lvgl",
-    "project_version":    "ada34de-dirty",
+    "project_version":    "037013a-dirty",
     "project_path":       "/Users/lustyd/Documents/repos/ESP32BoatAssistant",
     "idf_path":           "/Users/lustyd/.espressif/v5.5.5/esp-idf",
     "build_dir":          "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build",
@@ -1445,13 +1445,13 @@
             "dir": "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main",
             "type": "LIBRARY",
             "lib": "__idf_main",
-            "reqs": [ "esp_lcd", "lvgl__lvgl", "espressif__esp_lcd_touch", "espressif__esp_lcd_touch_gt911", "esp_driver_i2c", "esp_common", "esp_wifi", "nvs_flash" ],
+            "reqs": [ "esp_lcd", "lvgl__lvgl", "espressif__esp_lcd_touch", "espressif__esp_lcd_touch_gt911", "esp_driver_i2c", "esp_common", "esp_wifi", "nvs_flash", "esp_driver_twai" ],
             "priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
             "file": "/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/main/libmain.a",
-            "sources": [ "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/main.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/backlight/backlight.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/display/display.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/expander/expander.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/wifi/wifiscan.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/wifi/wifistation.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/gui.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_settings.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_environment.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_wifi.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_1.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_2.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/i2c/i2c.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/rgblcd43b/rgblcd43b" ],
-            "include_dirs": [ ".", "backlight", "display", "expander", "wifi", "gui", "gui/screens", "i2c", "rgblcd43b" ]
+            "sources": [ "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/main.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/backlight/backlight.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/display/display.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/expander/expander.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/wifi/wifiscan.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/wifi/wifistation.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/gui.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_settings.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_environment.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_wifi.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_1.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/gui/screens/screen_2.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/i2c/i2c.c", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/rgblcd43b/rgblcd43b", "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main/nmea2k/nmea2k.c" ],
+            "include_dirs": [ ".", "backlight", "display", "expander", "wifi", "gui", "gui/screens", "i2c", "rgblcd43b", "nmea2k" ]
         },
         "mbedtls": {
             "alias": "idf::mbedtls",
@@ -3159,11 +3159,11 @@
             "prefix": "idf",
             "dir": "/Users/lustyd/Documents/repos/ESP32BoatAssistant/main",
             "lib": "__idf_main",
-            "reqs": [ "esp_lcd", "lvgl__lvgl", "espressif__esp_lcd_touch", "espressif__esp_lcd_touch_gt911", "esp_driver_i2c", "esp_common", "esp_wifi", "nvs_flash" ],
+            "reqs": [ "esp_lcd", "lvgl__lvgl", "espressif__esp_lcd_touch", "espressif__esp_lcd_touch_gt911", "esp_driver_i2c", "esp_common", "esp_wifi", "nvs_flash", "esp_driver_twai" ],
             "priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__esp_lcd_touch_gt911", "espressif__esp_lvgl_adapter", "lvgl__lvgl" ],
-            "include_dirs": [ ".", "backlight", "display", "expander", "wifi", "gui", "gui/screens", "i2c", "rgblcd43b" ]
+            "include_dirs": [ ".", "backlight", "display", "expander", "wifi", "gui", "gui/screens", "i2c", "rgblcd43b", "nmea2k" ]
         },
         "espressif__button": {
             "alias": "idf::espressif__button",

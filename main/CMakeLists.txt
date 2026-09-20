@@ -14,6 +14,7 @@ idf_component_register(
         "gui/screens/screen_2.c"
         "i2c/i2c.c"
         "rgblcd43b/rgblcd43b"
+        "nmea2k/nmea2k.c"
     INCLUDE_DIRS 
         "."
         "backlight"
@@ -24,6 +25,7 @@ idf_component_register(
         "gui/screens"
         "i2c"
         "rgblcd43b"
+        "nmea2k"
     REQUIRES
         esp_lcd
         lvgl
@@ -33,4 +35,5 @@ idf_component_register(
         esp_common
         esp_wifi
         nvs_flash
+        esp_driver_twai
     )

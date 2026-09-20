@@ -2,11 +2,11 @@
 
 //logging
 static const char *TAG = "boat assistant gui";
-static lv_obj_t * lbl_title;
+static lv_obj_t * lbl_netstatus;
 
 // Set Status Label
-void set_status(const char * status) {
-    lv_label_set_text(lbl_title, status);
+void set_netstatus(const char * status) {
+    lv_label_set_text(lbl_netstatus, status);
 }
 
 // Timer callback function checked periodically by LVGL
@@ -51,6 +51,8 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t *screen_1 = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_2 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT);
+
+        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
         
         //init sensor reading sub
         lv_subject_init_int(&sensor_reading_subj, 0);
@@ -67,8 +69,8 @@ void screen_init(lv_display_t *disp) {
         lv_obj_set_flex_flow(status_bar, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(status_bar, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         //Status label
-        lbl_title = lv_label_create(status_bar);
-        lv_label_set_text(lbl_title, "Device OK");
+        lbl_netstatus = lv_label_create(status_bar);
+        lv_label_set_text(lbl_netstatus, "Not Connected");
         //Clock label
         lv_obj_t * lbl_time = lv_label_create(status_bar);
         lv_label_set_text(lbl_time, "12:00");
