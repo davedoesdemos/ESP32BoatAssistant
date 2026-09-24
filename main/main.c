@@ -52,5 +52,16 @@ void app_main(void)
         vTaskDelay(pdMS_TO_TICKS(1000));
         update_sensor_data((rand() % (45 - 1 + 1)) + 1);
         lv_timer_create(backlight_check_timer_cb, 200, NULL);
+
+            // 2. Spawn Sender Task on Core 0
+        xTaskCreatePinnedToCore(
+            nmea_process_to_queue,        // Task function
+            "nmea_process_to_queue",      // Task name string
+            4096,               // Stack size in bytes
+            NULL,               // Parameters passed to the task
+            1,                  // Task priority
+            NULL,               // Task handle (not needed here)
+            0                   // Core ID (0)
+        );
     }
 }
