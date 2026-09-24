@@ -53,7 +53,7 @@ void app_main(void)
         update_sensor_data((rand() % (45 - 1 + 1)) + 1);
         lv_timer_create(backlight_check_timer_cb, 200, NULL);
 
-            // 2. Spawn Sender Task on Core 0
+        // Spawn NMEA Sender Task on Core 0
         xTaskCreatePinnedToCore(
             nmea_process_to_queue,        // Task function
             "nmea_process_to_queue",      // Task name string

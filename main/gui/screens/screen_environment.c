@@ -104,6 +104,4 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_obj_t *title_label2 = lv_label_create(container_right);
     lv_label_set_text(title_label2, "Outdoor");
     lv_obj_align(title_label2, LV_ALIGN_BOTTOM_MID, 0, 0);
-
- 
 }

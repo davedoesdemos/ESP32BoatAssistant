@@ -10,6 +10,7 @@ idf_component_register(
         "gui/screens/screen_settings.c"
         "gui/screens/screen_environment.c"
         "gui/screens/screen_wifi.c"
+        "gui/screens/screen_nmea.c"
         "gui/screens/screen_1.c"
         "gui/screens/screen_2.c"
         "i2c/i2c.c"

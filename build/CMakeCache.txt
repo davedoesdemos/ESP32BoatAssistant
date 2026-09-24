@@ -400,7 +400,7 @@ PKG_CONFIG_ARGN:STRING=
 PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
 
 //No help, variable specified on the command line.
-PYTHON:UNINITIALIZED=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python
+PYTHON:UNINITIALIZED=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3
 
 //No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
@@ -671,7 +671,7 @@ FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[/usr/bin/git][v2.50.1 (Apple Git-155)
 //Details about finding PNG
 FIND_PACKAGE_MESSAGE_DETAILS_PNG:INTERNAL=[idf::espressif__libpng][/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__libpng/libpng][v1.6.58()]
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python][found components: Interpreter ][v3.14.6()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3][found components: Interpreter ][v3.14.6()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding ZLIB
@@ -688,10 +688,10 @@ _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
 _Python3_Compiler_REASON_FAILURE:INTERNAL=
 //Development reason failure
 _Python3_Development_REASON_FAILURE:INTERNAL=
-_Python3_EXECUTABLE:INTERNAL=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python
+_Python3_EXECUTABLE:INTERNAL=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3
 //Python3 Properties
 _Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;14;6;32;64;<none>;;abi3;/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/lib/python3.14;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14/site-packages;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14/site-packages
-_Python3_INTERPRETER_SIGNATURE:INTERNAL=d0d03755f687ce072ec5eed81f3816cf
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=e59ef2717836eb79a58e1b4fcc2f3b73
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=
 

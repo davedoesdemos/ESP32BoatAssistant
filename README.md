@@ -15,3 +15,9 @@ A Boat assistant project using the Waveshare ESP32S3 4.3B Box hardware
    │    └── lv_timer_handler()           │    └── twai_receive()
    └── Task: Touch Interrupt Handler     └── Task: REST API Client
         └── Reads I2C touch coords            └── HTTP Request/cJSON
+
+
+
+screens:
+| Settings | Wifi        | <blank>  |
+| NMEA     | Environment | Screen 2 |

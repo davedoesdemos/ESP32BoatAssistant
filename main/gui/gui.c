@@ -48,11 +48,11 @@ void screen_init(lv_display_t *disp) {
         //create tiles to act as screens
         lv_obj_t *screen_settings = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT| LV_DIR_BOTTOM);
         lv_obj_t *screen_wifi = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
-        lv_obj_t *screen_1 = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
+        lv_obj_t *screen_nmea = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_2 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT);
 
-        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
+        lv_tileview_set_tile_by_index(tileview, 0, 1, LV_ANIM_OFF);
         
         //init sensor reading sub
         lv_subject_init_int(&sensor_reading_subj, 0);
@@ -75,15 +75,14 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t * lbl_time = lv_label_create(status_bar);
         lv_label_set_text(lbl_time, "12:00");
 
-        //SCREEN 1
-        screen_1_layout(screen_1);
-        //SCREEN 2
-        screen_2_layout(screen_2);
-        //SCREEN 3 - Settings
+        //Lay out screens
+        //First row
         screen_settings_layout(screen_settings);
-        //SCREEN 4 for temp and humidity
-        screen_environment_layout(screen_environment);
         screen_wifi_layout(screen_wifi);
+        //Second row
+        screen_nmea_layout(screen_nmea);
+        screen_environment_layout(screen_environment);
+        screen_2_layout(screen_2);
 
         //finish and show everything
         esp_lv_adapter_unlock();
