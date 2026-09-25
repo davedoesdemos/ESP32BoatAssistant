@@ -28,6 +28,12 @@ static const char *TAG = "boat assistant main";
 
 void app_main(void)
 {
+    lvgl_mutex = xSemaphoreCreateMutex();
+    
+    if (lvgl_mutex == NULL) {
+        // Handle error: out of memory
+        return;
+    }
     // Initialise Non-Volatile Storage and reset if there is a problem
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -64,7 +70,18 @@ void app_main(void)
             0                   // Core ID (0)
         );
 
-                // Spawn NMEA Receiver Task on Core 1
+        // Spawn NMEA Sender Task on Core 0
+        xTaskCreatePinnedToCore(
+            nmea_fake_to_queue,        // Task function
+            "nmea_fake_to_queue",      // Task name string
+            4096,               // Stack size in bytes
+            NULL,               // Parameters passed to the task
+            1,                  // Task priority
+            NULL,               // Task handle (not needed here)
+            0                   // Core ID (0)
+        );
+
+        // Spawn NMEA Receiver Task on Core 1
         xTaskCreatePinnedToCore(
             update_nmea,        // Task function
             "update_nmea",      // Task name string

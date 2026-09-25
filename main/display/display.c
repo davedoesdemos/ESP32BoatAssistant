@@ -2,6 +2,8 @@
 
 esp_lcd_touch_handle_t touch_handle = NULL;
 lv_display_t *disp = NULL;
+// Define the variable
+SemaphoreHandle_t lvgl_mutex = NULL;
 
 void touch_reset(){
     // Hardware reset the GT911 before init

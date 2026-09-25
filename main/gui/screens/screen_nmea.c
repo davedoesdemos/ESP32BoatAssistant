@@ -23,22 +23,32 @@ void init_nmea_subjects(void) {
 
 // update function to have queue reader and process into labels
 void update_nmea() {
-    //char temp[16];
-
-    // Format and push new values to the subjects
-    //snprintf(temp, sizeof(temp), "%.1f kn", speed);
-    //lv_subject_set_string(subj_sog, temp); // The UI updates automatically!
-
-    //snprintf(temp, sizeof(temp), "%03.0f°", course);
-    //lv_subject_set_string(subj_cog, temp); // The UI updates automatically!
+        char cog_str_temp[16];
+        char sog_str_temp[16];
     nmea_msg_t received_nmea = { .type = UI_UPDATE_NULL, .data.int_val = 0};
     while (1) {
-        char temp[16];
         // Block indefinitely until an item arrives in the queue
         if (xQueueReceive(msg_queue_nmea, &received_nmea, portMAX_DELAY) == pdTRUE) {
-            snprintf(temp, sizeof(temp), "%d kn", received_nmea.data.int_val);
-            ESP_LOGW("RECEIVER", "Received value: %s on Core %d", temp, xPortGetCoreID());
-            lv_subject_set_string(subj_cog, temp); // The UI updates automatically!
+            switch (received_nmea.type) {
+                case UI_UPDATE_COG:
+                    snprintf(cog_str_temp, sizeof(cog_str_temp), "%d°", received_nmea.data.int_val);
+                    //ESP_LOGW("RECEIVER", "Received value: %s on Core %d", cog_str_temp, xPortGetCoreID());
+                    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_subject_set_string(subj_cog, cog_str_temp);
+                    xSemaphoreGive(lvgl_mutex);
+                    break;
+                case UI_UPDATE_SOG:
+                    snprintf(sog_str_temp, sizeof(sog_str_temp), "%.1f kn", received_nmea.data.float_val);
+                    //ESP_LOGW("RECEIVER", "Received value: %s on Core %d", sog_str_temp, xPortGetCoreID());
+                    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_subject_set_string(subj_sog, sog_str_temp);
+                    xSemaphoreGive(lvgl_mutex);
+                    break;
+                default:
+                    // code block
+                    break;
+            }
+            
         }
     }
 }
@@ -97,7 +107,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_width(row0_container, lv_pct(100));
 
         create_data_box(row0_container, "SOG", subj_sog, 0xF7F7F7);
-//        create_data_box(row0_container, "Depth", "4.5 kn", 0xF7F7F7);
+        create_data_box(row0_container, "COG", subj_cog, 0xF7F7F7);
 //        create_data_box(row0_container, "STW", "3.5 kn", 0xF7F7F7);
 //        create_data_box(row0_container, "STW", "3.5 kn", 0xF7F7F7);
 

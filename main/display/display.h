@@ -18,6 +18,7 @@
 
 extern esp_lcd_touch_handle_t touch_handle;
 extern lv_display_t *disp;
+extern SemaphoreHandle_t lvgl_mutex;
 
 void touch_reset();
 void touch_init();

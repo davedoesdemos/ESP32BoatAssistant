@@ -129,6 +129,27 @@ uint8_t get_source_from_id(uint32_t id) {
     // The source address is in the lowest 8 bits (0xFF)
     return id & 0xFF;
 }
+
+void nmea_fake_to_queue(){
+    nmea_msg_t msg;
+    nmea_msg_t msg2;
+    while (1) {
+        //COG
+        int temp = 0;
+        msg.type = UI_UPDATE_COG;
+        temp = rand() % 360;
+        msg.data.int_val = temp;
+        xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+        //ESP_LOGW("SENDERFAKE", "Sent value: %d on Core %d", temp, xPortGetCoreID());
+        //SOG
+        msg2.type = UI_UPDATE_SOG;
+        float random_float = (rand() % 101) / 10.0f;
+        msg2.data.float_val = random_float;
+        xQueueSend(msg_queue_nmea, &msg2, portMAX_DELAY);
+        //ESP_LOGW("SENDERFAKE", "Sent value: %d on Core %d", random_float, xPortGetCoreID());
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
 void nmea_process_to_queue(){
     twai_message_t message;
     nmea_msg_t msg;
