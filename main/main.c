@@ -63,5 +63,16 @@ void app_main(void)
             NULL,               // Task handle (not needed here)
             0                   // Core ID (0)
         );
+
+                // Spawn NMEA Receiver Task on Core 1
+        xTaskCreatePinnedToCore(
+            update_nmea,        // Task function
+            "update_nmea",      // Task name string
+            4096,               // Stack size in bytes
+            NULL,               // Parameters passed to the task
+            1,                  // Task priority
+            NULL,               // Task handle (not needed here)
+            1                   // Core ID (0)
+        );
     }
 }

@@ -22,15 +22,25 @@ void init_nmea_subjects(void) {
 }
 
 // update function to have queue reader and process into labels
-void update_nmea(float speed, float course) {
-    char temp[16];
+void update_nmea() {
+    //char temp[16];
 
     // Format and push new values to the subjects
-    snprintf(temp, sizeof(temp), "%.1f kn", speed);
-    lv_subject_set_string(subj_sog, temp); // The UI updates automatically!
+    //snprintf(temp, sizeof(temp), "%.1f kn", speed);
+    //lv_subject_set_string(subj_sog, temp); // The UI updates automatically!
 
-    snprintf(temp, sizeof(temp), "%03.0f°", course);
-    lv_subject_set_string(subj_cog, temp); // The UI updates automatically!
+    //snprintf(temp, sizeof(temp), "%03.0f°", course);
+    //lv_subject_set_string(subj_cog, temp); // The UI updates automatically!
+    nmea_msg_t received_nmea = { .type = UI_UPDATE_NULL, .data.int_val = 0};
+    while (1) {
+        char temp[16];
+        // Block indefinitely until an item arrives in the queue
+        if (xQueueReceive(msg_queue_nmea, &received_nmea, portMAX_DELAY) == pdTRUE) {
+            snprintf(temp, sizeof(temp), "%d kn", received_nmea.data.int_val);
+            ESP_LOGW("RECEIVER", "Received value: %s on Core %d", temp, xPortGetCoreID());
+            lv_subject_set_string(subj_cog, temp); // The UI updates automatically!
+        }
+    }
 }
 
 lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subject_t * subject_value, uint32_t bg_hex_color) {

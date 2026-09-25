@@ -75,24 +75,8 @@ static const n2k_pgn_meta_t pgn_directory[] = {
     { 130316, "Temperature, Extended Range", false }
 };
 
-typedef enum {
-    UI_UPDATE_LATITUDE,
-    UI_UPDATE_LONGITUDE,
-    UI_UPDATE_DEPTH,
-    UI_UPDATE_SATELLITES
-} ui_update_type_t;
-
-typedef struct {
-    ui_update_type_t type;
-    union {
-        float float_val;
-        int int_val;
-        char str_val[16]; // For pre-formatted strings
-    } data;
-} nmea_msg_t;
-
 // Handle for our inter-task queue
-static QueueHandle_t msg_queue_nmea = NULL;
+QueueHandle_t msg_queue_nmea = NULL;
 
 #define PGN_DIR_COUNT (sizeof(pgn_directory) / sizeof(pgn_directory[0]))
 
