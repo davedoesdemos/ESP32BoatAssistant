@@ -41,14 +41,14 @@ static void update_netstatus_from_interface(void) {
         snprintf(status_msg, sizeof(status_msg), "Connected: %s", ip_str);
         
         // Lock LVGL if you are running an asynchronous LVGL timer task
-        // lv_gl_lock(); 
+        lv_lock(); 
         set_netstatus(status_msg);
-        // lv_gl_unlock();
+        lv_unlock();
     }
 }
 
 //initialise wifi
-void wifi_global_init(void) {
+void wifi_global_init() {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     

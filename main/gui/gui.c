@@ -51,11 +51,9 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t *screen_nmea = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_2 = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT);
-
-        lv_tileview_set_tile_by_index(tileview, 0, 1, LV_ANIM_OFF);
+        //set default screen
+        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
         
-        //init sensor reading sub
-        lv_subject_init_int(&sensor_reading_subj, 0);
         //ALL SCREENS
         //Create a status bar
         lv_obj_t * status_bar = lv_obj_create(base_screen);

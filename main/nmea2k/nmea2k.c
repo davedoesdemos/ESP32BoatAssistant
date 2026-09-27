@@ -129,7 +129,8 @@ uint8_t get_source_from_id(uint32_t id) {
     // The source address is in the lowest 8 bits (0xFF)
     return id & 0xFF;
 }
-
+/*
+//create fake nmea data on queue for testing
 void nmea_fake_to_queue(){
     nmea_msg_t msg;
     nmea_msg_t msg2;
@@ -149,7 +150,7 @@ void nmea_fake_to_queue(){
         //ESP_LOGW("SENDERFAKE", "Sent value: %d on Core %d", random_float, xPortGetCoreID());
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
-}
+}*/
 void nmea_process_to_queue(){
     twai_message_t message;
     nmea_msg_t msg;
@@ -163,14 +164,87 @@ void nmea_process_to_queue(){
                 uint8_t src = get_source_from_id(message.identifier);
                 // Parse standard marine data streams based on their PGN type
                 switch(pgn) {
-                    case 127488: { // Engine Speed / RPM PGN
-                        // RPM data is inside bytes 2 and 3 (0-indexed)
-                        uint16_t raw_rpm = (message.data[3] << 8) | message.data[2];
-                        float actual_rpm = raw_rpm * 0.25; // NMEA multiplier scale
-                        printf("NMEA 2000 Data -> Engine RPM: %.2f\n", actual_rpm);
+                    case 129026: { // COG & SOG, Rapid Update PGN
+                        // COG sits in bytes 2-3 (16-bit unsigned, resolution 1x10^-4 rad)
+                        uint16_t raw_cog = ((uint16_t)message.data[3] << 8) | message.data[2];
+                        // SOG sits in bytes 4-5 (16-bit unsigned, resolution 1x10^-2 m/s)
+                        uint16_t raw_sog = ((uint16_t)message.data[5] << 8) | message.data[4];
+
+                        // Process Course Over Ground (if available)
+                        if (raw_cog != 0xFFFF) {
+                            float cog_rad = raw_cog * 0.0001f;
+                            float cog_deg = cog_rad * (180.0f / 3.14159265f); // Convert to degrees if needed
+
+                            msg.type = UI_UPDATE_COG;
+                            msg.data.float_val = cog_deg; 
+                            xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                        }
+
+                        // Process Speed Over Ground (if available)
+                        if (raw_sog != 0xFFFF) {
+                            float sog_ms = raw_sog * 0.01f;
+                            float sog_knots = sog_ms * 1.94384f; // Convert m/s to knots for marine display
+
+                            msg.type = UI_UPDATE_SOG;
+                            msg.data.float_val = sog_knots; 
+                            xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+
+                            //printf("[Source: %d] SOG: %.1f kts\n", src, sog_knots);
+                        }
                         break;
                     }
+                    case 130306: { // Wind Data PGN
+                        // Wind Speed sits in bytes 1-2 (16-bit unsigned, resolution 0.01 m/s)
+                        uint16_t raw_speed = ((uint16_t)message.data[2] << 8) | message.data[1];
+                        // Wind Direction sits in bytes 3-4 (16-bit unsigned, resolution 0.0001 rad)
+                        uint16_t raw_dir   = ((uint16_t)message.data[4] << 8) | message.data[3];
+                        // Wind Reference sits in bits 0-2 of byte 5
+                        uint8_t reference  = message.data[5] & 0x07; 
 
+                        float wind_speed_knots = 0.0f;
+                        float wind_dir_deg = 0.0f;
+
+                        // 1. Process Wind Speed (if available)
+                        if (raw_speed != 0xFFFF) {
+                            float speed_ms = raw_speed * 0.01f;
+                            wind_speed_knots = speed_ms * 1.94384f; // Convert m/s to knots
+                        }
+
+                        // 2. Process Wind Direction (if available)
+                        if (raw_dir != 0xFFFF) {
+                            float dir_rad = raw_dir * 0.0001f;
+                            wind_dir_deg = dir_rad * (180.0f / 3.14159265f); // Convert to degrees
+                        }
+
+                        // 3. Route to the correct UI target based on the reference type
+                        if (raw_speed != 0xFFFF || raw_dir != 0xFFFF) {
+                            switch (reference) {
+                                case 0: // Apparent Wind
+                                    msg.type = UI_UPDATE_AWS;
+                                    msg.data.float_val = wind_speed_knots;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_AWD;
+                                    msg.data.float_val = wind_dir_deg;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+
+                                case  1: // True Wind (referenced to boat heading/bow)
+                                case 2: // True Wind (referenced to true North / ground)
+                                case 3: // True Wind (referenced to magnetic North)
+                                    msg.type = UI_UPDATE_TWS;
+                                    msg.data.float_val = wind_speed_knots;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_TWD;
+                                    msg.data.float_val = wind_dir_deg;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+                                default:
+                                    // Unknown or reserved reference type
+                                    break;
+                            }
+                        }
+                        break;
+                    }
                     case 128267: { // Water Depth PGN
                         // Distance payload sits inside bytes 1-4 (Byte 0 is SID)
                         uint32_t raw_depth = ((uint32_t)message.data[4] << 24) | 
@@ -182,20 +256,84 @@ void nmea_process_to_queue(){
                              break; 
                         } else {
                             float actual_depth_m = (raw_depth * 0.01) + DEPTH_OFFSET; 
-                            
                             //fill struct and place on queue
                             msg.type = UI_UPDATE_DEPTH;
                             msg.data.float_val = actual_depth_m;
                             xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
-
-                            //old print statement, remove after testing
-                            printf("[Source: %d] Water Depth: %.2fm\n", src, actual_depth_m);
                         }
-                        break;              
-                        /* float actual_depth_m = raw_depth * 0.01; // Scale factor in meters
-                        // printf("NMEA 2000 Data -> Water Depth: %.2fm\n", actual_depth_m);
-                        printf("[Source: %d] Water Depth: %.2fm\n", src, actual_depth_m);
-                        break; */
+                        break;
+                    }
+                    case 130316: { // Temperature, Extended Range PGN
+                        uint8_t instance = message.data[1];
+                        uint8_t source   = message.data[2];
+                        // Extract the 24-bit temperature field from bytes 3, 4, and 5
+                        uint32_t raw_24bits = ((uint32_t)message.data[5] << 16) | 
+                                              ((uint32_t)message.data[4] << 8)  | 
+                                              message.data[3];
+                        // Missing data marker for a 24-bit integer is 0x00FFFFFF
+                        if (raw_24bits != 0x00FFFFFF) {
+                            // Sign-extend the 24-bit value to a standard 32-bit signed integer
+                            int32_t signed_temp = (int32_t)raw_24bits;
+                            if (signed_temp & 0x00800000) { 
+                                signed_temp |= 0xFF000000; // Extend the negative sign bit
+                            }
+                            // 130316 resolution is 0.001 Kelvin
+                            float temp_kelvin = signed_temp * 0.001f;
+                            float temp_celsius = temp_kelvin - 273.15f;
+
+                            switch(source) {
+                                case 1: {
+                                    msg.type = UI_UPDATE_TEMP_OUTSIDE;
+                                    msg.data.float_val = temp_celsius;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+                                }
+                                case 2: {
+                                    msg.type = UI_UPDATE_TEMP_INSIDE;
+                                    msg.data.float_val = temp_celsius;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                            //printf("[Source: %d] Temp Source %d (Inst %d): %.2f°C\n", src, source, instance, temp_celsius);
+                        }
+                        break;
+                    }
+                    case 130313: { // Humidity PGN
+                        uint8_t instance = message.data[1];
+                        uint8_t source   = message.data[2];
+                        // Humidity sits in bytes 3-4 (16-bit unsigned, resolution 0.004 %)
+                        uint16_t raw_humidity = ((uint16_t)message.data[4] << 8) | message.data[3];
+
+                        if (raw_humidity != 0xFFFF) {
+                            float humidity_percent = raw_humidity * 0.004f;
+
+                            switch(source) {
+                                case 1: {
+                                    msg.type = UI_UPDATE_HUM_OUTSIDE;
+                                    msg.data.float_val = humidity_percent;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+                                }
+                                case 0: {
+                                    msg.type = UI_UPDATE_HUM_INSIDE;
+                                    msg.data.float_val = humidity_percent;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                            //msg.type = UI_UPDATE_HUMIDITY;
+                            //msg.data.environment.instance = instance;
+                            //msg.data.environment.source = source;
+                            //msg.data.environment.value = humidity_percent;
+
+                            //printf("[Source: %d] Humidity Source %d (Inst %d): %.1f%%\n", src, source, instance, humidity_percent);
+                        }
+                        break;
                     }
                     default:
                         // Catch-all monitor to trace unmapped traffic packets

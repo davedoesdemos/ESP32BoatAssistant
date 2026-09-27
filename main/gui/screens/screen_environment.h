@@ -2,10 +2,13 @@
 #define SCREEN_ENVIRONMENT_H
 
 #include "lvgl.h"
+#include <stdio.h>
+#include "screen_nmea.h"
 
-extern lv_subject_t sensor_reading_subj;
-
-void update_sensor_data(int new_value);
+void update_temp_in(int new_value);
+void update_temp_out(int new_value);
+void update_hum_in(int new_value);
+void update_hum_out(int new_value);
 void screen_environment_layout(lv_obj_t *screen_environment);
 
 #endif //SCREEN_ENVIRONMENT_H

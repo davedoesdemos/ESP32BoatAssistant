@@ -21,6 +21,7 @@
 #include "gui.h"
 #include "rgblcd43b.h"
 #include "wifiscan.h"
+#include "wifistation.h"
 #include "nmea2k.h"
 
 //logging
@@ -51,15 +52,8 @@ void app_main(void)
     display_init();
     screen_init(disp);
     init_nmea2000_bus();
-    
-    // Keep app_main alive. Do NOT poll touch coordinates here; 
-    // esp_lv_adapter handles it automatically in the background.
-    while (1) {
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        update_sensor_data((rand() % (45 - 1 + 1)) + 1);
-        lv_timer_create(backlight_check_timer_cb, 200, NULL);
 
-        // Spawn NMEA Sender Task on Core 0
+    // Spawn NMEA Sender Task on Core 1
         xTaskCreatePinnedToCore(
             nmea_process_to_queue,        // Task function
             "nmea_process_to_queue",      // Task name string
@@ -67,18 +61,7 @@ void app_main(void)
             NULL,               // Parameters passed to the task
             1,                  // Task priority
             NULL,               // Task handle (not needed here)
-            0                   // Core ID (0)
-        );
-
-        // Spawn NMEA Sender Task on Core 0
-        xTaskCreatePinnedToCore(
-            nmea_fake_to_queue,        // Task function
-            "nmea_fake_to_queue",      // Task name string
-            4096,               // Stack size in bytes
-            NULL,               // Parameters passed to the task
-            1,                  // Task priority
-            NULL,               // Task handle (not needed here)
-            0                   // Core ID (0)
+            1                   // Core ID (0)
         );
 
         // Spawn NMEA Receiver Task on Core 1
@@ -91,5 +74,12 @@ void app_main(void)
             NULL,               // Task handle (not needed here)
             1                   // Core ID (0)
         );
-    }
+    
+    // Keep app_main alive. Do NOT poll touch coordinates here; 
+    // esp_lv_adapter handles it automatically in the background.
+    //while (1) {
+    //    vTaskDelay(pdMS_TO_TICKS(1000));
+     //   update_sensor_data((rand() % (45 - 1 + 1)) + 1);
+        lv_timer_create(backlight_check_timer_cb, 200, NULL);  
+    //}
 }

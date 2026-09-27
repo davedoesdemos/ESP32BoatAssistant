@@ -21,7 +21,7 @@ typedef struct {
     char password[64];
 } wifi_credentials_t;
 
-void wifi_global_init(void);
+void wifi_global_init();
 void wifi_task(void *pvParameters);
 void wifi_init_sta(const char * ssid, const char * password);
 

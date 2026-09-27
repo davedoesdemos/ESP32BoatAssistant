@@ -1,48 +1,178 @@
 #include "screen_nmea.h"
 
 // Allocate buffer sizes large enough for your data strings
-static char sog_buf[16] = "0.0 kn";
-static char sog_prev_buf[16] = "0.0 kn";
-static char cog_buf[16] = "000°";
-static char cog_prev_buf[16] = "000°";
+static char sog_buf[16] = "---kt";
+static char sog_prev_buf[16] = "---kt";
+static char cog_buf[16] = "---°";
+static char cog_prev_buf[16] = "---°";
+static char tws_buf[16] = "---kt";
+static char tws_prev_buf[16] = "---kt";
+static char twd_buf[16] = "---°";
+static char twd_prev_buf[16] = "---°";
+static char aws_buf[16] = "---kt";
+static char aws_prev_buf[16] = "---kt";
+static char awd_buf[16] = "---°";
+static char awd_prev_buf[16] = "---°";
+static char depth_buf[16] = "---m";
+static char depth_prev_buf[16] = "---m";
+static char hum_in_buf[16] = "---%";
+static char hum_in_prev_buf[16] = "---%";
+static char hum_out_buf[16] = "---%";
+static char hum_out_prev_buf[16] = "---%";
+static char temp_in_buf[16] = "---°C";
+static char temp_in_prev_buf[16] = "---°C";
+static char temp_out_buf[16] = "---°C";
+static char temp_out_prev_buf[16] = "---°C";
 
 // Declare your LVGL subjects
 static lv_subject_t * subj_sog;
 static lv_subject_t * subj_cog;
+static lv_subject_t * subj_tws;
+static lv_subject_t * subj_twd;
+static lv_subject_t * subj_aws;
+static lv_subject_t * subj_awd;
+static lv_subject_t * subj_depth;
+static lv_subject_t * subj_hum_in;
+static lv_subject_t * subj_hum_out;
+static lv_subject_t * subj_temp_in;
+static lv_subject_t * subj_temp_out;
 // Initialize them during your setup / main function
 
 void init_nmea_subjects(void) {
     subj_sog = lv_subject_create(LV_SUBJECT_TYPE_STRING);
     lv_subject_set_string_buffer_static(subj_sog, sog_buf, sog_prev_buf, sizeof(sog_buf));
-    lv_subject_set_string(subj_sog, "0.0 kn");
+    lv_subject_set_string(subj_sog, "---kt");
 
     subj_cog = lv_subject_create(LV_SUBJECT_TYPE_STRING);
     lv_subject_set_string_buffer_static(subj_cog, cog_buf, cog_prev_buf, sizeof(cog_buf));
-    lv_subject_set_string(subj_cog, "000°");
+    lv_subject_set_string(subj_cog, "---°");
+
+    subj_tws = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_tws, tws_buf, tws_prev_buf, sizeof(tws_buf));
+    lv_subject_set_string(subj_tws, "---kt");
+
+    subj_twd = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_twd, twd_buf, twd_prev_buf, sizeof(twd_buf));
+    lv_subject_set_string(subj_twd, "---°");
+
+    subj_aws = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_aws, aws_buf, aws_prev_buf, sizeof(aws_buf));
+    lv_subject_set_string(subj_aws, "---kt");
+
+    subj_awd = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_awd, awd_buf, awd_prev_buf, sizeof(awd_buf));
+    lv_subject_set_string(subj_awd, "---°");
+
+    subj_depth = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_depth, depth_buf, depth_prev_buf, sizeof(depth_buf));
+    lv_subject_set_string(subj_depth, "---m");
+
+    subj_hum_in = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_hum_in, hum_in_buf, hum_in_prev_buf, sizeof(hum_in_buf));
+    lv_subject_set_string(subj_hum_in, "---%");
+
+    subj_hum_out = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_hum_out, hum_out_buf, hum_out_prev_buf, sizeof(hum_out_buf));
+    lv_subject_set_string(subj_hum_out, "---%");
+
+    subj_temp_in = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_temp_in, temp_in_buf, temp_in_prev_buf, sizeof(temp_in_buf));
+    lv_subject_set_string(subj_temp_in, "---°C");
+
+    subj_temp_out = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_temp_out, temp_out_buf, temp_out_prev_buf, sizeof(temp_out_buf));
+    lv_subject_set_string(subj_temp_out, "---°C");
 }
 
 // update function to have queue reader and process into labels
 void update_nmea() {
         char cog_str_temp[16];
         char sog_str_temp[16];
+        char tws_str_temp[16];
+        char twd_str_temp[16];
+        char aws_str_temp[16];
+        char awd_str_temp[16];
+        char depth_str_temp[16];
+        char hum_in_str_temp[16];
+        char hum_out_str_temp[16];
+        char temp_in_str_temp[16];
+        char temp_out_str_temp[16];
     nmea_msg_t received_nmea = { .type = UI_UPDATE_NULL, .data.int_val = 0};
     while (1) {
         // Block indefinitely until an item arrives in the queue
         if (xQueueReceive(msg_queue_nmea, &received_nmea, portMAX_DELAY) == pdTRUE) {
             switch (received_nmea.type) {
                 case UI_UPDATE_COG:
-                    snprintf(cog_str_temp, sizeof(cog_str_temp), "%d°", received_nmea.data.int_val);
+                    snprintf(cog_str_temp, sizeof(cog_str_temp), "%.1f°", received_nmea.data.float_val);
                     //ESP_LOGW("RECEIVER", "Received value: %s on Core %d", cog_str_temp, xPortGetCoreID());
-                    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_lock();
                     lv_subject_set_string(subj_cog, cog_str_temp);
-                    xSemaphoreGive(lvgl_mutex);
+                    lv_unlock();
                     break;
                 case UI_UPDATE_SOG:
-                    snprintf(sog_str_temp, sizeof(sog_str_temp), "%.1f kn", received_nmea.data.float_val);
+                    snprintf(sog_str_temp, sizeof(sog_str_temp), "%.1f kt", received_nmea.data.float_val);
                     //ESP_LOGW("RECEIVER", "Received value: %s on Core %d", sog_str_temp, xPortGetCoreID());
-                    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_lock(); //xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
                     lv_subject_set_string(subj_sog, sog_str_temp);
-                    xSemaphoreGive(lvgl_mutex);
+                    lv_unlock(); //xSemaphoreGive(lvgl_mutex);
+                    break;
+                case UI_UPDATE_TWS:
+                    snprintf(tws_str_temp, sizeof(tws_str_temp), "%.1f kt", received_nmea.data.float_val);
+                    lv_lock(); //xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_subject_set_string(subj_tws, tws_str_temp);
+                    lv_unlock(); //xSemaphoreGive(lvgl_mutex);
+                    break;
+                case UI_UPDATE_TWD:
+                    snprintf(twd_str_temp, sizeof(twd_str_temp), "%.1f°", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_twd, twd_str_temp);
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_AWS:
+                    snprintf(aws_str_temp, sizeof(aws_str_temp), "%.1f kt", received_nmea.data.float_val);
+                    lv_lock(); //xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+                    lv_subject_set_string(subj_aws, aws_str_temp);
+                    lv_unlock(); //xSemaphoreGive(lvgl_mutex);
+                    break;
+                case UI_UPDATE_AWD:
+                    snprintf(awd_str_temp, sizeof(awd_str_temp), "%.1f°", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_awd, awd_str_temp);
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_DEPTH:
+                    snprintf(depth_str_temp, sizeof(depth_str_temp), "%.1fm", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_depth, depth_str_temp);
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_HUM_INSIDE:
+                    snprintf(hum_in_str_temp, sizeof(hum_in_str_temp), "%.1f%%", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_hum_in, hum_in_str_temp);
+                    update_hum_in((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_HUM_OUTSIDE:
+                    snprintf(hum_out_str_temp, sizeof(hum_out_str_temp), "%.1f%%", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_hum_out, hum_out_str_temp);
+                    update_hum_out((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_TEMP_INSIDE:
+                    snprintf(temp_in_str_temp, sizeof(temp_in_str_temp), "%.1f°C", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_temp_in, temp_in_str_temp);
+                    update_temp_in((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_TEMP_OUTSIDE:
+                    snprintf(temp_out_str_temp, sizeof(temp_out_str_temp), "%.1f°C", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_temp_out, temp_out_str_temp);
+                    update_temp_out((int)round(received_nmea.data.float_val));
+                    lv_unlock();
                     break;
                 default:
                     // code block
@@ -106,6 +236,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_flex_align(row0_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_width(row0_container, lv_pct(100));
 
+        create_data_box(row0_container, "Depth", subj_depth, 0xF7F7F7);
         create_data_box(row0_container, "SOG", subj_sog, 0xF7F7F7);
         create_data_box(row0_container, "COG", subj_cog, 0xF7F7F7);
 //        create_data_box(row0_container, "STW", "3.5 kn", 0xF7F7F7);
@@ -119,6 +250,10 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_flex_align(row1_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_width(row1_container, lv_pct(100));
 
+        create_data_box(row1_container, "TWS", subj_tws, 0xF7F7F7);
+        create_data_box(row1_container, "TWD", subj_twd, 0xF7F7F7);
+        create_data_box(row1_container, "AWS", subj_aws, 0xF7F7F7);
+        create_data_box(row1_container, "AWD", subj_awd, 0xF7F7F7);
 //        create_data_box(row1_container, "Wind Dir", "220", 0xF7F7F7);
 //        create_data_box(row1_container, "Depth", "4.5 kn", 0xF7F7F7);
 //        create_data_box(row1_container, "SSTW", "3.5 kn", 0xF7F7F7);
@@ -132,6 +267,11 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_flex_align(row2_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_width(row2_container, lv_pct(100));
 
+
+        create_data_box(row2_container, "Hum In", subj_hum_in, 0xF7F7F7);
+        create_data_box(row2_container, "Temp In", subj_temp_in, 0xF7F7F7);
+        create_data_box(row2_container, "Hum Out", subj_hum_out, 0xF7F7F7);
+        create_data_box(row2_container, "Temp Out", subj_temp_out, 0xF7F7F7);
 //        create_data_box(row2_container, "Wind Speed", "14.5 kn", 0xF7F7F7);
 //        create_data_box(row2_container, "Heading", "180", 0xF7F7F7);
 //        create_data_box(row2_container, "COG", "170", 0xF7F7F7);
