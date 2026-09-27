@@ -10,8 +10,9 @@
 #include "screens/screen_environment.h"
 #include "screens/screen_wifi.h"
 #include "screens/screen_nmea.h"
-#include "screens/screen_1.h"
-#include "screens/screen_2.h"
+#include "screens/screen_fuel.h"
+//#include "screens/screen_1.h"
+//#include "screens/screen_2.h"
 
 void set_netstatus(const char * status);
 void backlight_check_timer_cb(lv_timer_t * timer);

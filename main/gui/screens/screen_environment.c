@@ -84,7 +84,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_obj_set_size(container_left, 280, 300);
     lv_obj_align(container_left, LV_ALIGN_CENTER, -150, 0);
 
-    // 2. Outer Arc: Temperature (Size: 150x150)
+    // Outer Arc: Temperature (Size: 150x150)
     lv_obj_t *temp_arc1 = lv_arc_create(container_left);
     lv_obj_set_size(temp_arc1, 270, 270);
     lv_obj_set_style_pad_all(temp_arc1, 0, LV_PART_MAIN);

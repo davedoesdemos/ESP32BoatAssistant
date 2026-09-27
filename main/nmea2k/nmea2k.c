@@ -164,6 +164,57 @@ void nmea_process_to_queue(){
                 uint8_t src = get_source_from_id(message.identifier);
                 // Parse standard marine data streams based on their PGN type
                 switch(pgn) {
+                    case 127505: { // Fluid Level PGN
+                        // Fluid Type sits in the first 4 bits of Byte 0
+                        uint8_t fluid_type = message.data[0] & 0x0F;
+                        // Fluid Instance sits in the last 4 bits of Byte 0 (e.g., Tank 0, Tank 1)
+                        uint8_t instance   = (message.data[0] >> 4) & 0x0F;
+                        
+                        // Fluid Level sits in bytes 1-2 (16-bit unsigned, resolution 0.004%)
+                        uint16_t raw_level = ((uint16_t)message.data[2] << 8) | message.data[1];
+                        // Tank Capacity sits in bytes 3-6 (32-bit unsigned, resolution 0.1 L)
+                        uint32_t raw_cap   = ((uint32_t)message.data[6] << 24) |
+                                             ((uint32_t)message.data[5] << 16) |
+                                             ((uint32_t)message.data[4] << 8)  |
+                                             message.data[3];
+
+                        // We only care if the fluid type is Fuel (Fuel Type ID = 0)
+                        if (fluid_type == 0) {
+                            float fuel_level_percent = 0.0f;
+                            float tank_capacity_liters = 0.0f;
+                            float fuel_level_liters = 0.0f;
+
+                            // 1. Process Fuel Level Percentage (0xFFFF is unavailable)
+                            if (raw_level != 0xFFFF) {
+                                fuel_level_percent = raw_level * 0.004f;
+                            }
+
+                            // 2. Process Tank Capacity (0xFFFFFFFF is unavailable)
+                            if (raw_cap != 0xFFFFFFFF) {
+                                tank_capacity_liters = raw_cap * 0.1f;
+                            }
+
+                            // 3. Dispatch to your UI update queue
+                            if (raw_level != 0xFFFF) {
+                                fuel_level_liters = (fuel_level_percent / 100.0f) * tank_capacity_liters;
+                                msg.type = UI_UPDATE_FUELCAPACITY;
+                                msg.data.float_val = tank_capacity_liters;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+
+                                msg.type = UI_UPDATE_FUELPERCENT;
+                                msg.data.float_val = fuel_level_percent;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+
+                                msg.type = UI_UPDATE_FUELLEVEL;
+                                msg.data.float_val = fuel_level_liters;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+
+                                //printf("[Source: %d] Fuel Tank %d: %.1f%% (Cap: %.1fL)\n", 
+                                //       src, instance, fuel_level_percent, tank_capacity_liters);
+                            }
+                        }
+                        break;
+                    }
                     case 129026: { // COG & SOG, Rapid Update PGN
                         // COG sits in bytes 2-3 (16-bit unsigned, resolution 1x10^-4 rad)
                         uint16_t raw_cog = ((uint16_t)message.data[3] << 8) | message.data[2];

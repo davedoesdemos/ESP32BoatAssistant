@@ -8,6 +8,7 @@
 #include "nmea2k.h"
 #include "display.h"
 #include "screen_environment.h"
+#include "screen_fuel.h"
 
 void update_nmea();
 void screen_nmea_layout(lv_obj_t *screen_nmea);

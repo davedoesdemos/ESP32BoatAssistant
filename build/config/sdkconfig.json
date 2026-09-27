@@ -773,7 +773,7 @@
     "LV_FONT_MONTSERRAT_28_COMPRESSED": false,
     "LV_FONT_MONTSERRAT_30": false,
     "LV_FONT_MONTSERRAT_32": false,
-    "LV_FONT_MONTSERRAT_34": false,
+    "LV_FONT_MONTSERRAT_34": true,
     "LV_FONT_MONTSERRAT_36": false,
     "LV_FONT_MONTSERRAT_38": false,
     "LV_FONT_MONTSERRAT_40": false,

@@ -23,6 +23,12 @@ static char temp_in_buf[16] = "---°C";
 static char temp_in_prev_buf[16] = "---°C";
 static char temp_out_buf[16] = "---°C";
 static char temp_out_prev_buf[16] = "---°C";
+static char fuel_level_buf[16] = "---°";
+static char fuel_level_prev_buf[16] = "---°";
+static char fuel_capacity_buf[16] = "---°";
+static char fuel_capacity_prev_buf[16] = "---°";
+static char fuel_percent_buf[16] = "---°";
+static char fuel_percent_prev_buf[16] = "---°";
 
 // Declare your LVGL subjects
 static lv_subject_t * subj_sog;
@@ -36,6 +42,9 @@ static lv_subject_t * subj_hum_in;
 static lv_subject_t * subj_hum_out;
 static lv_subject_t * subj_temp_in;
 static lv_subject_t * subj_temp_out;
+static lv_subject_t * subj_fuel_level;
+static lv_subject_t * subj_fuel_capacity;
+static lv_subject_t * subj_fuel_percent;
 // Initialize them during your setup / main function
 
 void init_nmea_subjects(void) {
@@ -82,6 +91,18 @@ void init_nmea_subjects(void) {
     subj_temp_out = lv_subject_create(LV_SUBJECT_TYPE_STRING);
     lv_subject_set_string_buffer_static(subj_temp_out, temp_out_buf, temp_out_prev_buf, sizeof(temp_out_buf));
     lv_subject_set_string(subj_temp_out, "---°C");
+
+    subj_fuel_level = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_fuel_level, fuel_level_buf, fuel_level_prev_buf, sizeof(fuel_level_buf));
+    lv_subject_set_string(subj_fuel_level, "---l");
+
+    subj_fuel_capacity = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_fuel_capacity, fuel_capacity_buf, fuel_capacity_prev_buf, sizeof(fuel_capacity_buf));
+    lv_subject_set_string(subj_fuel_capacity, "---l");
+
+    subj_fuel_percent = lv_subject_create(LV_SUBJECT_TYPE_STRING);
+    lv_subject_set_string_buffer_static(subj_fuel_percent, fuel_percent_buf, fuel_percent_prev_buf, sizeof(fuel_percent_buf));
+    lv_subject_set_string(subj_fuel_percent, "---%");
 }
 
 // update function to have queue reader and process into labels
@@ -97,6 +118,9 @@ void update_nmea() {
         char hum_out_str_temp[16];
         char temp_in_str_temp[16];
         char temp_out_str_temp[16];
+        char fuel_level_str_temp[16];
+        char fuel_capacity_str_temp[16];
+        char fuel_percent_str_temp[16];
     nmea_msg_t received_nmea = { .type = UI_UPDATE_NULL, .data.int_val = 0};
     while (1) {
         // Block indefinitely until an item arrives in the queue
@@ -174,6 +198,27 @@ void update_nmea() {
                     update_temp_out((int)round(received_nmea.data.float_val));
                     lv_unlock();
                     break;
+                case UI_UPDATE_FUELLEVEL:
+                    snprintf(fuel_level_str_temp, sizeof(fuel_level_str_temp), "%.1fl", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_fuel_level, fuel_level_str_temp);
+                    update_fuel_level((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_FUELCAPACITY:
+                    snprintf(fuel_capacity_str_temp, sizeof(fuel_capacity_str_temp), "%.1fl", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_fuel_capacity, fuel_capacity_str_temp);
+                    update_fuel_capacity((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
+                case UI_UPDATE_FUELPERCENT:
+                    snprintf(fuel_percent_str_temp, sizeof(fuel_percent_str_temp), "%.1fl", received_nmea.data.float_val);
+                    lv_lock();
+                    lv_subject_set_string(subj_fuel_percent, fuel_percent_str_temp);
+                    update_fuel_percent((int)round(received_nmea.data.float_val));
+                    lv_unlock();
+                    break;
                 default:
                     // code block
                     break;
@@ -183,7 +228,7 @@ void update_nmea() {
     }
 }
 
-lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subject_t * subject_value, uint32_t bg_hex_color) {
+static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subject_t * subject_value, uint32_t bg_hex_color) {
     // Create and reset container
     lv_obj_t * container = lv_obj_create(parent);
     lv_obj_remove_style_all(container);
@@ -199,13 +244,13 @@ lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subject_t *
         lv_label_set_text(lbl_title, title);
         lv_obj_set_width(lbl_title, lv_pct(100));
         lv_obj_set_style_text_align(lbl_title, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, 0); 
+        lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_24, 0); 
         
         lv_obj_t * lbl_value = lv_label_create(container);
         //lv_label_set_text(lbl_value, value);
         lv_obj_set_width(lbl_title, lv_pct(100));
         lv_obj_set_style_text_align(lbl_value, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_24, 0); 
+        lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_34, 0); 
 
         // BIND THE SUBJECT: Automatically updates label text when the subject changes
         if (subject_value != NULL) {
@@ -239,8 +284,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         create_data_box(row0_container, "Depth", subj_depth, 0xF7F7F7);
         create_data_box(row0_container, "SOG", subj_sog, 0xF7F7F7);
         create_data_box(row0_container, "COG", subj_cog, 0xF7F7F7);
-//        create_data_box(row0_container, "STW", "3.5 kn", 0xF7F7F7);
-//        create_data_box(row0_container, "STW", "3.5 kn", 0xF7F7F7);
+        create_data_box(row0_container, "Fuel", subj_fuel_level, 0xF7F7F7);
 
         // Row 1
         lv_obj_t * row1_container = lv_obj_create(column1_container);
@@ -254,10 +298,6 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         create_data_box(row1_container, "TWD", subj_twd, 0xF7F7F7);
         create_data_box(row1_container, "AWS", subj_aws, 0xF7F7F7);
         create_data_box(row1_container, "AWD", subj_awd, 0xF7F7F7);
-//        create_data_box(row1_container, "Wind Dir", "220", 0xF7F7F7);
-//        create_data_box(row1_container, "Depth", "4.5 kn", 0xF7F7F7);
-//        create_data_box(row1_container, "SSTW", "3.5 kn", 0xF7F7F7);
-//        create_data_box(row1_container, "STW", "3.5 kn", 0xF7F7F7);
 
         // Row 2
         lv_obj_t * row2_container = lv_obj_create(column1_container);
@@ -268,12 +308,8 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_width(row2_container, lv_pct(100));
 
 
-        create_data_box(row2_container, "Hum In", subj_hum_in, 0xF7F7F7);
-        create_data_box(row2_container, "Temp In", subj_temp_in, 0xF7F7F7);
-        create_data_box(row2_container, "Hum Out", subj_hum_out, 0xF7F7F7);
-        create_data_box(row2_container, "Temp Out", subj_temp_out, 0xF7F7F7);
-//        create_data_box(row2_container, "Wind Speed", "14.5 kn", 0xF7F7F7);
-//        create_data_box(row2_container, "Heading", "180", 0xF7F7F7);
-//        create_data_box(row2_container, "COG", "170", 0xF7F7F7);
-//        create_data_box(row2_container, "STW", "3.5 kn", 0xF7F7F7);
+        create_data_box(row2_container, "Hum Inside", subj_hum_in, 0xF7F7F7);
+        create_data_box(row2_container, "Inside", subj_temp_in, 0xF7F7F7);
+        create_data_box(row2_container, "Hum Outside", subj_hum_out, 0xF7F7F7);
+        create_data_box(row2_container, "Outside", subj_temp_out, 0xF7F7F7);
 }
