@@ -20,10 +20,17 @@ static lv_subject_t *sensor_temp_out_text;
 
 void init_environment_subjects(){
         //init sensor subjects
-        lv_subject_init_int(sensor_hum_in, 0);
-        lv_subject_init_int(sensor_hum_out, 0);
-        lv_subject_init_int(sensor_temp_in, 0);
-        lv_subject_init_int(sensor_temp_out, 0);
+        sensor_hum_in = lv_subject_create(LV_SUBJECT_TYPE_INT);
+        lv_subject_set_int(sensor_hum_in, 0);
+        
+        sensor_hum_out = lv_subject_create(LV_SUBJECT_TYPE_INT);
+        lv_subject_set_int(sensor_hum_out, 0);
+
+        sensor_temp_in = lv_subject_create(LV_SUBJECT_TYPE_INT);
+        lv_subject_set_int(sensor_temp_in, 0);
+
+        sensor_temp_out = lv_subject_create(LV_SUBJECT_TYPE_INT);
+        lv_subject_set_int(sensor_temp_out, 0);
 
         sensor_hum_in_text = lv_subject_create(LV_SUBJECT_TYPE_STRING);
         lv_subject_set_string_buffer_static(sensor_hum_in_text, hum_in_buf, hum_in_prev_buf, sizeof(hum_in_buf));
@@ -57,9 +64,9 @@ void update_temp_out(int new_value) {
     lv_subject_set_string(sensor_temp_out_text, temp);
 }
 void update_hum_in(int new_value) {
+    lv_subject_set_int(sensor_hum_in, new_value);
     char temp[16];
     snprintf(temp, sizeof(temp), "%d%%", new_value);
-    lv_subject_set_int(sensor_hum_in, new_value);
     lv_subject_set_string(sensor_hum_in_text, temp);
 }
 void update_hum_out(int new_value) {
@@ -96,7 +103,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_obj_set_style_bg_color(temp_arc1, lv_palette_main(LV_PALETTE_RED), LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_remove_flag(temp_arc1, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
 
-    // 3. Inner Arc: Humidity (Size: 110x110)
+    // Inner Arc: Humidity
     lv_obj_t *humid_arc1 = lv_arc_create(container_left);
     lv_obj_set_size(humid_arc1, 190, 190);
     lv_obj_align(humid_arc1, LV_ALIGN_CENTER, 0, -5); // Adjust slightly upward to sit inside nicely
