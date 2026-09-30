@@ -26,14 +26,50 @@ typedef enum {
     TOPIC_RUUVI_AIR_1_CO2, //Carbon Dioxide (CO₂)
     TOPIC_RUUVI_AIR_1_VOC, //VOC Volatile Organic Compounds
     TOPIC_RUUVI_AIR_1_NOX, //NOx Nitrogen Oxides
+// -----NMEA2k-----
+    // Wind
+    TOPIC_NMEA_WIND_TRUE_SPEED,
+    TOPIC_NMEA_WIND_TRUE_DIRECTION,
+    TOPIC_NMEA_WIND_APPARENT_SPEED,
+    TOPIC_NMEA_WIND_APPARENT_DIRECTION,
+    // Diesel Tank
+    TOPIC_NMEA_DIESELTANK_LEVEL_PERCENT,
+    TOPIC_NMEA_DIESELTANK_LEVEL_LITRES,
+    TOPIC_NMEA_DIESELTANK_CAPACITY,
+    // Boat
+    TOPIC_NMEA_BOAT_HEADING,
+    TOPIC_NMEA_BOAT_COURSE,
+    TOPIC_NMEA_BOAT_SPEED_OVER_GROUND,
+    TOPIC_NMEA_BOAT_SPEED_THROUGH_WATER,
+    TOPIC_NMEA_BOAT_DEPTH,
+    TOPIC_NMEA_BOAT_DEPTH_OFFSET,
+    TOPIC_NMEA_BOAT_LATTITUDE,
+    TOPIC_NMEA_BOAT_LONGITUDE,
 // -----Victron-----
-        // House Battery
-    TOPIC_HOUSE_BATTERY_VOLTAGE,
-    TOPIC_HOUSE_BATTERY_CURRENT,
-    TOPIC_HOUSE_BATTERY_POWER,
-    TOPIC_HOUSE_BATTERY_SOC,
-       // Start Battery
-    TOPIC_START_BATTERY_VOLTAGE,
+    // House Battery
+    TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE,
+    TOPIC_VICTRON_HOUSE_BATTERY_CURRENT,
+    TOPIC_VICTRON_HOUSE_BATTERY_POWER,
+    TOPIC_VICTRON_HOUSE_BATTERY_SOC,
+    // Start Battery
+    TOPIC_VICTRON_START_BATTERY_VOLTAGE,
+    // IP43 charger
+    TOPIC_VICTRON_CHARGER_VOLTAGE,
+    TOPIC_VICTRON_CHARGER_CURRENT,
+    // MPPT1
+    TOPIC_VICTRON_MPPT1_DC_VOLTAGE,
+    TOPIC_VICTRON_MPPT1_DC_CURRENT,
+    TOPIC_VICTRON_MPPT1_PV_VOLTAGE,
+    TOPIC_VICTRON_MPPT1_YIELD_TODAY,
+    // MPPT2
+    TOPIC_VICTRON_MPPT2_DC_VOLTAGE,
+    TOPIC_VICTRON_MPPT2_DC_CURRENT,
+    TOPIC_VICTRON_MPPT2_PV_VOLTAGE,
+    TOPIC_VICTRON_MPPT2_YIELD_TODAY,
+    // DC2DC
+    TOPIC_VICTRON_DC2DC_VOLTAGE,
+    TOPIC_VICTRON_DC2DC_CURRENT,
+    TOPIC_VICTRON_DC2DC_POWER,
 // -----System-----
     TOPIC_SYSTEM_WIFI_CONNECTED,
     TOPIC_SYSTEM_WIFI_IP_ADDRESS
@@ -44,7 +80,7 @@ typedef enum {
  *============================================================================*/
 typedef struct {
     telemetry_id_t id;  // Which parameter is this? (The Key)
-    int32_t value;      // The actual numeric value scaled to an integer (The Value)
+    int32_t value;      // The actual numeric value scaled to an integer
 } telemetry_packet_t;
 
 extern QueueHandle_t msg_queue;

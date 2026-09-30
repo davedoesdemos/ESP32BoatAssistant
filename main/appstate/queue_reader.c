@@ -48,18 +48,81 @@ static void queue_reader_cb(lv_timer_t * timer)
                 break;
             case TOPIC_RUUVI_AIR_1_NOX: //NOx Nitrogen Oxides
                 break;
+// -----NMEA2k-----
+            // Wind
+            case TOPIC_NMEA_WIND_TRUE_SPEED:
+                break;
+            case TOPIC_NMEA_WIND_TRUE_DIRECTION:
+                break;
+            case TOPIC_NMEA_WIND_APPARENT_SPEED:
+                break;
+            case TOPIC_NMEA_WIND_APPARENT_DIRECTION:
+                break;
+            // Diesel Tank
+            case TOPIC_NMEA_DIESELTANK_LEVEL_PERCENT:
+                break;
+            case TOPIC_NMEA_DIESELTANK_LEVEL_LITRES:
+                break;
+            case TOPIC_NMEA_DIESELTANK_CAPACITY:
+            // Boat
+            case TOPIC_NMEA_BOAT_HEADING:
+                break;
+            case TOPIC_NMEA_BOAT_COURSE:
+                break;
+            case TOPIC_NMEA_BOAT_SPEED_OVER_GROUND:
+                break;
+            case TOPIC_NMEA_BOAT_SPEED_THROUGH_WATER:
+                break;
+            case TOPIC_NMEA_BOAT_DEPTH:
+                break;
+            case TOPIC_NMEA_BOAT_DEPTH_OFFSET:
+                break;
+            case TOPIC_NMEA_BOAT_LATTITUDE:
+                break;
+            case TOPIC_NMEA_BOAT_LONGITUDE:
+                break;
 // -----Victron-----
             // House Battery
-            case TOPIC_HOUSE_BATTERY_VOLTAGE:
+            case TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE:
                 break;
-            case TOPIC_HOUSE_BATTERY_CURRENT:
+            case TOPIC_VICTRON_HOUSE_BATTERY_CURRENT:
                 break;
-            case TOPIC_HOUSE_BATTERY_POWER:
+            case TOPIC_VICTRON_HOUSE_BATTERY_POWER:
                 break;
-            case TOPIC_HOUSE_BATTERY_SOC:
+            case TOPIC_VICTRON_HOUSE_BATTERY_SOC:
                 break;
             // Start Battery
-            case TOPIC_START_BATTERY_VOLTAGE:
+            case TOPIC_VICTRON_START_BATTERY_VOLTAGE:
+                break;
+            // IP43 charger
+            case TOPIC_VICTRON_CHARGER_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_CHARGER_CURRENT:
+                break;
+            // MPPT1
+            case TOPIC_VICTRON_MPPT1_DC_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_MPPT1_DC_CURRENT:
+                break;
+            case TOPIC_VICTRON_MPPT1_PV_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_MPPT1_YIELD_TODAY:
+                break;
+            // MPPT2
+            case TOPIC_VICTRON_MPPT2_DC_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_MPPT2_DC_CURRENT:
+                break;
+            case TOPIC_VICTRON_MPPT2_PV_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_MPPT2_YIELD_TODAY:
+                break;
+            // DC2DC
+            case TOPIC_VICTRON_DC2DC_VOLTAGE:
+                break;
+            case TOPIC_VICTRON_DC2DC_CURRENT:
+                break;
+            case TOPIC_VICTRON_DC2DC_POWER:
                 break;
 // -----System-----
             case TOPIC_SYSTEM_WIFI_CONNECTED:

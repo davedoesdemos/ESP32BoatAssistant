@@ -33,6 +33,33 @@ typedef struct {
             lv_subject_t nox; //NOx Nitrogen Oxides
         } air_1;
     } ruuvi;
+    // -----NMEA2k-----
+    struct {
+        // Wind
+        struct {
+            lv_subject_t true_speed;
+            lv_subject_t true_direction;
+            lv_subject_t apparent_speed;
+            lv_subject_t apparent_direction;
+        } wind;
+        // Diesel Tank
+        struct {
+            lv_subject_t level_percent;
+            lv_subject_t level_litres;
+            lv_subject_t capacity;
+        } dieseltank;
+        // Boat
+        struct {
+            lv_subject_t course_over_ground;
+            lv_subject_t heading;
+            lv_subject_t speed_over_ground;
+            lv_subject_t speed_through_water;
+            lv_subject_t depth;
+            lv_subject_t depth_offset;
+            lv_subject_t latitude;
+            lv_subject_t longitude;
+        } boat;
+    } nmea2k;
     // -----Victron-----
     struct {
         // House Battery
