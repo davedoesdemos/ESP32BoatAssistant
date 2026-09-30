@@ -19,13 +19,11 @@ void backlight_check_timer_cb(lv_timer_t * timer) {
 
     if (idle_time >= BACKLIGHT_TIMEOUT_MS) {
         if (backlight_is_on) {
-            printf("backlight on");
             expander_pins = set_backlight_state(false, expander_pins, expander_dev_handle2); // Turn off backlight
             backlight_is_on = false;
         }
     } else {
         if (!backlight_is_on) {
-            printf("backlight off");
             expander_pins = set_backlight_state(true, expander_pins, expander_dev_handle2);  // Turn back on if there is user activity
             backlight_is_on = true;
         }
@@ -52,7 +50,7 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT);
         //set default screen
-        lv_tileview_set_tile_by_index(tileview, 2, 1, LV_ANIM_OFF);
+        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
         
         //ALL SCREENS
         //Create a status bar

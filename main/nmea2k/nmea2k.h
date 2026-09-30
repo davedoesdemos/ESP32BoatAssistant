@@ -49,7 +49,6 @@ const char* get_pgn_label(uint32_t pgn);
 void init_nmea2000_bus(void);
 uint32_t get_pgn_from_id(uint32_t id);
 uint8_t get_source_from_id(uint32_t id);
-void nmea_fake_to_queue();
 void nmea_process_to_queue();
 
 

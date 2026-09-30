@@ -19,10 +19,6 @@ static char hum_in_buf[16] = "---%";
 static char hum_in_prev_buf[16] = "---%";
 static char hum_out_buf[16] = "---%";
 static char hum_out_prev_buf[16] = "---%";
-static char temp_in_buf[16] = "---°C";
-static char temp_in_prev_buf[16] = "---°C";
-static char temp_out_buf[16] = "---°C";
-static char temp_out_prev_buf[16] = "---°C";
 static char fuel_level_buf[16] = "---°";
 static char fuel_level_prev_buf[16] = "---°";
 static char fuel_capacity_buf[16] = "---°";
@@ -38,10 +34,6 @@ static lv_subject_t * subj_twd;
 static lv_subject_t * subj_aws;
 static lv_subject_t * subj_awd;
 static lv_subject_t * subj_depth;
-static lv_subject_t * subj_hum_in;
-static lv_subject_t * subj_hum_out;
-static lv_subject_t * subj_temp_in;
-static lv_subject_t * subj_temp_out;
 static lv_subject_t * subj_fuel_level;
 static lv_subject_t * subj_fuel_capacity;
 static lv_subject_t * subj_fuel_percent;
@@ -76,22 +68,6 @@ void init_nmea_subjects(void) {
     lv_subject_set_string_buffer_static(subj_depth, depth_buf, depth_prev_buf, sizeof(depth_buf));
     lv_subject_set_string(subj_depth, "---m");
 
-    subj_hum_in = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-    lv_subject_set_string_buffer_static(subj_hum_in, hum_in_buf, hum_in_prev_buf, sizeof(hum_in_buf));
-    lv_subject_set_string(subj_hum_in, "---%");
-
-    subj_hum_out = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-    lv_subject_set_string_buffer_static(subj_hum_out, hum_out_buf, hum_out_prev_buf, sizeof(hum_out_buf));
-    lv_subject_set_string(subj_hum_out, "---%");
-
-    subj_temp_in = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-    lv_subject_set_string_buffer_static(subj_temp_in, temp_in_buf, temp_in_prev_buf, sizeof(temp_in_buf));
-    lv_subject_set_string(subj_temp_in, "---°C");
-
-    subj_temp_out = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-    lv_subject_set_string_buffer_static(subj_temp_out, temp_out_buf, temp_out_prev_buf, sizeof(temp_out_buf));
-    lv_subject_set_string(subj_temp_out, "---°C");
-
     subj_fuel_level = lv_subject_create(LV_SUBJECT_TYPE_STRING);
     lv_subject_set_string_buffer_static(subj_fuel_level, fuel_level_buf, fuel_level_prev_buf, sizeof(fuel_level_buf));
     lv_subject_set_string(subj_fuel_level, "---l");
@@ -114,10 +90,6 @@ void update_nmea() {
         char aws_str_temp[16];
         char awd_str_temp[16];
         char depth_str_temp[16];
-        char hum_in_str_temp[16];
-        char hum_out_str_temp[16];
-        char temp_in_str_temp[16];
-        char temp_out_str_temp[16];
         char fuel_level_str_temp[16];
         char fuel_capacity_str_temp[16];
         char fuel_percent_str_temp[16];
@@ -168,34 +140,6 @@ void update_nmea() {
                     snprintf(depth_str_temp, sizeof(depth_str_temp), "%.1fm", received_nmea.data.float_val);
                     lv_lock();
                     lv_subject_set_string(subj_depth, depth_str_temp);
-                    lv_unlock();
-                    break;
-                case UI_UPDATE_HUM_INSIDE:
-                    snprintf(hum_in_str_temp, sizeof(hum_in_str_temp), "%.1f%%", received_nmea.data.float_val);
-                    lv_lock();
-                    lv_subject_set_string(subj_hum_in, hum_in_str_temp);
-                    update_hum_in((int)round(received_nmea.data.float_val));
-                    lv_unlock();
-                    break;
-                case UI_UPDATE_HUM_OUTSIDE:
-                    snprintf(hum_out_str_temp, sizeof(hum_out_str_temp), "%.1f%%", received_nmea.data.float_val);
-                    lv_lock();
-                    lv_subject_set_string(subj_hum_out, hum_out_str_temp);
-                    update_hum_out((int)round(received_nmea.data.float_val));
-                    lv_unlock();
-                    break;
-                case UI_UPDATE_TEMP_INSIDE:
-                    snprintf(temp_in_str_temp, sizeof(temp_in_str_temp), "%.1f°C", received_nmea.data.float_val);
-                    lv_lock();
-                    lv_subject_set_string(subj_temp_in, temp_in_str_temp);
-                    update_temp_in((int)round(received_nmea.data.float_val));
-                    lv_unlock();
-                    break;
-                case UI_UPDATE_TEMP_OUTSIDE:
-                    snprintf(temp_out_str_temp, sizeof(temp_out_str_temp), "%.1f°C", received_nmea.data.float_val);
-                    lv_lock();
-                    lv_subject_set_string(subj_temp_out, temp_out_str_temp);
-                    update_temp_out((int)round(received_nmea.data.float_val));
                     lv_unlock();
                     break;
                 case UI_UPDATE_FUELLEVEL:
@@ -308,8 +252,8 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_width(row2_container, lv_pct(100));
 
 
-        create_data_box(row2_container, "Hum Inside", subj_hum_in, 0xF7F7F7);
-        create_data_box(row2_container, "Inside", subj_temp_in, 0xF7F7F7);
-        create_data_box(row2_container, "Hum Outside", subj_hum_out, 0xF7F7F7);
-        create_data_box(row2_container, "Outside", subj_temp_out, 0xF7F7F7);
+        create_data_box(row2_container, "Hum Inside", state_ruuvi_tag_1_humidity_text, 0xF7F7F7);
+        create_data_box(row2_container, "Inside", state_ruuvi_tag_1_temperature_text, 0xF7F7F7);
+        create_data_box(row2_container, "Hum Outside", state_ruuvi_tag_2_humidity_text, 0xF7F7F7);
+        create_data_box(row2_container, "Outside", state_ruuvi_tag_2_temperature_text, 0xF7F7F7);
 }

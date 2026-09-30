@@ -1,84 +1,6 @@
 #include "screen_environment.h"
 
-static char hum_in_buf[16] = "---%";
-static char hum_in_prev_buf[16] = "---%";
-static char hum_out_buf[16] = "---%";
-static char hum_out_prev_buf[16] = "---%";
-static char temp_in_buf[16] = "---°C";
-static char temp_in_prev_buf[16] = "---°C";
-static char temp_out_buf[16] = "---°C";
-static char temp_out_prev_buf[16] = "---°C";
-
-static lv_subject_t *sensor_hum_in;
-static lv_subject_t *sensor_hum_in_text;
-static lv_subject_t *sensor_hum_out;
-static lv_subject_t *sensor_hum_out_text;
-static lv_subject_t *sensor_temp_in;
-static lv_subject_t *sensor_temp_in_text;
-static lv_subject_t *sensor_temp_out;
-static lv_subject_t *sensor_temp_out_text;
-
-void init_environment_subjects(){
-        //init sensor subjects
-        sensor_hum_in = lv_subject_create(LV_SUBJECT_TYPE_INT);
-        lv_subject_set_int(sensor_hum_in, 0);
-        
-        sensor_hum_out = lv_subject_create(LV_SUBJECT_TYPE_INT);
-        lv_subject_set_int(sensor_hum_out, 0);
-
-        sensor_temp_in = lv_subject_create(LV_SUBJECT_TYPE_INT);
-        lv_subject_set_int(sensor_temp_in, 0);
-
-        sensor_temp_out = lv_subject_create(LV_SUBJECT_TYPE_INT);
-        lv_subject_set_int(sensor_temp_out, 0);
-
-        sensor_hum_in_text = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-        lv_subject_set_string_buffer_static(sensor_hum_in_text, hum_in_buf, hum_in_prev_buf, sizeof(hum_in_buf));
-        lv_subject_set_string(sensor_hum_in_text, "---%");
-
-        sensor_hum_out_text = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-        lv_subject_set_string_buffer_static(sensor_hum_out_text, hum_out_buf, hum_out_prev_buf, sizeof(hum_out_buf));
-        lv_subject_set_string(sensor_hum_out_text, "---%");
-
-        sensor_temp_in_text = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-        lv_subject_set_string_buffer_static(sensor_temp_in_text, temp_in_buf, temp_in_prev_buf, sizeof(temp_in_buf));
-        lv_subject_set_string(sensor_temp_in_text, "---°C");
-
-        sensor_temp_out_text = lv_subject_create(LV_SUBJECT_TYPE_STRING);
-        lv_subject_set_string_buffer_static(sensor_temp_out_text, temp_out_buf, temp_out_prev_buf, sizeof(temp_out_buf));
-        lv_subject_set_string(sensor_temp_out_text, "---°C");
-}
-
-//dynamically update sensor data for label
-void update_temp_in(int new_value) {
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", new_value);
-    lv_subject_set_int(sensor_temp_in, new_value);
-    lv_subject_set_string(sensor_temp_in_text, temp);
-}
-void update_temp_out(int new_value) {
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", new_value);
-    //printf("update temp out %d\n", new_value);
-    lv_subject_set_int(sensor_temp_out, new_value);
-    lv_subject_set_string(sensor_temp_out_text, temp);
-}
-void update_hum_in(int new_value) {
-    lv_subject_set_int(sensor_hum_in, new_value);
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%d%%", new_value);
-    lv_subject_set_string(sensor_hum_in_text, temp);
-}
-void update_hum_out(int new_value) {
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%d%%", new_value);
-    lv_subject_set_int(sensor_hum_out, new_value);
-    lv_subject_set_string(sensor_hum_out_text, temp);
-}
-
 void screen_environment_layout(lv_obj_t *screen_environment) {
-    init_environment_subjects();
-
     lv_obj_t *container_left = lv_obj_create(screen_environment);
     lv_obj_remove_style_all(container_left); // Remove background/borders for a clean look
     lv_obj_set_size(container_left, 280, 300);
@@ -93,8 +15,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_arc_set_bg_angles(temp_arc1, 0, 270); // 270-degree partial circle
     lv_arc_set_range(temp_arc1, -10, 50);    // Temp range e.g., -10°C to 50°C
 
-    lv_arc_bind_value(temp_arc1, sensor_temp_in);
-    //lv_arc_set_value(temp_arc1, 22);         // Example value: 22°C
+    lv_arc_bind_value(temp_arc1, state_ruuvi_tag_1_temperature);
 
     // Style the Temperature Arc (Red theme)
     lv_obj_set_style_arc_width(temp_arc1, 25, 0);
@@ -111,7 +32,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_arc_set_bg_angles(humid_arc1, 0, 270);
     lv_arc_set_range(humid_arc1, 0, 100);    // Humidity range 0-100%
 
-    lv_arc_bind_value(humid_arc1, sensor_hum_in);
+    lv_arc_bind_value(humid_arc1, state_ruuvi_tag_1_humidity);
     //lv_arc_set_value(humid_arc1, 60);         // Example value: 60%
         
     // Style the Humidity Arc (Blue theme)
@@ -124,15 +45,16 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     // Centred Text Labels for values
     lv_obj_t *temp_in_label = lv_label_create(container_left);
     lv_obj_set_style_text_color(temp_in_label, lv_color_hex(0xFF0000), 0);
-    lv_label_bind_text(temp_in_label, sensor_temp_in_text, NULL);
-    //lv_label_set_text(temp_in_label, "22C");
+
+    lv_label_bind_text(temp_in_label, state_ruuvi_tag_1_temperature_text, NULL);
+
     lv_obj_set_style_text_align(temp_in_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align(temp_in_label, LV_ALIGN_CENTER, 0, -15);
     lv_obj_set_style_text_font(temp_in_label, &lv_font_montserrat_24, 0); 
 
     lv_obj_t *hum_in_label = lv_label_create(container_left);
     lv_obj_set_style_text_color(hum_in_label, lv_color_hex(0x0000FF), 0);
-    lv_label_bind_text(hum_in_label, sensor_hum_in_text, NULL);
+    lv_label_bind_text(hum_in_label, state_ruuvi_tag_1_humidity_text, NULL);
     //lv_label_set_text(hum_in_label, "22C");
     lv_obj_set_style_text_align(hum_in_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align(hum_in_label, LV_ALIGN_CENTER, 0, 15);
@@ -159,7 +81,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_arc_set_bg_angles(temp_arc2, 0, 270); // 270-degree partial circle
     lv_arc_set_range(temp_arc2, -10, 50);    // Temp range e.g., -10°C to 50°C
 
-    lv_arc_bind_value(temp_arc2, sensor_temp_out);
+    lv_arc_bind_value(temp_arc2, state_ruuvi_tag_2_temperature);
     //lv_arc_set_value(temp_arc2, 28);         // Example value: 22°C
 
     // Style the Temperature Arc (Red theme)
@@ -177,7 +99,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_arc_set_bg_angles(humid_arc2, 0, 270);
     lv_arc_set_range(humid_arc2, 0, 100);    // Humidity range 0-100%
 
-    lv_arc_bind_value(humid_arc2, sensor_hum_out);
+    lv_arc_bind_value(humid_arc2, state_ruuvi_tag_2_humidity);
     //lv_arc_set_value(humid_arc2, 88);         // Example value: 60%
         
     // Style the Humidity Arc (Blue theme)
@@ -190,7 +112,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     // Centred Text Labels for values
     lv_obj_t *temp_out_label = lv_label_create(container_right);
     lv_obj_set_style_text_color(temp_out_label, lv_color_hex(0xFF0000), 0);
-    lv_label_bind_text(temp_out_label, sensor_temp_out_text, NULL);
+    lv_label_bind_text(temp_out_label, state_ruuvi_tag_2_temperature_text, NULL);
     //lv_label_set_text(temp_out_label, "22C");
     lv_obj_set_style_text_align(temp_out_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align(temp_out_label, LV_ALIGN_CENTER, 0, -15);
@@ -198,7 +120,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
 
     lv_obj_t *hum_out_label = lv_label_create(container_right);
     lv_obj_set_style_text_color(hum_out_label, lv_color_hex(0x0000FF), 0);
-    lv_label_bind_text(hum_out_label, sensor_hum_out_text, NULL);
+    lv_label_bind_text(hum_out_label, state_ruuvi_tag_2_humidity_text, NULL);
     //lv_label_set_text(hum_out_label, "22C");
     lv_obj_set_style_text_align(hum_out_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align(hum_out_label, LV_ALIGN_CENTER, 0, 15);

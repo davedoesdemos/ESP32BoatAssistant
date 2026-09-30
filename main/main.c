@@ -23,6 +23,9 @@
 #include "wifiscan.h"
 #include "wifistation.h"
 #include "nmea2k.h"
+#include "state.h"
+#include "queue_reader.h"
+#include "bluetooth.h"
 
 //logging
 static const char *TAG = "boat assistant main";
@@ -30,6 +33,7 @@ static const char *TAG = "boat assistant main";
 void app_main(void)
 {
     lvgl_mutex = xSemaphoreCreateMutex();
+    msg_queue = xQueueCreate(20, sizeof(telemetry_packet_t));
     
     if (lvgl_mutex == NULL) {
         // Handle error: out of memory
@@ -44,6 +48,7 @@ void app_main(void)
     ESP_ERROR_CHECK( ret );
     
     // initialise the rest of the system
+    state_init();
     i2c_init();
     expander_init();
     touch_reset();
@@ -52,28 +57,39 @@ void app_main(void)
     display_init();
     screen_init(disp);
     init_nmea2000_bus();
+    bluetooth_init();
+
+    // Bluetooth Sender Task
+    xTaskCreate(
+        ble_host_task, 
+        "ble_host_task", 
+        4096, 
+        NULL, 
+        5, 
+        NULL
+    );
 
     // Spawn NMEA Sender Task on Core 1
-        xTaskCreatePinnedToCore(
-            nmea_process_to_queue,        // Task function
-            "nmea_process_to_queue",      // Task name string
-            4096,               // Stack size in bytes
-            NULL,               // Parameters passed to the task
-            1,                  // Task priority
-            NULL,               // Task handle (not needed here)
-            1                   // Core ID (0)
-        );
+    xTaskCreatePinnedToCore(
+        nmea_process_to_queue,        // Task function
+        "nmea_process_to_queue",      // Task name string
+        4096,               // Stack size in bytes
+        NULL,               // Parameters passed to the task
+        1,                  // Task priority
+        NULL,               // Task handle (not needed here)
+        1                   // Core ID (0)
+    );
 
-        // Spawn NMEA Receiver Task on Core 1
-        xTaskCreatePinnedToCore(
-            update_nmea,        // Task function
-            "update_nmea",      // Task name string
-            4096,               // Stack size in bytes
-            NULL,               // Parameters passed to the task
-            1,                  // Task priority
-            NULL,               // Task handle (not needed here)
-            1                   // Core ID (0)
-        );
+    // Spawn NMEA Receiver Task on Core 1
+    xTaskCreatePinnedToCore(
+        update_nmea,        // Task function
+        "update_nmea",      // Task name string
+        4096,               // Stack size in bytes
+        NULL,               // Parameters passed to the task
+        1,                  // Task priority
+        NULL,               // Task handle (not needed here)
+        1                   // Core ID (0)
+    );
     
     // Keep app_main alive. Do NOT poll touch coordinates here; 
     // esp_lv_adapter handles it automatically in the background.
@@ -81,5 +97,6 @@ void app_main(void)
     //    vTaskDelay(pdMS_TO_TICKS(1000));
      //   update_sensor_data((rand() % (45 - 1 + 1)) + 1);
         lv_timer_create(backlight_check_timer_cb, 200, NULL);  
+        queue_reader_init(msg_queue);
     //}
 }

@@ -1,7 +1,10 @@
 idf_component_register(
     SRCS
         "main.c"
+        "appstate/state.c"
+        "appstate/queue_reader.c"
         "backlight/backlight.c"
+        "bluetooth/bluetooth.c"
         "display/display.c"
         "expander/expander.c"
         "wifi/wifiscan.c"
@@ -17,7 +20,9 @@ idf_component_register(
         "nmea2k/nmea2k.c"
     INCLUDE_DIRS 
         "."
+        "appstate"
         "backlight"
+        "bluetooth"
         "display"
         "expander"
         "wifi"
@@ -27,6 +32,8 @@ idf_component_register(
         "rgblcd43b"
         "nmea2k"
     REQUIRES
+        driver
+        bt
         esp_lcd
         lvgl
         esp_lcd_touch
