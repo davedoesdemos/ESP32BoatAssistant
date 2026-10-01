@@ -83,47 +83,63 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----Victron-----
             // House Battery
             case TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE:
-            printf("victron voltage %f\n", packet.value.value_float);
+                state_set_victron_house_battery_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_HOUSE_BATTERY_CURRENT:
-            printf("victron current %f\n", packet.value.value_float);
+                state_set_victron_house_battery_current(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_HOUSE_BATTERY_POWER:
+                state_set_victron_house_battery_power(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_HOUSE_BATTERY_SOC:
+                state_set_victron_house_battery_soc(packet.value.value_float);
                 break;
             // Start Battery
             case TOPIC_VICTRON_START_BATTERY_VOLTAGE:
+                state_set_victron_start_battery_voltage(packet.value.value_float);
                 break;
             // IP43 charger
             case TOPIC_VICTRON_CHARGER_VOLTAGE:
+                state_set_victron_charger_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_CHARGER_CURRENT:
+                state_set_victron_charger_current(packet.value.value_float);
                 break;
             // MPPT1
             case TOPIC_VICTRON_MPPT1_DC_VOLTAGE:
+                state_set_victron_mppt1_dc_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT1_DC_CURRENT:
+                state_set_victron_mppt1_dc_current(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT1_PV_VOLTAGE:
+                state_set_victron_mppt1_pv_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT1_YIELD_TODAY:
+                state_set_victron_mppt1_yield_today(packet.value.value_float);
                 break;
             // MPPT2
             case TOPIC_VICTRON_MPPT2_DC_VOLTAGE:
+                state_set_victron_mppt2_dc_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT2_DC_CURRENT:
+                state_set_victron_mppt2_dc_current(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT2_PV_VOLTAGE:
+                state_set_victron_mppt2_pv_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT2_YIELD_TODAY:
+                state_set_victron_mppt2_yield_today(packet.value.value_float);
                 break;
             // DC2DC
             case TOPIC_VICTRON_DC2DC_VOLTAGE:
+                state_set_victron_dc2dc_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_DC2DC_CURRENT:
+                state_set_victron_dc2dc_current(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_DC2DC_POWER:
+                state_set_victron_dc2dc_power(packet.value.value_float);
                 break;
 // -----System-----
             case TOPIC_SYSTEM_WIFI_CONNECTED:

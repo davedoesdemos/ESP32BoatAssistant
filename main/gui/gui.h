@@ -8,6 +8,7 @@
 #include "expander.h"
 #include "screens/screen_settings.h"
 #include "screens/screen_environment.h"
+#include "screens/screen_victron.h"
 #include "screens/screen_wifi.h"
 #include "screens/screen_nmea.h"
 #include "screens/screen_fuel.h"

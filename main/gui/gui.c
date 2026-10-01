@@ -42,9 +42,10 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t *screen_wifi = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
         lv_obj_t *screen_nmea = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
-        lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT);
+        lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
+        lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 3, 1, LV_DIR_LEFT);
         //set default screen
-        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
+        lv_tileview_set_tile_by_index(tileview, 2, 1, LV_ANIM_OFF);
         
         //ALL SCREENS
         //Create a status bar
@@ -72,6 +73,7 @@ void screen_init(lv_display_t *disp) {
         //Second row
         screen_nmea_layout(screen_nmea);
         screen_environment_layout(screen_environment);
+        screen_victron_layout(screen_victron);
         screen_fuel_layout(screen_fuel);
 
         //finish and show everything

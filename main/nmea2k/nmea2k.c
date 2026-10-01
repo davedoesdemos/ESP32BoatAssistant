@@ -113,9 +113,10 @@ void init_nmea2000_bus(void) {
     // Install and spin up the transceiver engine
     if (twai_driver_install(&g_config, &t_config, &f_config) == ESP_OK) {
         twai_start();
-        printf("NMEA 2000 CAN Receiver initialized successfully at 250kbps.\n");
+
+        ESP_LOGI(TAG, "NMEA 2000 CAN Receiver initialized successfully at 250kbps.");
     } else {
-        printf("Failed to initialize CAN Hardware Bus!\n");
+        ESP_LOGE(TAG, "Failed to initialize CAN Hardware Bus!");
     }
 }
 

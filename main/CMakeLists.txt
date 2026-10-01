@@ -12,6 +12,7 @@ idf_component_register(
         "gui/gui.c"
         "gui/screens/screen_settings.c"
         "gui/screens/screen_environment.c"
+        "gui/screens/screen_victron.c"
         "gui/screens/screen_wifi.c"
         "gui/screens/screen_nmea.c"
         "gui/screens/screen_fuel.c"
