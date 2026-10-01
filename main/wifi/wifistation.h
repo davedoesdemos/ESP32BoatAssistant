@@ -11,6 +11,7 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "gui.h"
+#include "state.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"

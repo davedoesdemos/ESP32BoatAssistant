@@ -2,12 +2,6 @@
 
 //logging
 static const char *TAG = "boat assistant gui";
-static lv_obj_t * lbl_netstatus;
-
-// Set Status Label
-void set_netstatus(const char * status) {
-    lv_label_set_text(lbl_netstatus, status);
-}
 
 // Timer callback function checked periodically by LVGL
 void backlight_check_timer_cb(lv_timer_t * timer) {
@@ -65,8 +59,8 @@ void screen_init(lv_display_t *disp) {
         lv_obj_set_flex_flow(status_bar, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(status_bar, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         //Status label
-        lbl_netstatus = lv_label_create(status_bar);
-        lv_label_set_text(lbl_netstatus, "Not Connected");
+        lv_obj_t * lbl_netstatus = lv_label_create(status_bar);
+        lv_label_bind_text(lbl_netstatus, state_system_wifi_status_text, NULL);
         //Clock label
         lv_obj_t * lbl_time = lv_label_create(status_bar);
         lv_label_set_text(lbl_time, "12:00");

@@ -42,7 +42,7 @@ static void update_netstatus_from_interface(void) {
         
         // Lock LVGL if you are running an asynchronous LVGL timer task
         lv_lock(); 
-        set_netstatus(status_msg);
+        state_set_system_wifi_status_text(status_msg);
         lv_unlock();
     }
 }
@@ -120,7 +120,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
             if (s_wifi_event_group) {
                 xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
             }
-            set_netstatus("Connection Failed"); // Optional UI status update on full failure
+            state_set_system_wifi_status_text("Connection Failed"); // Optional UI status update on full failure
         }
         ESP_LOGI(TAG,"connect to the AP fail");
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {

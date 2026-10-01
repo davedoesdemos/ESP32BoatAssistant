@@ -50,8 +50,8 @@ typedef struct {
         } dieseltank;
         // Boat
         struct {
-            lv_subject_t course_over_ground;
             lv_subject_t heading;
+            lv_subject_t course_over_ground;
             lv_subject_t speed_over_ground;
             lv_subject_t speed_through_water;
             lv_subject_t depth;
@@ -59,7 +59,7 @@ typedef struct {
             lv_subject_t latitude;
             lv_subject_t longitude;
         } boat;
-    } nmea2k;
+    } nmea;
     // -----Victron-----
     struct {
         // House Battery
@@ -102,7 +102,7 @@ typedef struct {
     // -----System-----
     struct {
         lv_subject_t wifi_connected;
-        lv_subject_t wifi_ip_address;
+        lv_subject_t wifi_status_text;
     } system;
 } system_state_t;
 
@@ -132,6 +132,25 @@ static system_state_t system_state; // The single source of truth
     lv_subject_t * const state_ruuvi_air_1_co2 = &system_state.ruuvi.air_1.co2; //Carbon Dioxide (CO₂)
     lv_subject_t * const state_ruuvi_air_1_voc = &system_state.ruuvi.air_1.voc; //VOC Volatile Organic Compounds
     lv_subject_t * const state_ruuvi_air_1_nox = &system_state.ruuvi.air_1.nox; //NOx Nitrogen Oxides
+// -----NMEA2k-----
+    // Wind
+    lv_subject_t * const state_nmea_wind_true_speed = &system_state.nmea.wind.true_speed;
+    lv_subject_t * const state_nmea_wind_true_direction = &system_state.nmea.wind.true_direction;
+    lv_subject_t * const state_nmea_wind_apparent_speed = &system_state.nmea.wind.apparent_speed;
+    lv_subject_t * const state_nmea_wind_apparent_direction = &system_state.nmea.wind.apparent_direction;
+    // Diesel Tank
+    lv_subject_t * const state_nmea_dieseltank_level_percent = &system_state.nmea.dieseltank.level_percent;
+    lv_subject_t * const state_nmea_dieseltank_level_litres = &system_state.nmea.dieseltank.level_litres;
+    lv_subject_t * const state_nmea_dieseltank_capacity = &system_state.nmea.dieseltank.capacity;
+    // Boat
+    lv_subject_t * const state_nmea_boat_heading = &system_state.nmea.boat.heading;
+    lv_subject_t * const state_nmea_boat_course_over_ground = &system_state.nmea.boat.course_over_ground;
+    lv_subject_t * const state_nmea_boat_speed_over_ground = &system_state.nmea.boat.speed_over_ground;
+    lv_subject_t * const state_nmea_boat_speed_through_water = &system_state.nmea.boat.speed_through_water;
+    lv_subject_t * const state_nmea_boat_depth = &system_state.nmea.boat.depth;
+    lv_subject_t * const state_nmea_boat_depth_offset = &system_state.nmea.boat.depth_offset;
+    lv_subject_t * const state_nmea_boat_latitude = &system_state.nmea.boat.latitude;
+    lv_subject_t * const state_nmea_boat_longitude = &system_state.nmea.boat.longitude;
 // -----Victron-----
     // House Battery
     lv_subject_t * const state_house_battery_voltage = &system_state.victron.house_battery.voltage;
@@ -159,9 +178,10 @@ static system_state_t system_state; // The single source of truth
     lv_subject_t * const state_dc2dc_power = &system_state.victron.dc2dc.power;
 // -----System-----
     lv_subject_t * const state_system_wifi_connected = &system_state.system.wifi_connected;
-    lv_subject_t * const state_system_wifi_ip_address = &system_state.system.wifi_ip_address;
+    lv_subject_t * const state_system_wifi_status_text = &system_state.system.wifi_status_text;
 
 //char buffers for text states
+// -----Ruuvi-----
 static char state_ruuvi_tag_1_temperature_text_buf[16] = "---°C";
 static char state_ruuvi_tag_1_temperature_text_prev_buf[16] = "---°C";
 static char state_ruuvi_tag_1_humidity_text_buf[16] = "---%";
@@ -174,6 +194,9 @@ static char state_ruuvi_tag_2_humidity_text_buf[16] = "---%";
 static char state_ruuvi_tag_2_humidity_text_prev_buf[16] = "---%";
 static char state_ruuvi_tag_2_pressure_text_buf[16] = "---hPa";
 static char state_ruuvi_tag_2_pressure_text_prev_buf[16] = "---hPa";
+// -----System-----
+static char state_system_wifi_status_text_buf[30] = "Not Connected";
+static char state_system_wifi_status_text_prev_buf[30] = "Not Connected";
 
 void state_init(void) 
 {
@@ -186,7 +209,6 @@ void state_init(void)
         lv_subject_init_string(&system_state.ruuvi.tag_1.humidity_text, state_ruuvi_tag_1_humidity_text_buf, state_ruuvi_tag_1_humidity_text_prev_buf, sizeof(state_ruuvi_tag_1_humidity_text_buf), "---");
         lv_subject_init_int(&system_state.ruuvi.tag_1.pressure, 0);
         lv_subject_init_string(&system_state.ruuvi.tag_1.pressure_text, state_ruuvi_tag_1_pressure_text_buf, state_ruuvi_tag_1_pressure_text_prev_buf, sizeof(state_ruuvi_tag_1_pressure_text_buf), "---");
-    
         // Ruuvi Tag 2
         lv_subject_init_int(&system_state.ruuvi.tag_2.temperature, 0);
         lv_subject_init_string(&system_state.ruuvi.tag_2.temperature_text, state_ruuvi_tag_2_temperature_text_buf, state_ruuvi_tag_2_temperature_text_prev_buf, sizeof(state_ruuvi_tag_2_temperature_text_buf), "---");
@@ -194,7 +216,25 @@ void state_init(void)
         lv_subject_init_string(&system_state.ruuvi.tag_2.humidity_text, state_ruuvi_tag_2_humidity_text_buf, state_ruuvi_tag_2_humidity_text_prev_buf, sizeof(state_ruuvi_tag_2_humidity_text_buf), "---");
         lv_subject_init_int(&system_state.ruuvi.tag_2.pressure, 0);
         lv_subject_init_string(&system_state.ruuvi.tag_2.pressure_text, state_ruuvi_tag_2_pressure_text_buf, state_ruuvi_tag_2_pressure_text_prev_buf, sizeof(state_ruuvi_tag_2_pressure_text_buf), "---");
-    
+    // -----NMEA2k-----
+        // Wind
+        lv_subject_init_int(&system_state.nmea.wind.true_speed, 0);
+        lv_subject_init_int(&system_state.nmea.wind.true_direction, 0);
+        lv_subject_init_int(&system_state.nmea.wind.apparent_speed, 0);
+        lv_subject_init_int(&system_state.nmea.wind.apparent_direction, 0);
+        // Diesel Tank
+        lv_subject_init_int(&system_state.nmea.dieseltank.level_percent, 0);
+        lv_subject_init_int(&system_state.nmea.dieseltank.level_litres, 0);
+        lv_subject_init_int(&system_state.nmea.dieseltank.capacity, 0);
+        // Boat
+        lv_subject_init_int(&system_state.nmea.boat.heading, 0);
+        lv_subject_init_int(&system_state.nmea.boat.course_over_ground, 0);
+        lv_subject_init_int(&system_state.nmea.boat.speed_over_ground, 0);
+        lv_subject_init_int(&system_state.nmea.boat.speed_through_water, 0);
+        lv_subject_init_int(&system_state.nmea.boat.depth, 0);
+        lv_subject_init_int(&system_state.nmea.boat.depth_offset, 0);
+        lv_subject_init_int(&system_state.nmea.boat.latitude, 0);
+        lv_subject_init_int(&system_state.nmea.boat.longitude, 0);
     // -----Victron-----
         // House Battery
         lv_subject_init_int(&system_state.victron.house_battery.voltage, 0);
@@ -203,6 +243,26 @@ void state_init(void)
         lv_subject_init_int(&system_state.victron.house_battery.soc,     100); // Start at 100%
         // Start Battery
         lv_subject_init_int(&system_state.victron.start_battery.voltage,       0);
+        // IP43 Charger
+        lv_subject_init_int(&system_state.victron.charger.voltage,       0);
+        lv_subject_init_int(&system_state.victron.charger.current,       0);
+        // MPPT 1
+        lv_subject_init_int(&system_state.victron.mppt1.dc_voltage,       0);
+        lv_subject_init_int(&system_state.victron.mppt1.dc_current,       0);
+        lv_subject_init_int(&system_state.victron.mppt1.pv_voltage,       0);
+        lv_subject_init_int(&system_state.victron.mppt1.yield_today,       0);
+        // MPPT 1
+        lv_subject_init_int(&system_state.victron.mppt2.dc_voltage,       0);
+        lv_subject_init_int(&system_state.victron.mppt2.dc_current,       0);
+        lv_subject_init_int(&system_state.victron.mppt2.pv_voltage,       0);
+        lv_subject_init_int(&system_state.victron.mppt2.yield_today,       0);
+        // DC2DC
+        lv_subject_init_int(&system_state.victron.dc2dc.voltage,       0);
+        lv_subject_init_int(&system_state.victron.dc2dc.current,       0);
+        lv_subject_init_int(&system_state.victron.dc2dc.power,       0);
+// -----System-----
+    lv_subject_init_int(&system_state.system.wifi_connected,       0);
+    lv_subject_init_string(&system_state.system.wifi_status_text, state_system_wifi_status_text_buf, state_system_wifi_status_text_prev_buf, sizeof(state_system_wifi_status_text_buf), "Not Connected");
 }
 
 void state_set_ruuvi_tag_1_temperature(int32_t temperature){
@@ -264,4 +324,8 @@ void state_set_victron_start_battery_voltage(int millivolts)
 
     // Finally, update the UI value
     lv_subject_set_int(&system_state.victron.start_battery.voltage, millivolts);
+}
+
+void state_set_system_wifi_status_text(const char * status){
+    lv_subject_set_string(&system_state.system.wifi_status_text, status);
 }

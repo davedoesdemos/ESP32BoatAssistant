@@ -196,12 +196,8 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
         lv_obj_set_style_text_align(lbl_value, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_34, 0); 
 
-        // BIND THE SUBJECT: Automatically updates label text when the subject changes
-        if (subject_value != NULL) {
-            lv_label_bind_text(lbl_value, subject_value, NULL); // Third parameter is an optional printf format string if needed
-        } else {
-            lv_label_set_text(lbl_value, "---"); // Fallback if no subject is assigned
-        }
+        lv_label_bind_text(lbl_value, subject_value, NULL);
+
 
     return container;
 }

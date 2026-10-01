@@ -38,12 +38,12 @@ typedef enum {
     TOPIC_NMEA_DIESELTANK_CAPACITY,
     // Boat
     TOPIC_NMEA_BOAT_HEADING,
-    TOPIC_NMEA_BOAT_COURSE,
+    TOPIC_NMEA_BOAT_COURSE_OVER_GROUND,
     TOPIC_NMEA_BOAT_SPEED_OVER_GROUND,
     TOPIC_NMEA_BOAT_SPEED_THROUGH_WATER,
     TOPIC_NMEA_BOAT_DEPTH,
     TOPIC_NMEA_BOAT_DEPTH_OFFSET,
-    TOPIC_NMEA_BOAT_LATTITUDE,
+    TOPIC_NMEA_BOAT_LATITUDE,
     TOPIC_NMEA_BOAT_LONGITUDE,
 // -----Victron-----
     // House Battery
@@ -72,7 +72,7 @@ typedef enum {
     TOPIC_VICTRON_DC2DC_POWER,
 // -----System-----
     TOPIC_SYSTEM_WIFI_CONNECTED,
-    TOPIC_SYSTEM_WIFI_IP_ADDRESS
+    TOPIC_SYSTEM_WIFI_STATUS
 } telemetry_id_t;
 
 /*=============================================================================

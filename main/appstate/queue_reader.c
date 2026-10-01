@@ -67,7 +67,7 @@ static void queue_reader_cb(lv_timer_t * timer)
             // Boat
             case TOPIC_NMEA_BOAT_HEADING:
                 break;
-            case TOPIC_NMEA_BOAT_COURSE:
+            case TOPIC_NMEA_BOAT_COURSE_OVER_GROUND:
                 break;
             case TOPIC_NMEA_BOAT_SPEED_OVER_GROUND:
                 break;
@@ -77,7 +77,7 @@ static void queue_reader_cb(lv_timer_t * timer)
                 break;
             case TOPIC_NMEA_BOAT_DEPTH_OFFSET:
                 break;
-            case TOPIC_NMEA_BOAT_LATTITUDE:
+            case TOPIC_NMEA_BOAT_LATITUDE:
                 break;
             case TOPIC_NMEA_BOAT_LONGITUDE:
                 break;
@@ -127,7 +127,7 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----System-----
             case TOPIC_SYSTEM_WIFI_CONNECTED:
                 break;
-            case TOPIC_SYSTEM_WIFI_IP_ADDRESS:
+            case TOPIC_SYSTEM_WIFI_STATUS:
                 break;
 // -----Default-----
             default:
