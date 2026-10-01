@@ -91,6 +91,8 @@ typedef struct {
             lv_subject_t voltage_text;
             lv_subject_t current;
             lv_subject_t current_text;
+            lv_subject_t power;
+            lv_subject_t power_text;
         } charger;
         // MPPT1
         struct {
@@ -102,6 +104,8 @@ typedef struct {
             lv_subject_t pv_voltage_text;
             lv_subject_t yield_today;
             lv_subject_t yield_today_text;
+            lv_subject_t power;
+            lv_subject_t power_text;
         } mppt1;
         // MPPT2
         struct {
@@ -113,6 +117,8 @@ typedef struct {
             lv_subject_t pv_voltage_text;
             lv_subject_t yield_today;
             lv_subject_t yield_today_text;
+            lv_subject_t power;
+            lv_subject_t power_text;
         } mppt2;
         // DC2DC
         struct {
@@ -194,6 +200,8 @@ static system_state_t system_state; // The single source of truth
     lv_subject_t * const state_victron_charger_voltage_text = &system_state.victron.charger.voltage_text;
     lv_subject_t * const state_victron_charger_current = &system_state.victron.charger.current;
     lv_subject_t * const state_victron_charger_current_text = &system_state.victron.charger.current_text;
+    lv_subject_t * const state_victron_charger_power = &system_state.victron.charger.power;
+    lv_subject_t * const state_victron_charger_power_text = &system_state.victron.charger.power_text;
     // MPPT 1
     lv_subject_t * const state_victron_mppt1_dc_voltage = &system_state.victron.mppt1.dc_voltage;
     lv_subject_t * const state_victron_mppt1_dc_voltage_text = &system_state.victron.mppt1.dc_voltage_text;
@@ -203,6 +211,8 @@ static system_state_t system_state; // The single source of truth
     lv_subject_t * const state_victron_mppt1_pv_voltage_text = &system_state.victron.mppt1.pv_voltage_text;
     lv_subject_t * const state_victron_mppt1_yield_today = &system_state.victron.mppt1.yield_today;
     lv_subject_t * const state_victron_mppt1_yield_today_text = &system_state.victron.mppt1.yield_today_text;
+    lv_subject_t * const state_victron_mppt1_power = &system_state.victron.mppt1.power;
+    lv_subject_t * const state_victron_mppt1_power_text = &system_state.victron.mppt1.power_text;
     // MPPT 2
     lv_subject_t * const state_victron_mppt2_dc_voltage = &system_state.victron.mppt2.dc_voltage;
     lv_subject_t * const state_victron_mppt2_dc_voltage_text = &system_state.victron.mppt2.dc_voltage_text;
@@ -212,6 +222,8 @@ static system_state_t system_state; // The single source of truth
     lv_subject_t * const state_victron_mppt2_pv_voltage_text = &system_state.victron.mppt2.pv_voltage_text;
     lv_subject_t * const state_victron_mppt2_yield_today = &system_state.victron.mppt2.yield_today;
     lv_subject_t * const state_victron_mppt2_yield_today_text = &system_state.victron.mppt2.yield_today_text;
+    lv_subject_t * const state_victron_mppt2_power = &system_state.victron.mppt2.power;
+    lv_subject_t * const state_victron_mppt2_power_text = &system_state.victron.mppt2.power_text;
     // DC2DC
     lv_subject_t * const state_victron_dc2dc_voltage = &system_state.victron.dc2dc.voltage;
     lv_subject_t * const state_victron_dc2dc_voltage_text = &system_state.victron.dc2dc.voltage_text;
@@ -273,6 +285,8 @@ static char state_ruuvi_air_1_nox_text_prev_buf[16] = "---";
     static char state_victron_charger_voltage_text_prev_buf[16] = "---";
     static char state_victron_charger_current_text_buf[16] = "---";
     static char state_victron_charger_current_text_prev_buf[16] = "---";
+    static char state_victron_charger_power_text_buf[16] = "---";
+    static char state_victron_charger_power_text_prev_buf[16] = "---";
     // MPPT 1
     static char state_victron_mppt1_dc_voltage_text_buf[16] = "---";
     static char state_victron_mppt1_dc_voltage_text_prev_buf[16] = "---";
@@ -282,6 +296,8 @@ static char state_ruuvi_air_1_nox_text_prev_buf[16] = "---";
     static char state_victron_mppt1_pv_voltage_text_prev_buf[16] = "---";
     static char state_victron_mppt1_yield_today_text_buf[16] = "---";
     static char state_victron_mppt1_yield_today_text_prev_buf[16] = "---";
+    static char state_victron_mppt1_power_text_buf[16] = "---";
+    static char state_victron_mppt1_power_text_prev_buf[16] = "---";
     // MPPT 2
     static char state_victron_mppt2_dc_voltage_text_buf[16] = "---";
     static char state_victron_mppt2_dc_voltage_text_prev_buf[16] = "---";
@@ -291,6 +307,8 @@ static char state_ruuvi_air_1_nox_text_prev_buf[16] = "---";
     static char state_victron_mppt2_pv_voltage_text_prev_buf[16] = "---";
     static char state_victron_mppt2_yield_today_text_buf[16] = "---";
     static char state_victron_mppt2_yield_today_text_prev_buf[16] = "---";
+    static char state_victron_mppt2_power_text_buf[16] = "---";
+    static char state_victron_mppt2_power_text_prev_buf[16] = "---";
     // DC2DC
     static char state_victron_dc2dc_voltage_text_buf[16] = "---";
     static char state_victron_dc2dc_voltage_text_prev_buf[16] = "---";
@@ -365,37 +383,43 @@ void state_init(void) {
         lv_subject_init_string(&system_state.victron.house_battery.soc_text, state_victron_house_battery_soc_text_buf, state_victron_house_battery_soc_text_prev_buf, sizeof(state_victron_house_battery_soc_text_buf), "---");
         // Start Battery
         lv_subject_init_int(&system_state.victron.start_battery.voltage,       0);
-        lv_subject_init_string(&system_state.victron.start_battery.voltage, state_victron_start_battery_voltage_text_buf, state_victron_start_battery_voltage_text_prev_buf, sizeof(state_victron_start_battery_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.start_battery.voltage_text, state_victron_start_battery_voltage_text_buf, state_victron_start_battery_voltage_text_prev_buf, sizeof(state_victron_start_battery_voltage_text_buf), "---");
         // IP43 Charger
         lv_subject_init_int(&system_state.victron.charger.voltage,       0);
-        lv_subject_init_string(&system_state.victron.charger.voltage, state_victron_charger_voltage_text_buf, state_victron_charger_voltage_text_prev_buf, sizeof(state_victron_charger_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.charger.voltage_text, state_victron_charger_voltage_text_buf, state_victron_charger_voltage_text_prev_buf, sizeof(state_victron_charger_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.charger.current,       0);
-        lv_subject_init_string(&system_state.victron.charger.current, state_victron_charger_current_text_buf, state_victron_charger_current_text_prev_buf, sizeof(state_victron_charger_current_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.charger.current_text, state_victron_charger_current_text_buf, state_victron_charger_current_text_prev_buf, sizeof(state_victron_charger_current_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.charger.power,       0);
+        lv_subject_init_string(&system_state.victron.charger.power_text, state_victron_charger_power_text_buf, state_victron_charger_power_text_prev_buf, sizeof(state_victron_charger_power_text_buf), "---");
         // MPPT 1
         lv_subject_init_int(&system_state.victron.mppt1.dc_voltage,       0);
-        lv_subject_init_string(&system_state.victron.mppt1.dc_voltage, state_victron_mppt1_dc_voltage_text_buf, state_victron_mppt1_dc_voltage_text_prev_buf, sizeof(state_victron_mppt1_dc_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt1.dc_voltage_text, state_victron_mppt1_dc_voltage_text_buf, state_victron_mppt1_dc_voltage_text_prev_buf, sizeof(state_victron_mppt1_dc_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt1.dc_current,       0);
-        lv_subject_init_string(&system_state.victron.mppt1.dc_current, state_victron_mppt1_dc_current_text_buf, state_victron_mppt1_dc_current_text_prev_buf, sizeof(state_victron_mppt1_dc_current_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt1.dc_current_text, state_victron_mppt1_dc_current_text_buf, state_victron_mppt1_dc_current_text_prev_buf, sizeof(state_victron_mppt1_dc_current_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt1.pv_voltage,       0);
-        lv_subject_init_string(&system_state.victron.mppt1.pv_voltage, state_victron_mppt1_pv_voltage_text_buf, state_victron_mppt1_pv_voltage_text_prev_buf, sizeof(state_victron_mppt1_pv_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt1.pv_voltage_text, state_victron_mppt1_pv_voltage_text_buf, state_victron_mppt1_pv_voltage_text_prev_buf, sizeof(state_victron_mppt1_pv_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt1.yield_today,       0);
-        lv_subject_init_string(&system_state.victron.mppt1.yield_today, state_victron_mppt1_yield_today_text_buf, state_victron_mppt1_yield_today_text_prev_buf, sizeof(state_victron_mppt1_yield_today_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt1.yield_today_text, state_victron_mppt1_yield_today_text_buf, state_victron_mppt1_yield_today_text_prev_buf, sizeof(state_victron_mppt1_yield_today_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.mppt1.power,       0);
+        lv_subject_init_string(&system_state.victron.mppt1.power_text, state_victron_mppt1_power_text_buf, state_victron_mppt1_power_text_prev_buf, sizeof(state_victron_mppt1_power_text_buf), "---");
         // MPPT 1
         lv_subject_init_int(&system_state.victron.mppt2.dc_voltage,       0);
-        lv_subject_init_string(&system_state.victron.mppt2.dc_voltage, state_victron_mppt2_dc_voltage_text_buf, state_victron_mppt2_dc_voltage_text_prev_buf, sizeof(state_victron_mppt2_dc_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt2.dc_voltage_text, state_victron_mppt2_dc_voltage_text_buf, state_victron_mppt2_dc_voltage_text_prev_buf, sizeof(state_victron_mppt2_dc_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt2.dc_current,       0);
-        lv_subject_init_string(&system_state.victron.mppt2.dc_current, state_victron_mppt2_dc_current_text_buf, state_victron_mppt2_dc_current_text_prev_buf, sizeof(state_victron_mppt2_dc_current_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt2.dc_current_text, state_victron_mppt2_dc_current_text_buf, state_victron_mppt2_dc_current_text_prev_buf, sizeof(state_victron_mppt2_dc_current_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt2.pv_voltage,       0);
-        lv_subject_init_string(&system_state.victron.mppt2.pv_voltage, state_victron_mppt2_pv_voltage_text_buf, state_victron_mppt2_pv_voltage_text_prev_buf, sizeof(state_victron_mppt2_pv_voltage_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt2.pv_voltage_text, state_victron_mppt2_pv_voltage_text_buf, state_victron_mppt2_pv_voltage_text_prev_buf, sizeof(state_victron_mppt2_pv_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.mppt2.yield_today,       0);
-        lv_subject_init_string(&system_state.victron.mppt2.yield_today, state_victron_mppt2_yield_today_text_buf, state_victron_mppt2_yield_today_text_prev_buf, sizeof(state_victron_mppt2_yield_today_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.mppt2.yield_today_text, state_victron_mppt2_yield_today_text_buf, state_victron_mppt2_yield_today_text_prev_buf, sizeof(state_victron_mppt2_yield_today_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.mppt2.power,       0);
+        lv_subject_init_string(&system_state.victron.mppt2.power_text, state_victron_mppt2_power_text_buf, state_victron_mppt2_power_text_prev_buf, sizeof(state_victron_mppt2_power_text_buf), "---");
         // DC2DC
         lv_subject_init_int(&system_state.victron.dc2dc.voltage,       0);
+        lv_subject_init_string(&system_state.victron.dc2dc.voltage_text, state_victron_dc2dc_voltage_text_buf, state_victron_dc2dc_voltage_text_prev_buf, sizeof(state_victron_dc2dc_voltage_text_buf), "---");
         lv_subject_init_int(&system_state.victron.dc2dc.current,       0);
+        lv_subject_init_string(&system_state.victron.dc2dc.current_text, state_victron_dc2dc_current_text_buf, state_victron_dc2dc_current_text_prev_buf, sizeof(state_victron_dc2dc_current_text_buf), "---");
         lv_subject_init_int(&system_state.victron.dc2dc.power,       0);
-        lv_subject_init_string(&system_state.victron.dc2dc.voltage, state_victron_dc2dc_voltage_text_buf, state_victron_dc2dc_voltage_text_prev_buf, sizeof(state_victron_dc2dc_voltage_text_buf), "---");
-        lv_subject_init_string(&system_state.victron.dc2dc.current, state_victron_dc2dc_current_text_buf, state_victron_dc2dc_current_text_prev_buf, sizeof(state_victron_dc2dc_current_text_buf), "---");
-        lv_subject_init_string(&system_state.victron.dc2dc.power, state_victron_dc2dc_power_text_buf, state_victron_dc2dc_power_text_prev_buf, sizeof(state_victron_dc2dc_power_text_buf), "---");
+        lv_subject_init_string(&system_state.victron.dc2dc.power_text, state_victron_dc2dc_power_text_buf, state_victron_dc2dc_power_text_prev_buf, sizeof(state_victron_dc2dc_power_text_buf), "---");
 // -----System-----
     lv_subject_init_int(&system_state.system.wifi_connected,       0);
     lv_subject_init_string(&system_state.system.wifi_status_text, state_system_wifi_status_text_buf, state_system_wifi_status_text_prev_buf, sizeof(state_system_wifi_status_text_buf), "Not Connected");
@@ -494,114 +518,130 @@ void state_set_ruuvi_air_1_nox(int32_t value){
 void state_set_victron_house_battery_voltage(float value){
     lv_subject_set_int(&system_state.victron.house_battery.voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.house_battery.voltage_text, temp);
 }
 void state_set_victron_house_battery_current(float value){
     lv_subject_set_int(&system_state.victron.house_battery.current, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
     lv_subject_set_string(&system_state.victron.house_battery.current_text, temp);
 }
 void state_set_victron_house_battery_power(float value){
     lv_subject_set_int(&system_state.victron.house_battery.power, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dW", (int)value);
     lv_subject_set_string(&system_state.victron.house_battery.power_text, temp);
 }
 void state_set_victron_house_battery_soc(float value){
     lv_subject_set_int(&system_state.victron.house_battery.soc, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.victron.house_battery.soc_text, temp);
 }
 // Start Battery
 void state_set_victron_start_battery_voltage(float value){
     lv_subject_set_int(&system_state.victron.start_battery.voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.start_battery.voltage_text, temp);
 }
 // IP43 Charger
 void state_set_victron_charger_voltage(float value){
     lv_subject_set_int(&system_state.victron.charger.voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.charger.voltage_text, temp);
 }
 void state_set_victron_charger_current(float value){
     lv_subject_set_int(&system_state.victron.charger.current, value);
+    int power = lv_subject_get_int(&system_state.victron.charger.voltage) * value;
+    lv_subject_set_int(&system_state.victron.charger.power, power);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
     lv_subject_set_string(&system_state.victron.charger.current_text, temp);
+    snprintf(temp, sizeof(temp), "%dW", (int)power);
+    lv_subject_set_string(&system_state.victron.charger.power_text, temp);
 }
 // MPPT 1
 void state_set_victron_mppt1_dc_voltage(float value){
     lv_subject_set_int(&system_state.victron.mppt1.dc_voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.dc_voltage_text, temp);
 }
 void state_set_victron_mppt1_dc_current(float value){
     lv_subject_set_int(&system_state.victron.mppt1.dc_current, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.dc_current_text, temp);
 }
 void state_set_victron_mppt1_pv_voltage(float value){
     lv_subject_set_int(&system_state.victron.mppt1.pv_voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.pv_voltage_text, temp);
 }
 void state_set_victron_mppt1_yield_today(float value){
     lv_subject_set_int(&system_state.victron.mppt1.yield_today, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkWh", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.yield_today_text, temp);
 }
-// MPPT 1
+void state_set_victron_mppt1_power(float value){
+    lv_subject_set_int(&system_state.victron.mppt1.power, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%dW", (int)value);
+    lv_subject_set_string(&system_state.victron.mppt1.power_text, temp);
+}
+// MPPT 2
 void state_set_victron_mppt2_dc_voltage(float value){
     lv_subject_set_int(&system_state.victron.mppt2.dc_voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.dc_voltage_text, temp);
 }
 void state_set_victron_mppt2_dc_current(float value){
     lv_subject_set_int(&system_state.victron.mppt2.dc_current, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.dc_current_text, temp);
 }
 void state_set_victron_mppt2_pv_voltage(float value){
     lv_subject_set_int(&system_state.victron.mppt2.pv_voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.pv_voltage_text, temp);
 }
 void state_set_victron_mppt2_yield_today(float value){
     lv_subject_set_int(&system_state.victron.mppt2.yield_today, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkWh", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.yield_today_text, temp);
+}
+void state_set_victron_mppt2_power(float value){
+    lv_subject_set_int(&system_state.victron.mppt2.power, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%dW", (int)value);
+    lv_subject_set_string(&system_state.victron.mppt2.power_text, temp);
 }
 // DC2DC
 void state_set_victron_dc2dc_voltage(float value){
     lv_subject_set_int(&system_state.victron.dc2dc.voltage, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.dc2dc.voltage_text, temp);
 }
 void state_set_victron_dc2dc_current(float value){
     lv_subject_set_int(&system_state.victron.dc2dc.current, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
     lv_subject_set_string(&system_state.victron.dc2dc.current_text, temp);
 }
 void state_set_victron_dc2dc_power(float value){
     lv_subject_set_int(&system_state.victron.dc2dc.power, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dW", (int)value);
     lv_subject_set_string(&system_state.victron.dc2dc.power_text, temp);
 }
 

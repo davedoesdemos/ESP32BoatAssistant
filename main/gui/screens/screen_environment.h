@@ -2,7 +2,6 @@
 #define SCREEN_ENVIRONMENT_H
 
 #include "lvgl.h"
-#include <stdio.h>
 #include "screen_nmea.h"
 #include "state.h"
 

@@ -118,6 +118,9 @@ static void queue_reader_cb(lv_timer_t * timer)
             case TOPIC_VICTRON_MPPT1_YIELD_TODAY:
                 state_set_victron_mppt1_yield_today(packet.value.value_float);
                 break;
+            case TOPIC_VICTRON_MPPT1_POWER:
+                state_set_victron_mppt1_power(packet.value.value_float);
+                break;
             // MPPT2
             case TOPIC_VICTRON_MPPT2_DC_VOLTAGE:
                 state_set_victron_mppt2_dc_voltage(packet.value.value_float);
@@ -130,6 +133,9 @@ static void queue_reader_cb(lv_timer_t * timer)
                 break;
             case TOPIC_VICTRON_MPPT2_YIELD_TODAY:
                 state_set_victron_mppt2_yield_today(packet.value.value_float);
+                break;
+            case TOPIC_VICTRON_MPPT2_POWER:
+                state_set_victron_mppt2_power(packet.value.value_float);
                 break;
             // DC2DC
             case TOPIC_VICTRON_DC2DC_VOLTAGE:

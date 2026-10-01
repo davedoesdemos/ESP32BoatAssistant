@@ -74,6 +74,8 @@
     extern lv_subject_t * const state_victron_charger_voltage_text;
     extern lv_subject_t * const state_victron_charger_current;
     extern lv_subject_t * const state_victron_charger_current_text;
+    extern lv_subject_t * const state_victron_charger_power;
+    extern lv_subject_t * const state_victron_charger_power_text;
     // MPPT 1
     extern lv_subject_t * const state_victron_mppt1_dc_voltage;
     extern lv_subject_t * const state_victron_mppt1_dc_voltage_text;
@@ -83,6 +85,8 @@
     extern lv_subject_t * const state_victron_mppt1_pv_voltage_text;
     extern lv_subject_t * const state_victron_mppt1_yield_today;
     extern lv_subject_t * const state_victron_mppt1_yield_today_text;
+    extern lv_subject_t * const state_victron_mppt1_power;
+    extern lv_subject_t * const state_victron_mppt1_power_text;
     // MPPT 2
     extern lv_subject_t * const state_victron_mppt2_dc_voltage;
     extern lv_subject_t * const state_victron_mppt2_dc_voltage_text;
@@ -92,6 +96,8 @@
     extern lv_subject_t * const state_victron_mppt2_pv_voltage_text;
     extern lv_subject_t * const state_victron_mppt2_yield_today;
     extern lv_subject_t * const state_victron_mppt2_yield_today_text;
+    extern lv_subject_t * const state_victron_mppt2_power;
+    extern lv_subject_t * const state_victron_mppt2_power_text;
     // DC2DC
     extern lv_subject_t * const state_victron_dc2dc_voltage;
     extern lv_subject_t * const state_victron_dc2dc_voltage_text;
@@ -153,11 +159,13 @@ void state_init(void);
     void state_set_victron_mppt1_dc_current(float value);
     void state_set_victron_mppt1_pv_voltage(float value);
     void state_set_victron_mppt1_yield_today(float value);
+    void state_set_victron_mppt1_power(float value);
     // MPPT 1
     void state_set_victron_mppt2_dc_voltage(float value);
     void state_set_victron_mppt2_dc_current(float value);
     void state_set_victron_mppt2_pv_voltage(float value);
     void state_set_victron_mppt2_yield_today(float value);
+    void state_set_victron_mppt2_power(float value);
     // DC2DC
     void state_set_victron_dc2dc_voltage(float value);
     void state_set_victron_dc2dc_current(float value);

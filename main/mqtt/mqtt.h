@@ -23,11 +23,13 @@ typedef enum {
     TOPIC_MPPT1_DC_CURRENT,
     TOPIC_MPPT1_PV_VOLTAGE,
     TOPIC_MPPT1_YIELD_TODAY,
+    TOPIC_MPPT1_POWER,
     // MPPT2
     TOPIC_MPPT2_DC_VOLTAGE,
     TOPIC_MPPT2_DC_CURRENT,
     TOPIC_MPPT2_PV_VOLTAGE,
     TOPIC_MPPT2_YIELD_TODAY,
+    TOPIC_MPPT2_POWER,
     // DC2DC
     TOPIC_DC2DC_VOLTAGE,
     TOPIC_DC2DC_CURRENT,
@@ -53,11 +55,13 @@ static const char *topic_registry[TOPIC_COUNT] = {
         [TOPIC_MPPT1_DC_CURRENT] = "N/" VRM_ID "/solarcharger/278/Dc/0/Current",
         [TOPIC_MPPT1_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/278/Pv/V",
         [TOPIC_MPPT1_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/278/History/Daily/0/Yield",
+        [TOPIC_MPPT1_POWER] = "N/" VRM_ID "/solarcharger/278/Yield/Power",
     // MPPT2
         [TOPIC_MPPT2_DC_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Dc/0/Voltage",
         [TOPIC_MPPT2_DC_CURRENT] = "N/" VRM_ID "/solarcharger/290/Dc/0/Current",
         [TOPIC_MPPT2_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Pv/V",
         [TOPIC_MPPT2_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/290/History/Daily/0/Yield",
+        [TOPIC_MPPT2_POWER] = "N/" VRM_ID "/solarcharger/290/Yield/Power",
     // OrionXS
         [TOPIC_DC2DC_VOLTAGE] = "N/" VRM_ID "/alternator/279/Dc/0/Voltage",
         [TOPIC_DC2DC_CURRENT] = "N/" VRM_ID "/alternator/279/Dc/0/Current",

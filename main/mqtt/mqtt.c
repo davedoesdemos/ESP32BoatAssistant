@@ -143,6 +143,12 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
+                        case TOPIC_MPPT1_POWER: {
+                            packet.id = TOPIC_VICTRON_MPPT1_POWER;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
                         // MPPT2
                         case TOPIC_MPPT2_DC_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_MPPT2_DC_VOLTAGE;
@@ -164,6 +170,12 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                         }
                         case TOPIC_MPPT2_YIELD_TODAY: {
                             packet.id = TOPIC_VICTRON_MPPT2_YIELD_TODAY;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
+                        case TOPIC_MPPT2_POWER: {
+                            packet.id = TOPIC_VICTRON_MPPT2_POWER;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
