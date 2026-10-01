@@ -12,6 +12,7 @@
 #include "nvs_flash.h"
 #include "gui.h"
 #include "state.h"
+#include "mqtt.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"

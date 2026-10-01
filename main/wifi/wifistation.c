@@ -130,6 +130,8 @@ static void event_handler(void* arg, esp_event_base_t event_base,
         
         // Call the centralized function to update your UI whenever we hit connection status
         update_netstatus_from_interface();
+        // Start the mqtt
+        mqtt_app_start();
 
         if (s_wifi_event_group) {
             xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);

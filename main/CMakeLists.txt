@@ -15,6 +15,7 @@ idf_component_register(
         "gui/screens/screen_wifi.c"
         "gui/screens/screen_nmea.c"
         "gui/screens/screen_fuel.c"
+        "mqtt/mqtt.c"
         "i2c/i2c.c"
         "rgblcd43b/rgblcd43b"
         "nmea2k/nmea2k.c"
@@ -28,6 +29,7 @@ idf_component_register(
         "wifi"
         "gui"
         "gui/screens"
+        "mqtt"
         "i2c"
         "rgblcd43b"
         "nmea2k"
@@ -43,4 +45,6 @@ idf_component_register(
         esp_wifi
         nvs_flash
         esp_driver_twai
+        mqtt
+        json
     )

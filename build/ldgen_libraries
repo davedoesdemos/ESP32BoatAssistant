@@ -185,4 +185,5 @@
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__knob/libespressif__knob.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/main/libmain.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lcd_touch_gt911/libespressif__esp_lcd_touch_gt911.a
+/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/mqtt/libmqtt.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lvgl_adapter/libespressif__esp_lvgl_adapter.a

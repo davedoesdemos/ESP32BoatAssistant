@@ -1,4 +1,3 @@
-
 #include "queue_reader.h"
 
 QueueHandle_t msg_queue = NULL;
@@ -15,23 +14,23 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----Ruuvi-----
             // Ruuvi Tag 1
             case TOPIC_RUUVI_TAG_1_TEMPERATURE:
-                state_set_ruuvi_tag_1_temperature(packet.value);
+                state_set_ruuvi_tag_1_temperature(packet.value.value_int);
                 break;
             case TOPIC_RUUVI_TAG_1_HUMIDITY:
-                state_set_ruuvi_tag_1_humidity(packet.value);
+                state_set_ruuvi_tag_1_humidity(packet.value.value_int);
                 break;
             case TOPIC_RUUVI_TAG_1_PRESSURE:
-                state_set_ruuvi_tag_1_pressure(packet.value);
+                state_set_ruuvi_tag_1_pressure(packet.value.value_int);
                 break;
             // Ruuvi Tag 2
             case TOPIC_RUUVI_TAG_2_TEMPERATURE:
-                state_set_ruuvi_tag_2_temperature(packet.value);
+                state_set_ruuvi_tag_2_temperature(packet.value.value_int);
                 break;
             case TOPIC_RUUVI_TAG_2_HUMIDITY:
-                state_set_ruuvi_tag_2_humidity(packet.value);
+                state_set_ruuvi_tag_2_humidity(packet.value.value_int);
                 break;
             case TOPIC_RUUVI_TAG_2_PRESSURE:
-                state_set_ruuvi_tag_2_pressure(packet.value);
+                state_set_ruuvi_tag_2_pressure(packet.value.value_int);
                 break;
             // Ruuvi Air 1
             case TOPIC_RUUVI_AIR_1_TEMPERATURE:
@@ -84,8 +83,10 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----Victron-----
             // House Battery
             case TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE:
+            printf("victron voltage %f\n", packet.value.value_float);
                 break;
             case TOPIC_VICTRON_HOUSE_BATTERY_CURRENT:
+            printf("victron current %f\n", packet.value.value_float);
                 break;
             case TOPIC_VICTRON_HOUSE_BATTERY_POWER:
                 break;

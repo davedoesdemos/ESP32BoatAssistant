@@ -265,50 +265,138 @@ void state_init(void)
     lv_subject_init_string(&system_state.system.wifi_status_text, state_system_wifi_status_text_buf, state_system_wifi_status_text_prev_buf, sizeof(state_system_wifi_status_text_buf), "Not Connected");
 }
 
-void state_set_ruuvi_tag_1_temperature(int32_t temperature){
-    lv_subject_set_int(&system_state.ruuvi.tag_1.temperature, temperature);
+// -----Ruuvi-----
+// Ruuvi Tag 1
+void state_set_ruuvi_tag_1_temperature(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_1.temperature, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)temperature);
+    snprintf(temp, sizeof(temp), "%d°C", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_1.temperature_text, temp);
 }
 
-void state_set_ruuvi_tag_1_humidity(int32_t percentage){
-    lv_subject_set_int(&system_state.ruuvi.tag_1.humidity, percentage);
+void state_set_ruuvi_tag_1_humidity(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_1.humidity, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d%%", (int)percentage);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_1.humidity_text, temp);
 }
 
-void state_set_ruuvi_tag_1_pressure(int32_t hpa){
-    lv_subject_set_int(&system_state.ruuvi.tag_1.pressure, hpa);
+void state_set_ruuvi_tag_1_pressure(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_1.pressure, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dhPa", (int)hpa);
+    snprintf(temp, sizeof(temp), "%dhPa", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_1.pressure_text, temp);
 }
 
-void state_set_ruuvi_tag_2_temperature(int32_t temperature){
-    lv_subject_set_int(&system_state.ruuvi.tag_2.temperature, temperature);
+// Ruuvi Tag 2
+void state_set_ruuvi_tag_2_temperature(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_2.temperature, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)temperature);
+    snprintf(temp, sizeof(temp), "%d°C", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_2.temperature_text, temp);
 }
 
-void state_set_ruuvi_tag_2_humidity(int32_t percentage){
-    lv_subject_set_int(&system_state.ruuvi.tag_2.humidity, percentage);
+void state_set_ruuvi_tag_2_humidity(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_2.humidity, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d%%", (int)percentage);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_2.humidity_text, temp);
 }
 
-void state_set_ruuvi_tag_2_pressure(int32_t hpa){
-    lv_subject_set_int(&system_state.ruuvi.tag_2.pressure, hpa);
+void state_set_ruuvi_tag_2_pressure(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.tag_2.pressure, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dhPa", (int)hpa);
+    snprintf(temp, sizeof(temp), "%dhPa", (int)value);
     lv_subject_set_string(&system_state.ruuvi.tag_2.pressure_text, temp);
 }
 
-void state_set_victron_start_battery_voltage(int millivolts) 
-{
+// Ruuvi Air 1
+void state_set_ruuvi_air_1_temperature(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.temperature, value);
+}
+void state_set_ruuvi_air_1_humidity(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.humidity, value);
+}
+void state_set_ruuvi_air_1_pressure(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.pressure, value);
+}
+void state_set_ruuvi_air_1_pm2_5(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.pm2_5, value);
+}
+void state_set_ruuvi_air_1_co2(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.co2, value);
+}
+void state_set_ruuvi_air_1_voc(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.voc, value);
+}
+void state_set_ruuvi_air_1_nox(int32_t value){
+    lv_subject_set_int(&system_state.ruuvi.air_1.nox, value);
+}
+
+// -----Victron-----
+// House Battery
+void state_set_house_battery_voltage(float value){
+    lv_subject_set_int(&system_state.victron.house_battery.voltage, value);
+}
+void state_set_house_battery_current(float value){
+    lv_subject_set_int(&system_state.victron.house_battery.current, value);
+}
+void state_set_house_battery_power(float value){
+    lv_subject_set_int(&system_state.victron.house_battery.power, value);
+}
+void state_set_house_battery_soc(float value){
+    lv_subject_set_int(&system_state.victron.house_battery.soc, value);
+}
+// Start Battery
+void state_set_start_battery_voltage(float value){
+    lv_subject_set_int(&system_state.victron.start_battery.voltage, value);
+}
+// IP43 Charger
+void state_set_charger_voltage(float value){
+    lv_subject_set_int(&system_state.victron.charger.voltage, value);
+}
+void state_set_charger_current(float value){
+    lv_subject_set_int(&system_state.victron.charger.current, value);
+}
+// MPPT 1
+void state_set_mppt1_dc_voltage(float value){
+    lv_subject_set_int(&system_state.victron.mppt1.dc_voltage, value);
+}
+void state_set_mppt1_dc_current(float value){
+    lv_subject_set_int(&system_state.victron.mppt1.dc_current, value);
+}
+void state_set_mppt1_pv_voltage(float value){
+    lv_subject_set_int(&system_state.victron.mppt1.pv_voltage, value);
+}
+void state_set_mppt1_yield_today(float value){
+    lv_subject_set_int(&system_state.victron.mppt1.yield_today, value);
+}
+// MPPT 1
+void state_set_mppt2_dc_voltage(float value){
+    lv_subject_set_int(&system_state.victron.mppt2.dc_voltage, value);
+}
+void state_set_mppt2_dc_current(float value){
+    lv_subject_set_int(&system_state.victron.mppt2.dc_current, value);
+}
+void state_set_mppt2_pv_voltage(float value){
+    lv_subject_set_int(&system_state.victron.mppt2.pv_voltage, value);
+}
+void state_set_mppt2_yield_today(float value){
+    lv_subject_set_int(&system_state.victron.mppt2.yield_today, value);
+}
+// DC2DC
+void state_set_dc2dc_voltage(float value){
+    lv_subject_set_int(&system_state.victron.dc2dc.voltage, value);
+}
+void state_set_dc2dc_current(float value){
+    lv_subject_set_int(&system_state.victron.dc2dc.current, value);
+}
+void state_set_dc2dc_power(float value){
+    lv_subject_set_int(&system_state.victron.dc2dc.power, value);
+}
+
+//void state_set_victron_start_battery_voltage(int value) 
+//{
     // Safety check: Filter out corrupted or impossible data before updating LVGL
     //if (millivolts < 0 || millivolts > 60000) {
     //    log_system_error("Voltage out of bounds!");
@@ -323,9 +411,10 @@ void state_set_victron_start_battery_voltage(int millivolts)
     //}
 
     // Finally, update the UI value
-    lv_subject_set_int(&system_state.victron.start_battery.voltage, millivolts);
-}
+    //lv_subject_set_int(&system_state.victron.start_battery.voltage, value);
+//}
 
-void state_set_system_wifi_status_text(const char * status){
-    lv_subject_set_string(&system_state.system.wifi_status_text, status);
+// -----System-----
+void state_set_system_wifi_status_text(const char * value){
+    lv_subject_set_string(&system_state.system.wifi_status_text, value);
 }

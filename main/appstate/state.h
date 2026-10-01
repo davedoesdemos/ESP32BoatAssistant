@@ -95,12 +95,47 @@ void state_init(void);
  * @{
  */
 // -----Ruuvi-----
-void state_set_ruuvi_tag_1_temperature(int32_t temperature);
-void state_set_ruuvi_tag_1_humidity(int32_t percentage);
-void state_set_ruuvi_tag_1_pressure(int32_t hpa);
-void state_set_ruuvi_tag_2_temperature(int32_t temperature);
-void state_set_ruuvi_tag_2_humidity(int32_t percentage);
-void state_set_ruuvi_tag_2_pressure(int32_t hpa);
+    // Ruuvi Tag 1
+    void state_set_ruuvi_tag_1_temperature(int32_t value);
+    void state_set_ruuvi_tag_1_humidity(int32_t value);
+    void state_set_ruuvi_tag_1_pressure(int32_t value);
+    // Ruuvi Tag 2
+    void state_set_ruuvi_tag_2_temperature(int32_t value);
+    void state_set_ruuvi_tag_2_humidity(int32_t value);
+    void state_set_ruuvi_tag_2_pressure(int32_t value);
+    // Ruuvi Air 1
+    void state_set_ruuvi_air_1_temperature(int32_t value);
+    void state_set_ruuvi_air_1_humidity(int32_t value);
+    void state_set_ruuvi_air_1_pressure(int32_t value);
+    void state_set_ruuvi_air_1_pm2_5(int32_t value); //Particulate Matter (PM) 2.5µm
+    void state_set_ruuvi_air_1_co2(int32_t value); //Carbon Dioxide (CO₂)
+    void state_set_ruuvi_air_1_voc(int32_t value); //VOC Volatile Organic Compounds
+    void state_set_ruuvi_air_1_nox(int32_t value); //NOx Nitrogen Oxides
+// -----Victron-----
+    // House Battery
+    void state_set_house_battery_voltage(float value);
+    void state_set_house_battery_current(float value);
+    void state_set_house_battery_power(float value);
+    void state_set_house_battery_soc(float value);
+    // Start Battery
+    void state_set_start_battery_voltage(float value);
+    // IP43 Charger
+    void state_set_charger_voltage(float value);
+    void state_set_charger_current(float value);
+    // MPPT 1
+    void state_set_mppt1_dc_voltage(float value);
+    void state_set_mppt1_dc_current(float value);
+    void state_set_mppt1_pv_voltage(float value);
+    void state_set_mppt1_yield_today(float value);
+    // MPPT 1
+    void state_set_mppt2_dc_voltage(float value);
+    void state_set_mppt2_dc_current(float value);
+    void state_set_mppt2_pv_voltage(float value);
+    void state_set_mppt2_yield_today(float value);
+    // DC2DC
+    void state_set_dc2dc_voltage(float value);
+    void state_set_dc2dc_current(float value);
+    void state_set_dc2dc_power(float value);
 // -----System-----
 void state_set_system_wifi_status_text(const char * status);
 

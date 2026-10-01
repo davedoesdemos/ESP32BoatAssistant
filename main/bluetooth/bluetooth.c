@@ -96,26 +96,26 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg) {
                         case 0xe219e9062e2bULL: //AnamCara Cockpit
                             //ESP_LOGI(TAG, "TagID: [0x%012llx] AnamCara Cockpit", tag_id);
                             packet.id = TOPIC_RUUVI_TAG_1_TEMPERATURE;
-                            packet.value = (int32_t)data.temperature;
+                            packet.value.value_int = (int32_t)data.temperature;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_TAG_1_HUMIDITY;
-                            packet.value = (int32_t)data.humidity;
+                            packet.value.value_int = (int32_t)data.humidity;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_TAG_1_PRESSURE;
-                            packet.value = (int32_t)data.pressure;
+                            packet.value.value_int = (int32_t)data.pressure;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                             
                         case 0xf25010624882ULL: //AnamCara Indoors
                             //ESP_LOGI(TAG, "TagID: [0x%012llx] AnamCara Indoors", tag_id);
                             packet.id = TOPIC_RUUVI_TAG_2_TEMPERATURE;
-                            packet.value = (int32_t)data.temperature;
+                            packet.value.value_int = (int32_t)data.temperature;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_TAG_2_HUMIDITY;
-                            packet.value = (int32_t)data.humidity;
+                            packet.value.value_int = (int32_t)data.humidity;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_TAG_2_PRESSURE;
-                            packet.value = (int32_t)data.pressure;
+                            packet.value.value_int = (int32_t)data.pressure;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                             
@@ -143,25 +143,25 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg) {
                         case 0xeb807f705dc3ULL: //AnamCara Air
                             //ESP_LOGI(TAG, "TagID: [0x%012llx] AnamCara Air", tag_id);
                             packet.id = TOPIC_RUUVI_AIR_1_TEMPERATURE;
-                            packet.value = (int32_t)air.temperature;
+                            packet.value.value_int = (int32_t)air.temperature;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_HUMIDITY;
-                            packet.value = (int32_t)air.humidity;
+                            packet.value.value_int = (int32_t)air.humidity;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_PRESSURE;
-                            packet.value = (int32_t)air.pressure;
+                            packet.value.value_int = (int32_t)air.pressure;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_CO2;
-                            packet.value = (int32_t)air.co2;
+                            packet.value.value_int = (int32_t)air.co2;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_NOX;
-                            packet.value = (int32_t)air.nox;
+                            packet.value.value_int = (int32_t)air.nox;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_PM2_5;
-                            packet.value = (int32_t)air.pm2_5;
+                            packet.value.value_int = (int32_t)air.pm2_5;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_VOC;
-                            packet.value = (int32_t)air.voc;
+                            packet.value.value_int = (int32_t)air.voc;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         default:

@@ -80,7 +80,11 @@ typedef enum {
  *============================================================================*/
 typedef struct {
     telemetry_id_t id;  // Which parameter is this? (The Key)
-    int32_t value;      // The actual numeric value scaled to an integer
+    union {
+        float value_float;
+        int value_int;
+        char value_string[16]; // For pre-formatted strings
+    } value;
 } telemetry_packet_t;
 
 extern QueueHandle_t msg_queue;
