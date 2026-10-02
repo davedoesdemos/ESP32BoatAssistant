@@ -1,6 +1,9 @@
 # ESP32BoatAssistant
 A Boat assistant project using the Waveshare ESP32S3 4.3B Box hardware
-
+![image](docs/images/IMG_2643.jpg)
+![image](docs/images/IMG_2644.jpg)
+![image](docs/images/IMG_2646.jpg)
+![image](docs/images/IMG_2650.jpg)
 
 [app_main Startup]
   │── 1. Init Hardware (SPI, I2C, TWAI, Wi-Fi)
