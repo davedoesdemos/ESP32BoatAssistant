@@ -1,5 +1,8 @@
 # ESP32BoatAssistant
 A Boat assistant project using the Waveshare ESP32S3 4.3B Box hardware
+Touchscreen display with full NMEA2000, MQTT and Bluetooth integration for Ruuvi, Victron and Boat systems.
+Not currently configurable, everything is hardcoded to what I needed.
+Hardware is the [Waveshare LCD4.3B](https://docs.waveshare.com/ESP32-S3-Touch-LCD-4.3B)
 ![image](docs/images/IMG_2643.jpg)
 ![image](docs/images/IMG_2644.jpg)
 ![image](docs/images/IMG_2646.jpg)
