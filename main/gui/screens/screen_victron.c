@@ -37,20 +37,35 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             // Style
             lv_obj_set_style_arc_width(mppt1_arc1, 20, 0);
             lv_obj_set_style_arc_width(mppt1_arc1, 20, LV_PART_INDICATOR);
-            lv_obj_set_style_arc_color(mppt1_arc1, lv_palette_main(LV_PALETTE_YELLOW), LV_PART_INDICATOR);
-            lv_obj_set_style_bg_color(mppt1_arc1, lv_palette_main(LV_PALETTE_YELLOW), LV_PART_KNOB | LV_STATE_DEFAULT);
+            lv_obj_set_style_arc_color(mppt1_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(mppt1_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_KNOB | LV_STATE_DEFAULT);
             lv_obj_remove_flag(mppt1_arc1, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
 
             lv_arc_bind_value(mppt1_arc1, state_victron_mppt1_power);
 
+            // Container for labels
+            lv_obj_t * label_container_mppt1 = lv_obj_create(mppt1_arc1);
+            lv_obj_remove_style_all(label_container_mppt1);
+            lv_obj_set_layout(label_container_mppt1, LV_LAYOUT_FLEX);
+            lv_obj_set_flex_flow(label_container_mppt1, LV_FLEX_FLOW_COLUMN);
+            lv_obj_set_flex_align(label_container_mppt1, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+            lv_obj_align(label_container_mppt1, LV_ALIGN_CENTER, 0, 0);
+
             // MPPT 1 Power Label
-            lv_obj_t *mppt1_power_label = lv_label_create(mppt1_arc1);
-            lv_obj_set_style_text_color(mppt1_power_label, lv_color_hex(0xFF0000), 0);
+            lv_obj_t *mppt1_power_label = lv_label_create(label_container_mppt1);
+            lv_obj_set_style_text_color(mppt1_power_label, lv_color_hex(0x000000), 0);
             lv_obj_set_style_text_align(mppt1_power_label, LV_TEXT_ALIGN_CENTER, 0);
-            lv_obj_align(mppt1_power_label, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_style_text_font(mppt1_power_label, &lv_font_montserrat_24, 0);
 
             lv_label_bind_text(mppt1_power_label, state_victron_mppt1_power_text, NULL);
+
+            // MPPT 1 Yield Label
+            lv_obj_t *mppt1_yield_label = lv_label_create(label_container_mppt1);
+            lv_obj_set_style_text_color(mppt1_yield_label, lv_color_hex(0x000000), 0);
+            lv_obj_set_style_text_align(mppt1_yield_label, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_set_style_text_font(mppt1_yield_label, &lv_font_montserrat_24, 0);
+
+            lv_label_bind_text(mppt1_yield_label, state_victron_mppt1_yield_today_text, NULL);
 
             // MPPT 2 Label
             lv_obj_t *mppt2_label = lv_label_create(column0_container);
@@ -70,20 +85,37 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             // Style
             lv_obj_set_style_arc_width(mppt2_arc1, 20, 0);
             lv_obj_set_style_arc_width(mppt2_arc1, 20, LV_PART_INDICATOR);
-            lv_obj_set_style_arc_color(mppt2_arc1, lv_palette_main(LV_PALETTE_YELLOW), LV_PART_INDICATOR);
-            lv_obj_set_style_bg_color(mppt2_arc1, lv_palette_main(LV_PALETTE_YELLOW), LV_PART_KNOB | LV_STATE_DEFAULT);
+            lv_obj_set_style_arc_color(mppt2_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(mppt2_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_KNOB | LV_STATE_DEFAULT);
             lv_obj_remove_flag(mppt2_arc1, LV_OBJ_FLAG_CLICKABLE);
 
             lv_arc_bind_value(mppt2_arc1, state_victron_mppt2_power);
 
+            // Container for labels
+            lv_obj_t * label_container_mppt2 = lv_obj_create(mppt2_arc1);
+            lv_obj_remove_style_all(label_container_mppt2);
+            lv_obj_set_layout(label_container_mppt2, LV_LAYOUT_FLEX);
+            lv_obj_set_flex_flow(label_container_mppt2, LV_FLEX_FLOW_COLUMN);
+            lv_obj_set_flex_align(label_container_mppt2, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+            lv_obj_align(label_container_mppt2, LV_ALIGN_CENTER, 0, 0);
+
             // MPPT 2 Power Label
-            lv_obj_t *mppt2_power_label = lv_label_create(mppt2_arc1);
-            lv_obj_set_style_text_color(mppt2_power_label, lv_color_hex(0xFF0000), 0);
+            lv_obj_t *mppt2_power_label = lv_label_create(label_container_mppt2);
+            lv_obj_set_style_text_color(mppt2_power_label, lv_color_hex(0x000000), 0);
             lv_obj_set_style_text_align(mppt2_power_label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_align(mppt2_power_label, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_style_text_font(mppt2_power_label, &lv_font_montserrat_24, 0);
 
             lv_label_bind_text(mppt2_power_label, state_victron_mppt2_power_text, NULL);
+
+            // MPPT 2 Yield Label
+            lv_obj_t *mppt2_yield_label = lv_label_create(label_container_mppt2);
+            lv_obj_set_style_text_color(mppt2_yield_label, lv_color_hex(0x000000), 0);
+            lv_obj_set_style_text_align(mppt2_yield_label, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_align(mppt2_yield_label, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_style_text_font(mppt2_yield_label, &lv_font_montserrat_24, 0);
+
+            lv_label_bind_text(mppt2_yield_label, state_victron_mppt2_yield_today_text, NULL);
 
         // column 1
         lv_obj_t * column1_container = lv_obj_create(row1_container);
@@ -100,7 +132,7 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             lv_label_set_text(house_battery_label, "House Battery");
             lv_obj_set_style_text_align(house_battery_label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_align(house_battery_label, LV_ALIGN_CENTER, 0, 0);
-            lv_obj_set_style_text_font(house_battery_label, &lv_font_montserrat_14, 0); 
+            lv_obj_set_style_text_font(house_battery_label, &lv_font_montserrat_24, 0); 
 
             // House Battery Arc
             lv_obj_t *house_battery_arc1 = lv_arc_create(column1_container);
@@ -112,20 +144,37 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             // Style
             lv_obj_set_style_arc_width(house_battery_arc1, 30, 0);
             lv_obj_set_style_arc_width(house_battery_arc1, 30, LV_PART_INDICATOR);
-            lv_obj_set_style_arc_color(house_battery_arc1, lv_palette_main(LV_PALETTE_GREEN), LV_PART_INDICATOR);
-            lv_obj_set_style_bg_color(house_battery_arc1, lv_palette_main(LV_PALETTE_GREEN), LV_PART_KNOB | LV_STATE_DEFAULT);
+            lv_obj_set_style_arc_color(house_battery_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(house_battery_arc1, lv_palette_main(LV_PALETTE_BLUE), LV_PART_KNOB | LV_STATE_DEFAULT);
             lv_obj_remove_flag(house_battery_arc1, LV_OBJ_FLAG_CLICKABLE);
 
             lv_arc_bind_value(house_battery_arc1, state_victron_house_battery_soc);
 
+            // Container for labels
+            lv_obj_t * label_container_house_battery = lv_obj_create(house_battery_arc1);
+            lv_obj_remove_style_all(label_container_house_battery);
+            lv_obj_set_layout(label_container_house_battery, LV_LAYOUT_FLEX);
+            lv_obj_set_flex_flow(label_container_house_battery, LV_FLEX_FLOW_COLUMN);
+            lv_obj_set_flex_align(label_container_house_battery, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+            lv_obj_align(label_container_house_battery, LV_ALIGN_CENTER, 0, 0);
+            
             // House Battery SOC
-            lv_obj_t *house_battery_soc_label = lv_label_create(house_battery_arc1);
-            lv_obj_set_style_text_color(house_battery_soc_label, lv_color_hex(0xFF0000), 0);
+            lv_obj_t *house_battery_soc_label = lv_label_create(label_container_house_battery);
+            lv_obj_set_style_text_color(house_battery_soc_label, lv_color_hex(0x000000), 0);
             lv_obj_set_style_text_align(house_battery_soc_label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_align(house_battery_soc_label, LV_ALIGN_CENTER, 0, 0);
-            lv_obj_set_style_text_font(house_battery_soc_label, &lv_font_montserrat_24, 0);
+            lv_obj_set_style_text_font(house_battery_soc_label, &lv_font_montserrat_48, 0);
 
             lv_label_bind_text(house_battery_soc_label, state_victron_house_battery_soc_text, NULL);
+            
+            // House Battery Power
+            lv_obj_t *house_battery_power_label = lv_label_create(label_container_house_battery);
+            lv_obj_set_style_text_color(house_battery_power_label, lv_color_hex(0x000000), 0);
+            lv_obj_set_style_text_align(house_battery_power_label, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_align(house_battery_power_label, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_style_text_font(house_battery_power_label, &lv_font_montserrat_24, 0);
+
+            lv_label_bind_text(house_battery_power_label, state_victron_house_battery_power_text, NULL);
 
         // column 2
         lv_obj_t * column2_container = lv_obj_create(row1_container);
@@ -161,7 +210,7 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
 
             // Centred Text Labels for values
             lv_obj_t *dc2dc_power_label = lv_label_create(dc2dc_arc1);
-            lv_obj_set_style_text_color(dc2dc_power_label, lv_color_hex(0xFF0000), 0);
+            lv_obj_set_style_text_color(dc2dc_power_label, lv_color_hex(0x000000), 0);
             lv_obj_set_style_text_align(dc2dc_power_label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_align(dc2dc_power_label, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_style_text_font(dc2dc_power_label, &lv_font_montserrat_24, 0);
@@ -194,7 +243,7 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
 
             // Centred Text Labels for values
             lv_obj_t *charger_power_label = lv_label_create(charger_arc1);
-            lv_obj_set_style_text_color(charger_power_label, lv_color_hex(0xFF0000), 0);
+            lv_obj_set_style_text_color(charger_power_label, lv_color_hex(0x000000), 0);
             lv_obj_set_style_text_align(charger_power_label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_align(charger_power_label, LV_ALIGN_CENTER, 0, 0);
             lv_obj_set_style_text_font(charger_power_label, &lv_font_montserrat_24, 0);

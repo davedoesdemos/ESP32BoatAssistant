@@ -1,5 +1,8 @@
 #include "state.h"
 
+// Logging
+static const char *TAG = "Boat Assistant: State";
+
 // System State Subjects
 typedef struct {
     // -----Ruuvi-----
@@ -53,19 +56,6 @@ typedef struct {
             lv_subject_t apparent_direction;
             lv_subject_t apparent_direction_text;
         } wind;
-        // Diesel Tank
-        struct {
-            lv_subject_t level_percent;
-            lv_subject_t level_percent_text;
-            lv_subject_t level_litres;
-            lv_subject_t level_litres_text;
-            lv_subject_t capacity;
-            lv_subject_t capacity_text;
-            lv_subject_t remaining_hours;
-            lv_subject_t remaining_hours_text;
-            lv_subject_t remaining_miles;
-            lv_subject_t remaining_miles_text;
-        } dieseltank;
         // Boat
         struct {
             lv_subject_t heading;
@@ -159,6 +149,19 @@ typedef struct {
             lv_subject_t power;
             lv_subject_t power_text;
         } dc2dc;
+        // Diesel Tank
+        struct {
+            lv_subject_t level_percent;
+            lv_subject_t level_percent_text;
+            lv_subject_t level_litres;
+            lv_subject_t level_litres_text;
+            lv_subject_t capacity;
+            lv_subject_t capacity_text;
+            lv_subject_t remaining_hours;
+            lv_subject_t remaining_hours_text;
+            lv_subject_t remaining_miles;
+            lv_subject_t remaining_miles_text;
+        } dieseltank;
     } victron;
     // -----System-----
     struct {
@@ -210,17 +213,6 @@ static system_state_t system_state;
     lv_subject_t * const state_nmea_wind_apparent_speed_text = &system_state.nmea.wind.apparent_speed_text;
     lv_subject_t * const state_nmea_wind_apparent_direction = &system_state.nmea.wind.apparent_direction;
     lv_subject_t * const state_nmea_wind_apparent_direction_text = &system_state.nmea.wind.apparent_direction_text;
-    // Diesel Tank
-    lv_subject_t * const state_nmea_dieseltank_level_percent = &system_state.nmea.dieseltank.level_percent;
-    lv_subject_t * const state_nmea_dieseltank_level_percent_text = &system_state.nmea.dieseltank.level_percent_text;
-    lv_subject_t * const state_nmea_dieseltank_level_litres = &system_state.nmea.dieseltank.level_litres;
-    lv_subject_t * const state_nmea_dieseltank_level_litres_text = &system_state.nmea.dieseltank.level_litres_text;
-    lv_subject_t * const state_nmea_dieseltank_capacity = &system_state.nmea.dieseltank.capacity;
-    lv_subject_t * const state_nmea_dieseltank_capacity_text = &system_state.nmea.dieseltank.capacity_text;
-    lv_subject_t * const state_nmea_dieseltank_remaining_hours = &system_state.nmea.dieseltank.remaining_hours;
-    lv_subject_t * const state_nmea_dieseltank_remaining_hours_text = &system_state.nmea.dieseltank.remaining_hours_text;
-    lv_subject_t * const state_nmea_dieseltank_remaining_miles = &system_state.nmea.dieseltank.remaining_miles;
-    lv_subject_t * const state_nmea_dieseltank_remaining_miles_text = &system_state.nmea.dieseltank.remaining_miles_text;
     // Boat
     lv_subject_t * const state_nmea_boat_heading = &system_state.nmea.boat.heading;
     lv_subject_t * const state_nmea_boat_heading_text = &system_state.nmea.boat.heading_text;
@@ -296,6 +288,17 @@ static system_state_t system_state;
     lv_subject_t * const state_victron_dc2dc_current_text = &system_state.victron.dc2dc.current_text;
     lv_subject_t * const state_victron_dc2dc_power = &system_state.victron.dc2dc.power;
     lv_subject_t * const state_victron_dc2dc_power_text = &system_state.victron.dc2dc.power_text;
+    // Diesel Tank
+    lv_subject_t * const state_victron_dieseltank_level_percent = &system_state.victron.dieseltank.level_percent;
+    lv_subject_t * const state_victron_dieseltank_level_percent_text = &system_state.victron.dieseltank.level_percent_text;
+    lv_subject_t * const state_victron_dieseltank_level_litres = &system_state.victron.dieseltank.level_litres;
+    lv_subject_t * const state_victron_dieseltank_level_litres_text = &system_state.victron.dieseltank.level_litres_text;
+    lv_subject_t * const state_victron_dieseltank_capacity = &system_state.victron.dieseltank.capacity;
+    lv_subject_t * const state_victron_dieseltank_capacity_text = &system_state.victron.dieseltank.capacity_text;
+    lv_subject_t * const state_victron_dieseltank_remaining_hours = &system_state.victron.dieseltank.remaining_hours;
+    lv_subject_t * const state_victron_dieseltank_remaining_hours_text = &system_state.victron.dieseltank.remaining_hours_text;
+    lv_subject_t * const state_victron_dieseltank_remaining_miles = &system_state.victron.dieseltank.remaining_miles;
+    lv_subject_t * const state_victron_dieseltank_remaining_miles_text = &system_state.victron.dieseltank.remaining_miles_text;
 // -----System-----
     lv_subject_t * const state_system_wifi_connected = &system_state.system.wifi_connected;
     lv_subject_t * const state_system_wifi_status_text = &system_state.system.wifi_status_text;
@@ -341,17 +344,6 @@ static system_state_t system_state;
     static char state_nmea_wind_apparent_speed_text_prev_buf[16] = "---";
     static char state_nmea_wind_apparent_direction_text_buf[16] = "---";
     static char state_nmea_wind_apparent_direction_text_prev_buf[16] = "---";
-    // Diesel Tank
-    static char state_nmea_dieseltank_level_percent_text_buf[16] = "---";
-    static char state_nmea_dieseltank_level_percent_text_prev_buf[16] = "---";
-    static char state_nmea_dieseltank_level_litres_text_buf[16] = "---";
-    static char state_nmea_dieseltank_level_litres_text_prev_buf[16] = "---";
-    static char state_nmea_dieseltank_capacity_text_buf[16] = "---";
-    static char state_nmea_dieseltank_capacity_text_prev_buf[16] = "---";
-    static char state_nmea_dieseltank_remaining_hours_text_buf[16] = "---";
-    static char state_nmea_dieseltank_remaining_hours_text_prev_buf[16] = "---";
-    static char state_nmea_dieseltank_remaining_miles_text_buf[16] = "---";
-    static char state_nmea_dieseltank_remaining_miles_text_prev_buf[16] = "---";
     // Boat
     static char state_nmea_boat_heading_text_buf[16] = "---";
     static char state_nmea_boat_heading_text_prev_buf[16] = "---";
@@ -427,6 +419,17 @@ static system_state_t system_state;
     static char state_victron_dc2dc_current_text_prev_buf[16] = "---";
     static char state_victron_dc2dc_power_text_buf[16] = "---";
     static char state_victron_dc2dc_power_text_prev_buf[16] = "---";
+    // Diesel Tank
+    static char state_victron_dieseltank_level_percent_text_buf[16] = "---";
+    static char state_victron_dieseltank_level_percent_text_prev_buf[16] = "---";
+    static char state_victron_dieseltank_level_litres_text_buf[16] = "---";
+    static char state_victron_dieseltank_level_litres_text_prev_buf[16] = "---";
+    static char state_victron_dieseltank_capacity_text_buf[16] = "---";
+    static char state_victron_dieseltank_capacity_text_prev_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_hours_text_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_hours_text_prev_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_miles_text_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_miles_text_prev_buf[16] = "---";
 // -----System-----
 static char state_system_wifi_status_text_buf[30] = "Not Connected";
 static char state_system_wifi_status_text_prev_buf[30] = "Not Connected";
@@ -473,17 +476,6 @@ void state_init(void) {
         lv_subject_init_string(&system_state.nmea.wind.apparent_speed_text, state_nmea_wind_apparent_speed_text_buf, state_nmea_wind_apparent_speed_text_prev_buf, sizeof(state_nmea_wind_apparent_speed_text_buf), "---");
         lv_subject_init_int(&system_state.nmea.wind.apparent_direction, 0);
         lv_subject_init_string(&system_state.nmea.wind.apparent_direction_text, state_nmea_wind_apparent_direction_text_buf, state_nmea_wind_apparent_direction_text_prev_buf, sizeof(state_nmea_wind_apparent_direction_text_buf), "---");
-        // Diesel Tank
-        lv_subject_init_int(&system_state.nmea.dieseltank.level_percent, 0);
-        lv_subject_init_string(&system_state.nmea.dieseltank.level_percent_text, state_nmea_dieseltank_level_percent_text_buf, state_nmea_dieseltank_level_percent_text_prev_buf, sizeof(state_nmea_dieseltank_level_percent_text_buf), "---");
-        lv_subject_init_int(&system_state.nmea.dieseltank.level_litres, 0);
-        lv_subject_init_string(&system_state.nmea.dieseltank.level_litres_text, state_nmea_dieseltank_level_litres_text_buf, state_nmea_dieseltank_level_litres_text_prev_buf, sizeof(state_nmea_dieseltank_level_litres_text_buf), "---");
-        lv_subject_init_int(&system_state.nmea.dieseltank.capacity, 0);
-        lv_subject_init_string(&system_state.nmea.dieseltank.capacity_text, state_nmea_dieseltank_capacity_text_buf, state_nmea_dieseltank_capacity_text_prev_buf, sizeof(state_nmea_dieseltank_capacity_text_buf), "---");
-        lv_subject_init_int(&system_state.nmea.dieseltank.remaining_hours, 0);
-        lv_subject_init_string(&system_state.nmea.dieseltank.remaining_hours_text, state_nmea_dieseltank_remaining_hours_text_buf, state_nmea_dieseltank_remaining_hours_text_prev_buf, sizeof(state_nmea_dieseltank_remaining_hours_text_buf), "---");
-        lv_subject_init_int(&system_state.nmea.dieseltank.remaining_miles, 0);
-        lv_subject_init_string(&system_state.nmea.dieseltank.remaining_miles_text, state_nmea_dieseltank_remaining_miles_text_buf, state_nmea_dieseltank_remaining_miles_text_prev_buf, sizeof(state_nmea_dieseltank_remaining_miles_text_buf), "---");
         // Boat
         lv_subject_init_int(&system_state.nmea.boat.heading, 0);
         lv_subject_init_string(&system_state.nmea.boat.heading_text, state_nmea_boat_heading_text_buf, state_nmea_boat_heading_text_prev_buf, sizeof(state_nmea_boat_heading_text_buf), "---");
@@ -559,6 +551,17 @@ void state_init(void) {
         lv_subject_init_string(&system_state.victron.dc2dc.current_text, state_victron_dc2dc_current_text_buf, state_victron_dc2dc_current_text_prev_buf, sizeof(state_victron_dc2dc_current_text_buf), "---");
         lv_subject_init_int(&system_state.victron.dc2dc.power,       0);
         lv_subject_init_string(&system_state.victron.dc2dc.power_text, state_victron_dc2dc_power_text_buf, state_victron_dc2dc_power_text_prev_buf, sizeof(state_victron_dc2dc_power_text_buf), "---");
+        // Diesel Tank
+        lv_subject_init_int(&system_state.victron.dieseltank.level_percent, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.level_percent_text, state_victron_dieseltank_level_percent_text_buf, state_victron_dieseltank_level_percent_text_prev_buf, sizeof(state_victron_dieseltank_level_percent_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.dieseltank.level_litres, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.level_litres_text, state_victron_dieseltank_level_litres_text_buf, state_victron_dieseltank_level_litres_text_prev_buf, sizeof(state_victron_dieseltank_level_litres_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.dieseltank.capacity, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.capacity_text, state_victron_dieseltank_capacity_text_buf, state_victron_dieseltank_capacity_text_prev_buf, sizeof(state_victron_dieseltank_capacity_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.dieseltank.remaining_hours, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.remaining_hours_text, state_victron_dieseltank_remaining_hours_text_buf, state_victron_dieseltank_remaining_hours_text_prev_buf, sizeof(state_victron_dieseltank_remaining_hours_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.dieseltank.remaining_miles, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.remaining_miles_text, state_victron_dieseltank_remaining_miles_text_buf, state_victron_dieseltank_remaining_miles_text_prev_buf, sizeof(state_victron_dieseltank_remaining_miles_text_buf), "---");
 // -----System-----
     lv_subject_init_int(&system_state.system.wifi_connected,       0);
     lv_subject_init_string(&system_state.system.wifi_status_text, state_system_wifi_status_text_buf, state_system_wifi_status_text_prev_buf, sizeof(state_system_wifi_status_text_buf), "Not Connected");
@@ -671,33 +674,6 @@ void state_set_nmea_wind_apparent_direction(int32_t value) {
     char temp[16];
     snprintf(temp, sizeof(temp), "%d°", (int)value);
     lv_subject_set_string(&system_state.nmea.wind.apparent_direction_text, temp);
-}
-// Diesel Tank
-void state_set_nmea_dieseltank_level_percent(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.dieseltank.level_percent, value);
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%d%%", (int)value);
-    lv_subject_set_string(&system_state.nmea.dieseltank.level_percent_text, temp);
-}
-void state_set_nmea_dieseltank_level_litres(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.dieseltank.level_litres, value);
-    char temp[16];
-    int fuel_time = value / 2;
-    lv_subject_set_int(&system_state.nmea.dieseltank.remaining_hours, fuel_time);
-    int fuel_miles = fuel_time * 5;
-    lv_subject_set_int(&system_state.nmea.dieseltank.remaining_miles, fuel_miles);
-    snprintf(temp, sizeof(temp), "%dl", (int)value);
-    lv_subject_set_string(&system_state.nmea.dieseltank.level_litres_text, temp);
-    snprintf(temp, sizeof(temp), "%dhrs", fuel_time);
-    lv_subject_set_string(&system_state.nmea.dieseltank.remaining_hours_text, temp);
-    snprintf(temp, sizeof(temp), "%dNM", fuel_miles);
-    lv_subject_set_string(&system_state.nmea.dieseltank.remaining_miles_text, temp);
-}
-void state_set_nmea_dieseltank_capacity(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.dieseltank.capacity, value);
-    char temp[16];
-    snprintf(temp, sizeof(temp), "%dl", (int)value);
-    lv_subject_set_string(&system_state.nmea.dieseltank.capacity_text, temp);
 }
 // Boat
 void state_set_nmea_boat_heading(int32_t value) {
@@ -842,10 +818,10 @@ void state_set_victron_mppt1_pv_voltage(float value){
     snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.pv_voltage_text, temp);
 }
-void state_set_victron_mppt1_yield_today(float value){
+void state_set_victron_mppt1_yield_today(int value){
     lv_subject_set_int(&system_state.victron.mppt1.yield_today, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkWh", (int)value);
+    snprintf(temp, sizeof(temp), "%dWh", (int)value);
     lv_subject_set_string(&system_state.victron.mppt1.yield_today_text, temp);
 }
 void state_set_victron_mppt1_power(float value){
@@ -873,10 +849,10 @@ void state_set_victron_mppt2_pv_voltage(float value){
     snprintf(temp, sizeof(temp), "%dV", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.pv_voltage_text, temp);
 }
-void state_set_victron_mppt2_yield_today(float value){
+void state_set_victron_mppt2_yield_today(int value){
     lv_subject_set_int(&system_state.victron.mppt2.yield_today, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkWh", (int)value);
+    snprintf(temp, sizeof(temp), "%dWh", (int)value);
     lv_subject_set_string(&system_state.victron.mppt2.yield_today_text, temp);
 }
 void state_set_victron_mppt2_power(float value){
@@ -903,6 +879,33 @@ void state_set_victron_dc2dc_power(float value){
     char temp[16];
     snprintf(temp, sizeof(temp), "%dW", (int)value);
     lv_subject_set_string(&system_state.victron.dc2dc.power_text, temp);
+}
+// Diesel Tank
+void state_set_victron_dieseltank_level_percent(int32_t value) {
+    lv_subject_set_int(&system_state.victron.dieseltank.level_percent, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
+    lv_subject_set_string(&system_state.victron.dieseltank.level_percent_text, temp);
+}
+void state_set_victron_dieseltank_level_litres(int32_t value) {
+    lv_subject_set_int(&system_state.victron.dieseltank.level_litres, value);
+    char temp[16];
+    int fuel_time = value / 2;
+    lv_subject_set_int(&system_state.victron.dieseltank.remaining_hours, fuel_time);
+    int fuel_miles = fuel_time * 5;
+    lv_subject_set_int(&system_state.victron.dieseltank.remaining_miles, fuel_miles);
+    snprintf(temp, sizeof(temp), "%dl", (int)value);
+    lv_subject_set_string(&system_state.victron.dieseltank.level_litres_text, temp);
+    snprintf(temp, sizeof(temp), "%dhrs", fuel_time);
+    lv_subject_set_string(&system_state.victron.dieseltank.remaining_hours_text, temp);
+    snprintf(temp, sizeof(temp), "%dNM", fuel_miles);
+    lv_subject_set_string(&system_state.victron.dieseltank.remaining_miles_text, temp);
+}
+void state_set_victron_dieseltank_capacity(int32_t value) {
+    lv_subject_set_int(&system_state.victron.dieseltank.capacity, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%dl", (int)value);
+    lv_subject_set_string(&system_state.victron.dieseltank.capacity_text, temp);
 }
 // -----System-----
 void state_set_system_wifi_status_text(const char * value){

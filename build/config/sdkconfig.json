@@ -1016,7 +1016,7 @@
     "LV_FONT_MONTSERRAT_42": false,
     "LV_FONT_MONTSERRAT_44": false,
     "LV_FONT_MONTSERRAT_46": false,
-    "LV_FONT_MONTSERRAT_48": false,
+    "LV_FONT_MONTSERRAT_48": true,
     "LV_FONT_MONTSERRAT_8": false,
     "LV_FONT_SOURCE_HAN_SANS_SC_14_CJK": false,
     "LV_FONT_SOURCE_HAN_SANS_SC_16_CJK": false,

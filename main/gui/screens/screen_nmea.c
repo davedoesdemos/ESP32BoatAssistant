@@ -51,7 +51,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         create_data_box(row0_container, "Depth", state_nmea_boat_depth_text, 0xF7F7F7);
         create_data_box(row0_container, "SOG", state_nmea_boat_speed_over_ground_text, 0xF7F7F7);
         create_data_box(row0_container, "COG", state_nmea_boat_course_over_ground_text, 0xF7F7F7);
-        create_data_box(row0_container, "Fuel", state_nmea_dieseltank_level_litres_text, 0xF7F7F7);
+        create_data_box(row0_container, "Fuel", state_victron_dieseltank_level_litres_text, 0xF7F7F7);
 
         // Row 1
         lv_obj_t * row1_container = lv_obj_create(column1_container);

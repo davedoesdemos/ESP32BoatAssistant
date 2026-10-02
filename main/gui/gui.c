@@ -45,7 +45,7 @@ void screen_init(lv_display_t *disp) {
         lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT);
         lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 3, 1, LV_DIR_LEFT);
         // Set default screen
-        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
+        lv_tileview_set_tile_by_index(tileview, 2, 1, LV_ANIM_OFF);
         
         // Status bar for all screens
         lv_obj_t * status_bar = lv_obj_create(base_screen);

@@ -73,13 +73,13 @@ static void queue_reader_cb(lv_timer_t * timer)
                 break;
             // Diesel Tank
             case TOPIC_NMEA_DIESELTANK_LEVEL_PERCENT:
-                state_set_nmea_dieseltank_level_percent((int)round(packet.value.value_float));
+                //state_set_nmea_dieseltank_level_percent((int)round(packet.value.value_float));
                 break;
             case TOPIC_NMEA_DIESELTANK_LEVEL_LITRES:
-                state_set_nmea_dieseltank_level_litres((int)round(packet.value.value_float));
+                //state_set_nmea_dieseltank_level_litres((int)round(packet.value.value_float));
                 break;
             case TOPIC_NMEA_DIESELTANK_CAPACITY:
-                state_set_nmea_dieseltank_capacity((int)round(packet.value.value_float));
+                //state_set_nmea_dieseltank_capacity((int)round(packet.value.value_float));
             // Boat
             case TOPIC_NMEA_BOAT_HEADING:
                 state_set_nmea_boat_heading((int)round(packet.value.value_float));
@@ -154,7 +154,7 @@ static void queue_reader_cb(lv_timer_t * timer)
                 state_set_victron_mppt1_pv_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT1_YIELD_TODAY:
-                state_set_victron_mppt1_yield_today(packet.value.value_float);
+                state_set_victron_mppt1_yield_today((int)round(packet.value.value_float*1000));
                 break;
             case TOPIC_VICTRON_MPPT1_POWER:
                 state_set_victron_mppt1_power(packet.value.value_float);
@@ -170,7 +170,7 @@ static void queue_reader_cb(lv_timer_t * timer)
                 state_set_victron_mppt2_pv_voltage(packet.value.value_float);
                 break;
             case TOPIC_VICTRON_MPPT2_YIELD_TODAY:
-                state_set_victron_mppt2_yield_today(packet.value.value_float);
+                state_set_victron_mppt2_yield_today((int)round(packet.value.value_float*1000));
                 break;
             case TOPIC_VICTRON_MPPT2_POWER:
                 state_set_victron_mppt2_power(packet.value.value_float);
@@ -184,6 +184,16 @@ static void queue_reader_cb(lv_timer_t * timer)
                 break;
             case TOPIC_VICTRON_DC2DC_POWER:
                 state_set_victron_dc2dc_power(packet.value.value_float);
+                break;
+            // Diesel Tank
+            case TOPIC_VICTRON_DIESELTANK_LEVEL_PERCENT:
+                state_set_victron_dieseltank_level_percent((int)round(packet.value.value_float));
+                break;
+            case TOPIC_VICTRON_DIESELTANK_LEVEL_LITRES:
+                state_set_victron_dieseltank_level_litres((int)round(packet.value.value_float*1000));
+                break;
+            case TOPIC_VICTRON_DIESELTANK_CAPACITY:
+                state_set_victron_dieseltank_capacity((int)round(packet.value.value_float));
                 break;
 // -----System-----
             case TOPIC_SYSTEM_WIFI_CONNECTED:

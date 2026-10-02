@@ -198,6 +198,25 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
+                        // Diesel Tank
+                        case TOPIC_DIESELTANK_LEVEL_PERCENT: {
+                            packet.id = TOPIC_VICTRON_DIESELTANK_LEVEL_PERCENT;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
+                        case TOPIC_DIESELTANK_LEVEL_LITRES: {
+                            packet.id = TOPIC_VICTRON_DIESELTANK_LEVEL_LITRES;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
+                        case TOPIC_DIESELTANK_CAPACITY: {
+                            packet.id = TOPIC_VICTRON_DIESELTANK_CAPACITY;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
                         default:
                             break;
                     }

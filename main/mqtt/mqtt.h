@@ -35,8 +35,12 @@ typedef enum {
     TOPIC_DC2DC_VOLTAGE,
     TOPIC_DC2DC_CURRENT,
     TOPIC_DC2DC_POWER,
+    // Diesel Tank
+    TOPIC_DIESELTANK_LEVEL_PERCENT,
+    TOPIC_DIESELTANK_LEVEL_LITRES,
+    TOPIC_DIESELTANK_CAPACITY,
     //add topics here, keep the last one
-    TOPIC_COUNT             // Index 3 (Total count)
+    TOPIC_COUNT             // (Total count)
 } victron_topic_id_t;
 
 // Hardcode the complete strings directly into your registry array
@@ -66,7 +70,11 @@ static const char *topic_registry[TOPIC_COUNT] = {
     // OrionXS
         [TOPIC_DC2DC_VOLTAGE] = "N/" VRM_ID "/alternator/279/Dc/0/Voltage",
         [TOPIC_DC2DC_CURRENT] = "N/" VRM_ID "/alternator/279/Dc/0/Current",
-        [TOPIC_DC2DC_POWER] = "N/" VRM_ID "/alternator/279/Dc/0/Power"
+        [TOPIC_DC2DC_POWER] = "N/" VRM_ID "/alternator/279/Dc/0/Power",
+    // Diesel Tank
+        [TOPIC_DIESELTANK_LEVEL_PERCENT] = "N/" VRM_ID "/tank/20/Level",
+        [TOPIC_DIESELTANK_LEVEL_LITRES] = "N/" VRM_ID "/tank/20/Remaining",
+        [TOPIC_DIESELTANK_CAPACITY] = "N/" VRM_ID "/tank/20/Capacity"
 };
 
 void mqtt_app_start(void);

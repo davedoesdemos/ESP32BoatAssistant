@@ -4,6 +4,7 @@
 #include <lvgl.h>
 #include <stdbool.h>
 #include "stdio.h"
+#include <esp_log.h>
 
 // Subject pointers for binding
 // -----Ruuvi-----
@@ -47,17 +48,6 @@
     extern lv_subject_t * const state_nmea_wind_apparent_speed_text;
     extern lv_subject_t * const state_nmea_wind_apparent_direction;
     extern lv_subject_t * const state_nmea_wind_apparent_direction_text;
-    // Diesel Tank
-    extern lv_subject_t * const state_nmea_dieseltank_level_percent;
-    extern lv_subject_t * const state_nmea_dieseltank_level_percent_text;
-    extern lv_subject_t * const state_nmea_dieseltank_level_litres;
-    extern lv_subject_t * const state_nmea_dieseltank_level_litres_text;
-    extern lv_subject_t * const state_nmea_dieseltank_capacity;
-    extern lv_subject_t * const state_nmea_dieseltank_capacity_text;
-    extern lv_subject_t * const state_nmea_dieseltank_remaining_hours;
-    extern lv_subject_t * const state_nmea_dieseltank_remaining_hours_text;
-    extern lv_subject_t * const state_nmea_dieseltank_remaining_miles;
-    extern lv_subject_t * const state_nmea_dieseltank_remaining_miles_text;
     // Boat
     extern lv_subject_t * const state_nmea_boat_heading;
     extern lv_subject_t * const state_nmea_boat_heading_text;
@@ -133,7 +123,17 @@
     extern lv_subject_t * const state_victron_dc2dc_current_text;
     extern lv_subject_t * const state_victron_dc2dc_power;
     extern lv_subject_t * const state_victron_dc2dc_power_text;
-
+    // Diesel Tank
+    extern lv_subject_t * const state_victron_dieseltank_level_percent;
+    extern lv_subject_t * const state_victron_dieseltank_level_percent_text;
+    extern lv_subject_t * const state_victron_dieseltank_level_litres;
+    extern lv_subject_t * const state_victron_dieseltank_level_litres_text;
+    extern lv_subject_t * const state_victron_dieseltank_capacity;
+    extern lv_subject_t * const state_victron_dieseltank_capacity_text;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_hours;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_hours_text;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_miles;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_miles_text;
 // -----System-----
     extern lv_subject_t * const state_system_wifi_connected;
     extern lv_subject_t * const state_system_wifi_status_text;
@@ -163,10 +163,6 @@ void state_init(void);
     void state_set_nmea_wind_true_direction(int32_t value);
     void state_set_nmea_wind_apparent_speed(int32_t value);
     void state_set_nmea_wind_apparent_direction(int32_t value);
-    // Diesel Tank
-    void state_set_nmea_dieseltank_level_percent(int32_t value);
-    void state_set_nmea_dieseltank_level_litres(int32_t value);
-    void state_set_nmea_dieseltank_capacity(int32_t value);
     // Boat
     void state_set_nmea_boat_heading(int32_t value);
     void state_set_nmea_boat_course_over_ground(int32_t value);
@@ -196,18 +192,22 @@ void state_init(void);
     void state_set_victron_mppt1_dc_voltage(float value);
     void state_set_victron_mppt1_dc_current(float value);
     void state_set_victron_mppt1_pv_voltage(float value);
-    void state_set_victron_mppt1_yield_today(float value);
+    void state_set_victron_mppt1_yield_today(int value);
     void state_set_victron_mppt1_power(float value);
     // MPPT 1
     void state_set_victron_mppt2_dc_voltage(float value);
     void state_set_victron_mppt2_dc_current(float value);
     void state_set_victron_mppt2_pv_voltage(float value);
-    void state_set_victron_mppt2_yield_today(float value);
+    void state_set_victron_mppt2_yield_today(int value);
     void state_set_victron_mppt2_power(float value);
     // DC2DC
     void state_set_victron_dc2dc_voltage(float value);
     void state_set_victron_dc2dc_current(float value);
     void state_set_victron_dc2dc_power(float value);
+    // Diesel Tank
+    void state_set_victron_dieseltank_level_percent(int32_t value);
+    void state_set_victron_dieseltank_level_litres(int32_t value);
+    void state_set_victron_dieseltank_capacity(int32_t value);
 // -----System-----
 void state_set_system_wifi_status_text(const char * status);
 
