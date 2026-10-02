@@ -40,22 +40,50 @@
 // -----NMEA2k-----
     // Wind
     extern lv_subject_t * const state_nmea_wind_true_speed;
+    extern lv_subject_t * const state_nmea_wind_true_speed_text;
     extern lv_subject_t * const state_nmea_wind_true_direction;
+    extern lv_subject_t * const state_nmea_wind_true_direction_text;
     extern lv_subject_t * const state_nmea_wind_apparent_speed;
+    extern lv_subject_t * const state_nmea_wind_apparent_speed_text;
     extern lv_subject_t * const state_nmea_wind_apparent_direction;
+    extern lv_subject_t * const state_nmea_wind_apparent_direction_text;
     // Diesel Tank
     extern lv_subject_t * const state_nmea_dieseltank_level_percent;
+    extern lv_subject_t * const state_nmea_dieseltank_level_percent_text;
     extern lv_subject_t * const state_nmea_dieseltank_level_litres;
+    extern lv_subject_t * const state_nmea_dieseltank_level_litres_text;
     extern lv_subject_t * const state_nmea_dieseltank_capacity;
+    extern lv_subject_t * const state_nmea_dieseltank_capacity_text;
+    extern lv_subject_t * const state_nmea_dieseltank_remaining_hours;
+    extern lv_subject_t * const state_nmea_dieseltank_remaining_hours_text;
+    extern lv_subject_t * const state_nmea_dieseltank_remaining_miles;
+    extern lv_subject_t * const state_nmea_dieseltank_remaining_miles_text;
     // Boat
     extern lv_subject_t * const state_nmea_boat_heading;
+    extern lv_subject_t * const state_nmea_boat_heading_text;
     extern lv_subject_t * const state_nmea_boat_course_over_ground;
+    extern lv_subject_t * const state_nmea_boat_course_over_ground_text;
     extern lv_subject_t * const state_nmea_boat_speed_over_ground;
+    extern lv_subject_t * const state_nmea_boat_speed_over_ground_text;
     extern lv_subject_t * const state_nmea_boat_speed_through_water;
+    extern lv_subject_t * const state_nmea_boat_speed_through_water_text;
     extern lv_subject_t * const state_nmea_boat_depth;
+    extern lv_subject_t * const state_nmea_boat_depth_text;
     extern lv_subject_t * const state_nmea_boat_depth_offset;
+    extern lv_subject_t * const state_nmea_boat_depth_offset_text;
     extern lv_subject_t * const state_nmea_boat_latitude;
+    extern lv_subject_t * const state_nmea_boat_latitude_text;
     extern lv_subject_t * const state_nmea_boat_longitude;
+    extern lv_subject_t * const state_nmea_boat_longitude_text;
+    // Environment
+    extern lv_subject_t * const state_nmea_environment_temperature_inside;
+    extern lv_subject_t * const state_nmea_environment_temperature_inside_text;
+    extern lv_subject_t * const state_nmea_environment_humidity_inside;
+    extern lv_subject_t * const state_nmea_environment_humidity_inside_text;
+    extern lv_subject_t * const state_nmea_environment_temperature_outside;
+    extern lv_subject_t * const state_nmea_environment_temperature_outside_text;
+    extern lv_subject_t * const state_nmea_environment_humidity_outside;
+    extern lv_subject_t * const state_nmea_environment_humidity_outside_text;
 // -----Victron-----
     // House Battery
     extern lv_subject_t * const state_victron_house_battery_voltage;
@@ -143,6 +171,30 @@ void state_init(void);
     void state_set_ruuvi_air_1_co2(int32_t value); //Carbon Dioxide (CO₂)
     void state_set_ruuvi_air_1_voc(int32_t value); //VOC Volatile Organic Compounds
     void state_set_ruuvi_air_1_nox(int32_t value); //NOx Nitrogen Oxides
+// -----NMEA2K-----
+    // Wind
+    void state_set_nmea_wind_true_speed(int32_t value);
+    void state_set_nmea_wind_true_direction(int32_t value);
+    void state_set_nmea_wind_apparent_speed(int32_t value);
+    void state_set_nmea_wind_apparent_direction(int32_t value);
+    // Diesel Tank
+    void state_set_nmea_dieseltank_level_percent(int32_t value);
+    void state_set_nmea_dieseltank_level_litres(int32_t value);
+    void state_set_nmea_dieseltank_capacity(int32_t value);
+    // Boat
+    void state_set_nmea_boat_heading(int32_t value);
+    void state_set_nmea_boat_course_over_ground(int32_t value);
+    void state_set_nmea_boat_speed_over_ground(int32_t value);
+    void state_set_nmea_boat_speed_through_water(int32_t value);
+    void state_set_nmea_boat_depth(int32_t value);
+    void state_set_nmea_boat_depth_offset(int32_t value);
+    void state_set_nmea_boat_latitude(int32_t value);
+    void state_set_nmea_boat_longitude(int32_t value);
+    // Environment
+    void state_set_nmea_environment_temperature_inside(int32_t value);
+    void state_set_nmea_environment_humidity_inside(int32_t value);
+    void state_set_nmea_environment_temperature_outside(int32_t value);
+    void state_set_nmea_environment_humidity_outside(int32_t value);
 // -----Victron-----
     // House Battery
     void state_set_victron_house_battery_voltage(float value);

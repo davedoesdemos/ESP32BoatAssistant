@@ -75,6 +75,9 @@ static const n2k_pgn_meta_t pgn_directory[] = {
     { 130316, "Temperature, Extended Range", false }
 };
 
+// Handle for our inter-task queue
+QueueHandle_t msg_queue_nmea = NULL;
+
 #define PGN_DIR_COUNT (sizeof(pgn_directory) / sizeof(pgn_directory[0]))
 
 // Helper function to scan the directory for a matching label
@@ -88,6 +91,12 @@ const char* get_pgn_label(uint32_t pgn) {
 }
 
 void init_nmea2000_bus(void) {
+    // init the message queue
+    msg_queue_nmea = xQueueCreate(5, sizeof(nmea_msg_t));
+    if (msg_queue_nmea == NULL) {
+        ESP_LOGE(TAG, "Error creating the queue");
+        return;
+    }
     // 1. Establish General IO routing configs
     twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(
         CAN_TX_IO_NUM, 
@@ -124,7 +133,7 @@ uint8_t get_source_from_id(uint32_t id) {
 
 void nmea_process_to_queue(){
     twai_message_t message;
-    telemetry_packet_t packet; //packet for the queue
+    nmea_msg_t msg;
 
     while (1) {
         // Wait indefinitely or until an incoming frame lands in the buffer queue
@@ -168,17 +177,17 @@ void nmea_process_to_queue(){
                             // 3. Dispatch to your UI update queue
                             if (raw_level != 0xFFFF) {
                                 fuel_level_liters = (fuel_level_percent / 100.0f) * tank_capacity_liters;
-                                packet.id = TOPIC_NMEA_DIESELTANK_CAPACITY;
-                                packet.value.value_float = tank_capacity_liters;
-                                xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                msg.type = UI_UPDATE_FUELCAPACITY;
+                                msg.data.float_val = tank_capacity_liters;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
 
-                                packet.id = TOPIC_NMEA_DIESELTANK_LEVEL_PERCENT;
-                                packet.value.value_float = fuel_level_percent;
-                                xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                msg.type = UI_UPDATE_FUELPERCENT;
+                                msg.data.float_val = fuel_level_percent;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
 
-                                packet.id = TOPIC_NMEA_DIESELTANK_LEVEL_LITRES;
-                                packet.value.value_float = fuel_level_liters;
-                                xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                msg.type = UI_UPDATE_FUELLEVEL;
+                                msg.data.float_val = fuel_level_liters;
+                                xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
 
                                 //printf("[Source: %d] Fuel Tank %d: %.1f%% (Cap: %.1fL)\n", 
                                 //       src, instance, fuel_level_percent, tank_capacity_liters);
@@ -197,9 +206,9 @@ void nmea_process_to_queue(){
                             float cog_rad = raw_cog * 0.0001f;
                             float cog_deg = cog_rad * (180.0f / 3.14159265f); // Convert to degrees if needed
 
-                            packet.id = TOPIC_NMEA_BOAT_COURSE_OVER_GROUND;
-                            packet.value.value_float = cog_deg; 
-                            xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                            msg.type = UI_UPDATE_COG;
+                            msg.data.float_val = cog_deg; 
+                            xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                         }
 
                         // Process Speed Over Ground (if available)
@@ -207,9 +216,9 @@ void nmea_process_to_queue(){
                             float sog_ms = raw_sog * 0.01f;
                             float sog_knots = sog_ms * 1.94384f; // Convert m/s to knots for marine display
 
-                            packet.id = TOPIC_NMEA_BOAT_SPEED_OVER_GROUND;
-                            packet.value.value_float = sog_knots; 
-                            xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                            msg.type = UI_UPDATE_SOG;
+                            msg.data.float_val = sog_knots; 
+                            xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
 
                             //printf("[Source: %d] SOG: %.1f kts\n", src, sog_knots);
                         }
@@ -242,23 +251,23 @@ void nmea_process_to_queue(){
                         if (raw_speed != 0xFFFF || raw_dir != 0xFFFF) {
                             switch (reference) {
                                 case 0: // Apparent Wind
-                                    packet.id = TOPIC_NMEA_WIND_APPARENT_SPEED;
-                                    packet.value.value_float = wind_speed_knots;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
-                                    packet.id = TOPIC_NMEA_WIND_APPARENT_DIRECTION;
-                                    packet.value.value_float = wind_dir_deg;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_AWS;
+                                    msg.data.float_val = wind_speed_knots;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_AWD;
+                                    msg.data.float_val = wind_dir_deg;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
 
                                 case  1: // True Wind (referenced to boat heading/bow)
                                 case 2: // True Wind (referenced to true North / ground)
                                 case 3: // True Wind (referenced to magnetic North)
-                                    packet.id = TOPIC_NMEA_WIND_TRUE_SPEED;
-                                    packet.value.value_float = wind_speed_knots;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
-                                    packet.id = TOPIC_NMEA_WIND_TRUE_DIRECTION;
-                                    packet.value.value_float = wind_dir_deg;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_TWS;
+                                    msg.data.float_val = wind_speed_knots;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_TWD;
+                                    msg.data.float_val = wind_dir_deg;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
                                 default:
                                     // Unknown or reserved reference type
@@ -279,9 +288,9 @@ void nmea_process_to_queue(){
                         } else {
                             float actual_depth_m = (raw_depth * 0.01) + DEPTH_OFFSET; 
                             //fill struct and place on queue
-                            packet.id = TOPIC_NMEA_BOAT_DEPTH;
-                            packet.value.value_float = actual_depth_m;
-                            xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                            msg.type = UI_UPDATE_DEPTH;
+                            msg.data.float_val = actual_depth_m;
+                            xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                         }
                         break;
                     }
@@ -305,15 +314,15 @@ void nmea_process_to_queue(){
 
                             switch(source) {
                                 case 1: {
-                                    packet.id = TOPIC_NMEA_ENVIRONMENT_TEMPERATURE_OUTSIDE;
-                                    packet.value.value_float = temp_celsius;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_TEMP_OUTSIDE;
+                                    msg.data.float_val = temp_celsius;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
                                 }
                                 case 2: {
-                                    packet.id = TOPIC_NMEA_ENVIRONMENT_TEMPERATURE_INSIDE;
-                                    packet.value.value_float = temp_celsius;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_TEMP_INSIDE;
+                                    msg.data.float_val = temp_celsius;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
                                 }
                                 default:
@@ -334,21 +343,21 @@ void nmea_process_to_queue(){
 
                             switch(source) {
                                 case 1: {
-                                    packet.id = TOPIC_NMEA_ENVIRONMENT_HUMIDITY_OUTSIDE;
-                                    packet.value.value_float = humidity_percent;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_HUM_OUTSIDE;
+                                    msg.data.float_val = humidity_percent;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
                                 }
                                 case 0: {
-                                    packet.id = TOPIC_NMEA_ENVIRONMENT_HUMIDITY_INSIDE;
-                                    packet.value.value_float = humidity_percent;
-                                    xQueueSend(msg_queue, &packet, portMAX_DELAY);
+                                    msg.type = UI_UPDATE_HUM_INSIDE;
+                                    msg.data.float_val = humidity_percent;
+                                    xQueueSend(msg_queue_nmea, &msg, portMAX_DELAY);
                                     break;
                                 }
                                 default:
                                     break;
                             }
-                            //packet.id = UI_UPDATE_HUMIDITY;
+                            //msg.type = UI_UPDATE_HUMIDITY;
                             //msg.data.environment.instance = instance;
                             //msg.data.environment.source = source;
                             //msg.data.environment.value = humidity_percent;

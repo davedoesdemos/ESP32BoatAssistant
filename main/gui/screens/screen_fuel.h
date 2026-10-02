@@ -3,6 +3,7 @@
 
 #include "lvgl.h"
 #include "screen_nmea.h"
+#include "state.h"
 
 void update_fuel_level(int new_value);
 void update_fuel_capacity(int new_value);

@@ -11,7 +11,6 @@
 #include "screen_fuel.h"
 #include "state.h"
 
-void update_nmea();
 void screen_nmea_layout(lv_obj_t *screen_nmea);
 
 #endif //SCREEN_NMEA_H
