@@ -2,6 +2,7 @@
 #define QUEUE_READER_H
 
 #include <stdio.h>
+#include <math.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "lvgl.h"

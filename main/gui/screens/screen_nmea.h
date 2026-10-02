@@ -2,7 +2,6 @@
 #define SCREEN_NMEA_H
 
 #include <stdio.h>
-#include <math.h>
 //#include "freertos/queue.h"
 #include "lvgl.h"
 #include "nmea2k.h"

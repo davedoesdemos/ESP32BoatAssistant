@@ -68,7 +68,7 @@ void screen_fuel_layout(lv_obj_t *screen_fuel) {
         lv_obj_set_height(column1_container, lv_pct(100));
 
             create_data_box(column1_container, "Level", state_nmea_dieseltank_level_litres_text, 0xF7F7F7);
-            create_data_box(column1_container, "Percent", state_nmea_dieseltank_level_percent, 0xF7F7F7);
+            create_data_box(column1_container, "Percent", state_nmea_dieseltank_level_percent_text, 0xF7F7F7);
 
         // column 2
         lv_obj_t * column2_container = lv_obj_create(row1_container);

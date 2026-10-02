@@ -612,37 +612,37 @@ void state_set_ruuvi_air_1_temperature(int32_t value){
 void state_set_ruuvi_air_1_humidity(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.humidity, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.humidity_text, temp);
 }
 void state_set_ruuvi_air_1_pressure(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.pressure, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dhPa", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.pressure_text, temp);
 }
 void state_set_ruuvi_air_1_pm2_5(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.pm2_5, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.pm2_5_text, temp);
 }
 void state_set_ruuvi_air_1_co2(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.co2, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.co2_text, temp);
 }
 void state_set_ruuvi_air_1_voc(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.voc, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.voc_text, temp);
 }
 void state_set_ruuvi_air_1_nox(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.nox, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.nox_text, temp);
 }
 // -----NMEA2K-----
@@ -650,38 +650,38 @@ void state_set_ruuvi_air_1_nox(int32_t value){
 void state_set_nmea_wind_true_speed(int32_t value) {
     lv_subject_set_int(&system_state.nmea.wind.true_speed, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkt", (int)value);
     lv_subject_set_string(&system_state.nmea.wind.true_speed_text, temp);
 }
 void state_set_nmea_wind_true_direction(int32_t value) {
     lv_subject_set_int(&system_state.nmea.wind.true_direction, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)value);
     lv_subject_set_string(&system_state.nmea.wind.true_direction_text, temp);
 }
 void state_set_nmea_wind_apparent_speed(int32_t value) {
     lv_subject_set_int(&system_state.nmea.wind.apparent_speed, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkt", (int)value);
     lv_subject_set_string(&system_state.nmea.wind.apparent_speed_text, temp);
 }
 void state_set_nmea_wind_apparent_direction(int32_t value) {
     lv_subject_set_int(&system_state.nmea.wind.apparent_direction, (int)value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)value);
     lv_subject_set_string(&system_state.nmea.wind.apparent_direction_text, temp);
 }
 // Diesel Tank
 void state_set_nmea_dieseltank_level_percent(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.dieseltank.level_percent, (int)value);
+    lv_subject_set_int(&system_state.nmea.dieseltank.level_percent, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.nmea.dieseltank.level_percent_text, temp);
 }
 void state_set_nmea_dieseltank_level_litres(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.dieseltank.level_litres, (int)value);
+    lv_subject_set_int(&system_state.nmea.dieseltank.level_litres, value);
     char temp[16];
-    int fuel_time = (int)value / 2;
+    int fuel_time = value / 2;
     lv_subject_set_int(&system_state.nmea.dieseltank.remaining_hours, fuel_time);
     int fuel_miles = fuel_time * 5;
     lv_subject_set_int(&system_state.nmea.dieseltank.remaining_miles, fuel_miles);
@@ -695,56 +695,56 @@ void state_set_nmea_dieseltank_level_litres(int32_t value) {
 void state_set_nmea_dieseltank_capacity(int32_t value) {
     lv_subject_set_int(&system_state.nmea.dieseltank.capacity, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dl", (int)value);
     lv_subject_set_string(&system_state.nmea.dieseltank.capacity_text, temp);
 }
 // Boat
 void state_set_nmea_boat_heading(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.heading, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.heading_text, temp);
 }
 void state_set_nmea_boat_course_over_ground(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.course_over_ground, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.course_over_ground_text, temp);
 }
 void state_set_nmea_boat_speed_over_ground(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.speed_over_ground, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkt", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.speed_over_ground_text, temp);
 }
 void state_set_nmea_boat_speed_through_water(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.speed_through_water, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dkt", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.speed_through_water_text, temp);
 }
 void state_set_nmea_boat_depth(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.depth, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dm", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.depth_text, temp);
 }
 void state_set_nmea_boat_depth_offset(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.depth_offset, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%dm", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.depth_offset_text, temp);
 }
 void state_set_nmea_boat_latitude(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.latitude, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.latitude_text, temp);
 }
 void state_set_nmea_boat_longitude(int32_t value) {
     lv_subject_set_int(&system_state.nmea.boat.longitude, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.longitude_text, temp);
 }
 // Environment
@@ -757,7 +757,7 @@ void state_set_nmea_environment_temperature_inside(int32_t value) {
 void state_set_nmea_environment_humidity_inside(int32_t value) {
     lv_subject_set_int(&system_state.nmea.environment.humidity_inside, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.nmea.environment.humidity_inside_text, temp);
 }
 void state_set_nmea_environment_temperature_outside(int32_t value) {
@@ -769,7 +769,7 @@ void state_set_nmea_environment_temperature_outside(int32_t value) {
 void state_set_nmea_environment_humidity_outside(int32_t value) {
     lv_subject_set_int(&system_state.nmea.environment.humidity_outside, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°C", (int)value);
+    snprintf(temp, sizeof(temp), "%d%%", (int)value);
     lv_subject_set_string(&system_state.nmea.environment.humidity_outside_text, temp);
 }
 // -----Victron-----
