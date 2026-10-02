@@ -14,7 +14,7 @@
 #define CH422G_I2C_ADDR2             0x38    // Second Expander Address
 #define CH422G_REG_IN               0x26    // Target Input Byte Register
 
-//CH422 Expander pin masks for Waveshare 4.3b
+// CH422 Expander pin masks for Waveshare 4.3b
 #define TOUCH_RESET_PIN_MASK (1 << 1)
 #define BACKLIGHT_PIN_MASK (1 << 2)
 #define DISPLAY_RESET_PIN_MASK (1<<3)

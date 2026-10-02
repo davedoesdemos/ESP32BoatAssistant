@@ -28,11 +28,7 @@ static void rescan_btn_event_cb(lv_event_t * e) {
     if(code == LV_EVENT_CLICKED) {
         char *scanned_ssids = wifi_scan();
         lv_dropdown_set_options(ssid_dropdown, scanned_ssids);
-        //printf("Scanned SSIDs:\n%s", scanned_ssids);
         free(scanned_ssids); // Crucial to prevent ESP32 memory leaks
-        //char *scanned_ssids = wifi_scan();
-        // TRIGGER BACKGROUND HARDWARE WI-FI MANAGER HERE
-        // Example: WiFi.begin(ssid, password);
     }
 }
 

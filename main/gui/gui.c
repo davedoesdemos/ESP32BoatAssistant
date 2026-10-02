@@ -1,7 +1,7 @@
 #include "gui.h"
 
-//logging
-static const char *TAG = "boat assistant gui";
+// Logging
+static const char *TAG = "Boat Assistant: GUI";
 
 // Timer callback function checked periodically by LVGL
 void backlight_check_timer_cb(lv_timer_t * timer) {
@@ -25,30 +25,29 @@ void backlight_check_timer_cb(lv_timer_t * timer) {
 }
 
 void screen_init(lv_display_t *disp) {
-        //Start the adapter task
+        // Start the adapter task
     ESP_ERROR_CHECK(esp_lv_adapter_start());
-     //Draw with LVGL (guarded by adapter lock for thread safety)
+     // Draw with LVGL (guarded by adapter lock for thread safety)
     if (esp_lv_adapter_lock(-1) == ESP_OK) {
-        //get the base screen
+        // Get the base screen
         lv_obj_t *base_screen = lv_display_get_screen_active(disp);
 
-        //create tileview
+        // Create tileview to house "screens"
         lv_obj_t *tileview = lv_tileview_create(base_screen);
         lv_obj_set_size(tileview, LV_PCT(100), LV_PCT(100));
         lv_obj_align(tileview, LV_ALIGN_CENTER, 0, 0);
 
-        //create tiles to act as screens
+        // Create tiles to act as screens
         lv_obj_t *screen_settings = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT| LV_DIR_BOTTOM);
         lv_obj_t *screen_wifi = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
         lv_obj_t *screen_nmea = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
-        lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
+        lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT);
         lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 3, 1, LV_DIR_LEFT);
-        //set default screen
-        lv_tileview_set_tile_by_index(tileview, 2, 1, LV_ANIM_OFF);
+        // Set default screen
+        lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
         
-        //ALL SCREENS
-        //Create a status bar
+        // Status bar for all screens
         lv_obj_t * status_bar = lv_obj_create(base_screen);
         lv_obj_set_size(status_bar, LV_HOR_RES, 25);
         lv_obj_align(status_bar, LV_ALIGN_TOP_MID, 0, 0);
@@ -59,24 +58,24 @@ void screen_init(lv_display_t *disp) {
         lv_obj_set_layout(status_bar, LV_LAYOUT_FLEX);
         lv_obj_set_flex_flow(status_bar, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(status_bar, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-        //Status label
+        // Wifi Status label
         lv_obj_t * lbl_netstatus = lv_label_create(status_bar);
         lv_label_bind_text(lbl_netstatus, state_system_wifi_status_text, NULL);
-        //Clock label
+        // Clock label
         lv_obj_t * lbl_time = lv_label_create(status_bar);
         lv_label_set_text(lbl_time, "12:00");
 
-        //Lay out screens
-        //First row
+        // Lay out all screens
+        // First row
         screen_settings_layout(screen_settings);
         screen_wifi_layout(screen_wifi);
-        //Second row
+        // Second row
         screen_nmea_layout(screen_nmea);
         screen_environment_layout(screen_environment);
         screen_victron_layout(screen_victron);
         screen_fuel_layout(screen_fuel);
 
-        //finish and show everything
+        // Finish and show everything
         esp_lv_adapter_unlock();
     }
 }

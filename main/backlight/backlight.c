@@ -1,6 +1,7 @@
 #include "backlight.h"
-//logging
-static const char *TAG = "boat assistant backlight";
+
+// Logging
+static const char *TAG = "Boat Assistant: Backlight";
 
 uint32_t BACKLIGHT_TIMEOUT_MS = 10000; //default backlight timeout 10 seconds
 

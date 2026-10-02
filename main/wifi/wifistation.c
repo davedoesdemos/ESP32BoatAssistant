@@ -1,7 +1,7 @@
 #include "wifistation.h"
 
-//logging
-static const char *TAG = "wifi station";
+// Logging
+static const char *TAG = "Boat Assistant: WiFi Station";
 
 #define EXAMPLE_ESP_MAXIMUM_RETRY  5
 #define ESP_WIFI_SAE_MODE WPA3_SAE_PWE_BOTH
@@ -9,14 +9,12 @@ static const char *TAG = "wifi station";
 
 #define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA2_PSK
 
-/* FreeRTOS event group to signal when we are connected*/
+// FreeRTOS event group to signal when we are connected
 static EventGroupHandle_t s_wifi_event_group;
 
-/* The event group allows multiple bits for each event, but we only care about two events:
- * - we are connected to the AP with an IP
- * - we failed to connect after the maximum amount of retries */
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
+// The event group allows multiple bits for each event, we only care about two events:
+#define WIFI_CONNECTED_BIT BIT0 // Connected to the AP with an IP
+#define WIFI_FAIL_BIT      BIT1 // Failed to connect after the maximum amount of retries
 
 static esp_netif_t *sta_netif = NULL; // Keep track of the network interface
 static int s_retry_num = 0;
@@ -40,14 +38,12 @@ static void update_netstatus_from_interface(void) {
         char status_msg[40];
         snprintf(status_msg, sizeof(status_msg), "Connected: %s", ip_str);
         
-        // Lock LVGL if you are running an asynchronous LVGL timer task
-        lv_lock(); 
+        // Ideally replace with a message on the queue
         state_set_system_wifi_status_text(status_msg);
-        lv_unlock();
     }
 }
 
-//initialise wifi
+// Initialise wifi
 void wifi_global_init() {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -183,15 +179,3 @@ void wifi_init_sta(const char * ssid, const char * password){
     vEventGroupDelete(s_wifi_event_group);
     s_wifi_event_group = NULL; 
 }
-
-//void app_main(void)
-//{
-//    if (CONFIG_LOG_MAXIMUM_LEVEL > CONFIG_LOG_DEFAULT_LEVEL) {
-//        /* If you only want to open more logs in the wifi module, you need to make the max level greater than the default level,
-//        * and call esp_log_level_set() before esp_wifi_init() to improve the log level of the wifi module. */
-//        esp_log_level_set("wifi", CONFIG_LOG_MAXIMUM_LEVEL);
-//    }
-
-//    ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
-//    wifi_init_sta();
-//}

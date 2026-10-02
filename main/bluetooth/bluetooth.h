@@ -25,13 +25,13 @@ typedef struct {
     float temperature;
     float humidity;
     float pressure;
-    float pm1_0; //Particulate Matter (PM) 1µm
-    float pm2_5; //Particulate Matter (PM) 2.5µm
-    float pm4_0; //Particulate Matter (PM) 4µm
-    float pm10_0; //Particulate Matter (PM) 10µm
-    uint16_t co2; //Carbon Dioxide (CO₂)
-    uint16_t voc; //VOC Volatile Organic Compounds
-    uint16_t nox; //NOx Nitrogen Oxides
+    float pm1_0;
+    float pm2_5;
+    float pm4_0;
+    float pm10_0;
+    uint16_t co2;
+    uint16_t voc;
+    uint16_t nox;
     float luminosity;
     uint32_t seq_num;
 } ruuvi_e1_t;

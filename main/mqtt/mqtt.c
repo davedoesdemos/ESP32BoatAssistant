@@ -1,9 +1,9 @@
 #include "mqtt_client.h"
 #include "esp_log.h"
-#include "cJSON.h" // Required to parse Victron's payload wrapper
+#include "cJSON.h"
 #include "mqtt.h"
 
-static const char *TAG = "VICTRON_MQTT";
+static const char *TAG = "Boat Assistant: MQTT Victron";
 static esp_mqtt_client_handle_t client;
 
 // Define our target topics
@@ -31,7 +31,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "Connected to Cerbo GX Broker!");
             
-            // 1. Loop through your registry and subscribe to every topic automatically
+            // Loop through the registry and subscribe to every topic automatically
             for (int i = 0; i < TOPIC_COUNT; i++) {
                 int msg_id = esp_mqtt_client_subscribe(client, topic_registry[i], 0);
                 if (msg_id != -1) {
@@ -41,12 +41,12 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                 }
             }
             
-            // 2. Start the keepalive task immediately upon connection
+            // Start the keepalive task immediately upon connection
             xTaskCreate(victron_keepalive_task, "victron_ka", 2048, NULL, 5, NULL);
             break;
 
         case MQTT_EVENT_DATA:
-            // 1. Identify which topic this is
+            // Identify which topic this is
             victron_topic_id_t matched_id = TOPIC_COUNT;
 
             for (int i = 0; i < TOPIC_COUNT; i++) {
@@ -63,21 +63,20 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             if (matched_id == TOPIC_COUNT) {
                 break;
             }
-            // 2. Safely extract and parse the JSON string wrapper
+            // Safely extract and parse the JSON string wrapper
             char *json_string = malloc(event->data_len + 1);
             snprintf(json_string, event->data_len + 1, "%s", event->data);
             cJSON *root = cJSON_Parse(json_string);
             if (root != NULL) {
                 cJSON *value_node = cJSON_GetObjectItem(root, "value");
                 if (cJSON_IsNumber(value_node)) {
-                    // 3. Clean, readable switch statement!
+                    // Clean, readable switch statement!
                     switch (matched_id) {
                         // House Battery
                         case TOPIC_HOUSE_BATTERY_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
-                            //ESP_LOGI(TAG, "House Battery Voltage: %.2f V", house_battery_voltage);
                             break;
                         }
                         case TOPIC_HOUSE_BATTERY_CURRENT: {
@@ -217,7 +216,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 }
 void mqtt_app_start(void) {
     esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = "mqtt://192.168.1.2:1883", // Cerbo GX IP
+        .broker.address.uri = CERBO_ADDRESS, // Cerbo GX IP
     };
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);

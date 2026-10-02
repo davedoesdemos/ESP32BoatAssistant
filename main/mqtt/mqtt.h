@@ -4,7 +4,8 @@
 #include "queue_reader.h"
 
 // Replace with your actual VRM ID
-#define VRM_ID "48e7da89d561" 
+#define VRM_ID "48e7da89d561"
+#define CERBO_ADDRESS "mqtt://192.168.1.2:1883"
 
 typedef enum {
 // -----Victron-----

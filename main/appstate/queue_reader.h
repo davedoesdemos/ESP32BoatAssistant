@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <esp_log.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "lvgl.h"
@@ -23,10 +24,10 @@ typedef enum {
     TOPIC_RUUVI_AIR_1_TEMPERATURE,
     TOPIC_RUUVI_AIR_1_HUMIDITY,
     TOPIC_RUUVI_AIR_1_PRESSURE,
-    TOPIC_RUUVI_AIR_1_PM2_5, //Particulate Matter (PM) 2.5µm
-    TOPIC_RUUVI_AIR_1_CO2, //Carbon Dioxide (CO₂)
-    TOPIC_RUUVI_AIR_1_VOC, //VOC Volatile Organic Compounds
-    TOPIC_RUUVI_AIR_1_NOX, //NOx Nitrogen Oxides
+    TOPIC_RUUVI_AIR_1_PM2_5,
+    TOPIC_RUUVI_AIR_1_CO2,
+    TOPIC_RUUVI_AIR_1_VOC,
+    TOPIC_RUUVI_AIR_1_NOX,
 // -----NMEA2k-----
     // Wind
     TOPIC_NMEA_WIND_TRUE_SPEED,
@@ -83,15 +84,13 @@ typedef enum {
     TOPIC_SYSTEM_WIFI_STATUS
 } telemetry_id_t;
 
-/*=============================================================================
- * THE QUEUE MESSAGE STRUCT
- *============================================================================*/
+// Telemetry Packet Struct
 typedef struct {
-    telemetry_id_t id;  // Which parameter is this? (The Key)
+    telemetry_id_t id;
     union {
         float value_float;
         int value_int;
-        char value_string[16]; // For pre-formatted strings
+        char value_string[16];
     } value;
 } telemetry_packet_t;
 

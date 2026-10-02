@@ -1,7 +1,7 @@
 #include "i2c.h"
 
-//logging
-static const char *TAG = "boat assistant i2c";
+// Logging
+static const char *TAG = "Boat Assistant: i2c";
 
 i2c_master_bus_handle_t global_bus_handle = NULL;
 

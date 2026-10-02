@@ -8,7 +8,6 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
     lv_obj_set_layout(container, LV_LAYOUT_FLEX);
     lv_obj_set_flex_flow(container, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_flex_align(container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);    
-    //lv_obj_set_height(container, 50);
     lv_obj_set_style_bg_opa(container, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_bg_color(container, lv_color_hex(bg_hex_color), LV_PART_MAIN);
         // Create and populate labels
@@ -24,7 +23,7 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
         lv_obj_set_style_text_align(lbl_value, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_34, 0); 
 
-        lv_label_bind_text(lbl_value, subject_value, NULL); // Third parameter is an optional printf format string if needed
+        lv_label_bind_text(lbl_value, subject_value, NULL);
     return container;
 }
 

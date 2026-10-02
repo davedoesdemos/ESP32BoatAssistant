@@ -1,7 +1,7 @@
 #include "wifiscan.h"
 
-//logging
-static const char *TAG = "boat assistant wifiscan";
+// Logging
+static const char *TAG = "Boat Assistant: WiFi Scan";
 
 #define DEFAULT_SCAN_LIST_SIZE 10
 
@@ -139,7 +139,7 @@ static void array_2_channel_bitmap(const uint8_t channel_list[], const uint8_t c
 #endif /*USE_CHANNEL_BITMAP*/
 
 
-/* Initialize Wi-Fi as sta and set scan method */
+// Initialize Wi-Fi as sta and set scan method
 char* wifi_scan(void){
 
     uint16_t number = DEFAULT_SCAN_LIST_SIZE;
@@ -159,7 +159,7 @@ char* wifi_scan(void){
 
 #else
     esp_wifi_scan_start(NULL, true);
-#endif /*USE_CHANNEL_BITMAP*/
+#endif // USE_CHANNEL_BITMAP
 
     ESP_LOGI(TAG, "Max AP number ap_info can hold = %u", number);
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));

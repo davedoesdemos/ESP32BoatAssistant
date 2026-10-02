@@ -1,7 +1,7 @@
 #include "nmea2k.h"
 
-//logging
-static const char *TAG = "boat assistant nmea";
+// Logging
+static const char *TAG = "Boat Assistant: TWAI NMEA";
 
 // Define a structural format for the PGN directory
 typedef struct {
@@ -88,17 +88,17 @@ const char* get_pgn_label(uint32_t pgn) {
 }
 
 void init_nmea2000_bus(void) {
-    // 1. Establish General IO routing configs
+    // Establish General IO routing configs
     twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(
         CAN_TX_IO_NUM, 
         CAN_RX_IO_NUM, 
         TWAI_MODE_NORMAL
     );
     
-    // 2. Enforce the strict 250 kbps NMEA 2000 baseline standard
+    // Enforce the strict 250 kbps NMEA 2000 baseline standard
     twai_timing_config_t t_config = TWAI_TIMING_CONFIG_250KBITS();
     
-    // 3. Listen to all IDs without restrictive hardware masking
+    // Listen to all IDs without restrictive hardware masking
     twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 
     // Install and spin up the transceiver engine
@@ -124,7 +124,7 @@ uint8_t get_source_from_id(uint32_t id) {
 
 void nmea_process_to_queue(){
     twai_message_t message;
-    telemetry_packet_t packet; //packet for the queue
+    telemetry_packet_t packet; //packet for the global queue
 
     while (1) {
         // Wait indefinitely or until an incoming frame lands in the buffer queue
@@ -155,17 +155,17 @@ void nmea_process_to_queue(){
                             float tank_capacity_liters = 0.0f;
                             float fuel_level_liters = 0.0f;
 
-                            // 1. Process Fuel Level Percentage (0xFFFF is unavailable)
+                            // Process Fuel Level Percentage (0xFFFF is unavailable)
                             if (raw_level != 0xFFFF) {
                                 fuel_level_percent = raw_level * 0.004f;
                             }
 
-                            // 2. Process Tank Capacity (0xFFFFFFFF is unavailable)
+                            // Process Tank Capacity (0xFFFFFFFF is unavailable)
                             if (raw_cap != 0xFFFFFFFF) {
                                 tank_capacity_liters = raw_cap * 0.1f;
                             }
 
-                            // 3. Dispatch to your UI update queue
+                            // Dispatch to your UI update queue
                             if (raw_level != 0xFFFF) {
                                 fuel_level_liters = (fuel_level_percent / 100.0f) * tank_capacity_liters;
                                 packet.id = TOPIC_NMEA_DIESELTANK_CAPACITY;
@@ -179,9 +179,6 @@ void nmea_process_to_queue(){
                                 packet.id = TOPIC_NMEA_DIESELTANK_LEVEL_LITRES;
                                 packet.value.value_float = fuel_level_liters;
                                 xQueueSend(msg_queue, &packet, portMAX_DELAY);
-
-                                //printf("[Source: %d] Fuel Tank %d: %.1f%% (Cap: %.1fL)\n", 
-                                //       src, instance, fuel_level_percent, tank_capacity_liters);
                             }
                         }
                         break;
@@ -210,8 +207,6 @@ void nmea_process_to_queue(){
                             packet.id = TOPIC_NMEA_BOAT_SPEED_OVER_GROUND;
                             packet.value.value_float = sog_knots; 
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);
-
-                            //printf("[Source: %d] SOG: %.1f kts\n", src, sog_knots);
                         }
                         break;
                     }
@@ -226,19 +221,19 @@ void nmea_process_to_queue(){
                         float wind_speed_knots = 0.0f;
                         float wind_dir_deg = 0.0f;
 
-                        // 1. Process Wind Speed (if available)
+                        // Process Wind Speed (if available)
                         if (raw_speed != 0xFFFF) {
                             float speed_ms = raw_speed * 0.01f;
                             wind_speed_knots = speed_ms * 1.94384f; // Convert m/s to knots
                         }
 
-                        // 2. Process Wind Direction (if available)
+                        // Process Wind Direction (if available)
                         if (raw_dir != 0xFFFF) {
                             float dir_rad = raw_dir * 0.0001f;
                             wind_dir_deg = dir_rad * (180.0f / 3.14159265f); // Convert to degrees
                         }
 
-                        // 3. Route to the correct UI target based on the reference type
+                        // Route to the correct UI target based on the reference type
                         if (raw_speed != 0xFFFF || raw_dir != 0xFFFF) {
                             switch (reference) {
                                 case 0: // Apparent Wind
@@ -250,7 +245,7 @@ void nmea_process_to_queue(){
                                     xQueueSend(msg_queue, &packet, portMAX_DELAY);
                                     break;
 
-                                case  1: // True Wind (referenced to boat heading/bow)
+                                case 1: // True Wind (referenced to boat heading/bow)
                                 case 2: // True Wind (referenced to true North / ground)
                                 case 3: // True Wind (referenced to magnetic North)
                                     packet.id = TOPIC_NMEA_WIND_TRUE_SPEED;
@@ -278,7 +273,6 @@ void nmea_process_to_queue(){
                              break; 
                         } else {
                             float actual_depth_m = (raw_depth * 0.01) + DEPTH_OFFSET; 
-                            //fill struct and place on queue
                             packet.id = TOPIC_NMEA_BOAT_DEPTH;
                             packet.value.value_float = actual_depth_m;
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);
@@ -319,7 +313,6 @@ void nmea_process_to_queue(){
                                 default:
                                     break;
                             }
-                            //printf("[Source: %d] Temp Source %d (Inst %d): %.2f°C\n", src, source, instance, temp_celsius);
                         }
                         break;
                     }
@@ -348,18 +341,13 @@ void nmea_process_to_queue(){
                                 default:
                                     break;
                             }
-                            //packet.id = UI_UPDATE_HUMIDITY;
-                            //msg.data.environment.instance = instance;
-                            //msg.data.environment.source = source;
-                            //msg.data.environment.value = humidity_percent;
-
-                            //printf("[Source: %d] Humidity Source %d (Inst %d): %.1f%%\n", src, source, instance, humidity_percent);
                         }
                         break;
                     }
                     default:
                         // Catch-all monitor to trace unmapped traffic packets
-                        // printf("Caught PGN: %-25s | Size: %d Bytes\n", get_pgn_label(pgn), message.data_length_code);
+                        // Only enable for troubleshooting for performance reasons
+                        // ESP_LOGI(TAG, "Caught PGN: %-25s | Size: %d Bytes\n", get_pgn_label(pgn), message.data_length_code);
                         break;
                 }
             }

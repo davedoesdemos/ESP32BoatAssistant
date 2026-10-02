@@ -1,5 +1,8 @@
 #include "queue_reader.h"
 
+// Logging
+static const char *TAG = "Boat Assistant: Queue Reader";
+
 QueueHandle_t msg_queue = NULL;
 
 static void queue_reader_cb(lv_timer_t * timer) 
@@ -9,7 +12,7 @@ static void queue_reader_cb(lv_timer_t * timer)
 
     // Pull every single pending message off the queue
     while (xQueueReceive(data_queue, &packet, 0) == pdTRUE) {
-        // Route data safely using the telemetry ID
+        // Route data using the telemetry ID
         switch (packet.id) {
 // -----Ruuvi-----
             // Ruuvi Tag 1
@@ -190,6 +193,7 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----Default-----
             default:
                 // Unknown packet ID safety catch
+                ESP_LOGW(TAG, "Unknown packet topic found");
                 break;
         }
     }

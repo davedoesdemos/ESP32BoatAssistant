@@ -138,22 +138,8 @@
     extern lv_subject_t * const state_system_wifi_connected;
     extern lv_subject_t * const state_system_wifi_status_text;
 
-
-/* 2. PUBLIC STATE MANAGEMENT API
- *============================================================================*/
-
-/*
- * @brief Initializes the single global state structure and all internal 
- *        LVGL subjects with their safe default startup values.
- * @note  Call this in main.c BEFORE creating queues, tasks, or UI screens.
- */
 void state_init(void);
 
-/**
- * @brief Thread-safe setters to push data into the state engine.
- *        These will be called directly by your queue_reader.c module.
- * @{
- */
 // -----Ruuvi-----
     // Ruuvi Tag 1
     void state_set_ruuvi_tag_1_temperature(int32_t value);
@@ -167,10 +153,10 @@ void state_init(void);
     void state_set_ruuvi_air_1_temperature(int32_t value);
     void state_set_ruuvi_air_1_humidity(int32_t value);
     void state_set_ruuvi_air_1_pressure(int32_t value);
-    void state_set_ruuvi_air_1_pm2_5(int32_t value); //Particulate Matter (PM) 2.5µm
-    void state_set_ruuvi_air_1_co2(int32_t value); //Carbon Dioxide (CO₂)
-    void state_set_ruuvi_air_1_voc(int32_t value); //VOC Volatile Organic Compounds
-    void state_set_ruuvi_air_1_nox(int32_t value); //NOx Nitrogen Oxides
+    void state_set_ruuvi_air_1_pm2_5(int32_t value);
+    void state_set_ruuvi_air_1_co2(int32_t value);
+    void state_set_ruuvi_air_1_voc(int32_t value);
+    void state_set_ruuvi_air_1_nox(int32_t value);
 // -----NMEA2K-----
     // Wind
     void state_set_nmea_wind_true_speed(int32_t value);

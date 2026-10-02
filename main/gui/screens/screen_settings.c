@@ -2,7 +2,7 @@
 
 static lv_obj_t * slider_label;
 
-//Event callback triggered when the slider value changes
+// Event callback triggered when the slider value changes
 static void slider_event_cb(lv_event_t * e)
 {
     lv_obj_t * slider = lv_event_get_target(e);

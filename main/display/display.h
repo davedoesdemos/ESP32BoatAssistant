@@ -10,7 +10,7 @@
 #include "esp_lcd_panel_rgb.h"
 #include "esp_lcd_touch.h"
 #include "esp_lcd_touch_gt911.h"
-#include "esp_lv_adapter.h"  // Includes display & input adapters
+#include "esp_lv_adapter.h"
 #include <lvgl.h>
 
 #include "expander.h"
@@ -18,7 +18,6 @@
 
 extern esp_lcd_touch_handle_t touch_handle;
 extern lv_display_t *disp;
-extern SemaphoreHandle_t lvgl_mutex;
 
 void touch_reset();
 void touch_init();

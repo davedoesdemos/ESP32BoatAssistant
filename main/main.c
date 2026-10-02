@@ -1,17 +1,5 @@
 #include "nvs_flash.h"
-//#include <stdio.h>
-//#include <lvgl.h>
-//#include <esp_err.h>
-//#include <esp_log.h>
-//#include "esp_check.h"        // Dependent header file
-//#include "esp_lcd_panel_ops.h"
-//#include "esp_lcd_panel_rgb.h"
-//#include "esp_lcd_touch.h"
-//#include "esp_lcd_touch_gt911.h"  // Example with GT911
-//#include "driver/i2c_master.h"
-//#include "freertos/FreeRTOS.h"
-//#include "freertos/task.h"
-//#include "esp_lv_adapter.h"  // Includes display & input adapters
+#include <esp_log.h>
 
 //my libraries
 #include "i2c.h"
@@ -27,18 +15,14 @@
 #include "queue_reader.h"
 #include "bluetooth.h"
 
-//logging
-static const char *TAG = "boat assistant main";
+// Logging
+static const char *TAG = "Boat Assistant: Main";
 
 void app_main(void)
 {
-    lvgl_mutex = xSemaphoreCreateMutex();
+    // Create global message queue
     msg_queue = xQueueCreate(20, sizeof(telemetry_packet_t));
-    
-    if (lvgl_mutex == NULL) {
-        // Handle error: out of memory
-        return;
-    }
+
     // Initialise Non-Volatile Storage and reset if there is a problem
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -58,18 +42,20 @@ void app_main(void)
     screen_init(disp);
     init_nmea2000_bus();
     bluetooth_init();
+    ESP_LOGI(TAG, "System Inits done");
 
     // Bluetooth Sender Task
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
         ble_host_task, 
         "ble_host_task", 
         4096, 
         NULL, 
         5, 
-        NULL
+        NULL,
+        0
     );
 
-    // Spawn NMEA Sender Task on Core 1
+    // NMEA Sender Task
     xTaskCreatePinnedToCore(
         nmea_process_to_queue,        // Task function
         "nmea_process_to_queue",      // Task name string
@@ -77,15 +63,11 @@ void app_main(void)
         NULL,               // Parameters passed to the task
         1,                  // Task priority
         NULL,               // Task handle (not needed here)
-        1                   // Core ID (0)
+        0                   // Core ID (0)
     );
     
-    // Keep app_main alive. Do NOT poll touch coordinates here; 
-    // esp_lv_adapter handles it automatically in the background.
-    //while (1) {
-    //    vTaskDelay(pdMS_TO_TICKS(1000));
-     //   update_sensor_data((rand() % (45 - 1 + 1)) + 1);
-        lv_timer_create(backlight_check_timer_cb, 200, NULL);  
-        queue_reader_init(msg_queue);
-    //}
+    // Create backlight timeout task in lvgl
+    lv_timer_create(backlight_check_timer_cb, 200, NULL);
+    // Global Queue Reader 
+    queue_reader_init(msg_queue);
 }

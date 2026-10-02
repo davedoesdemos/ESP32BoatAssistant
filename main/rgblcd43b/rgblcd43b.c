@@ -1,7 +1,7 @@
 #include "rgblcd43b.h"
 
-//logging
-static const char *TAG = "boat assistant rgblcd43b";
+// Logging
+static const char *TAG = "Boat Assistant: rgblcd43b";
 
 //https://github.com/waveshareteam/ESP32-S3-Touch-LCD-4.3B/blob/master/examples/ESP-IDF/09_lvgl_v9_demo/components/waveshare_rgb_lcd_port.c
 esp_err_t rgblcd_panel_init(uint8_t frame_buffer_count, esp_lcd_panel_handle_t *out_panel_handle)

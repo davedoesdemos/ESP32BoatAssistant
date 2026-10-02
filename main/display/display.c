@@ -2,8 +2,6 @@
 
 esp_lcd_touch_handle_t touch_handle = NULL;
 lv_display_t *disp = NULL;
-// Define the variable
-SemaphoreHandle_t lvgl_mutex = NULL;
 
 void touch_reset(){
     // Hardware reset the GT911 before init
@@ -24,8 +22,8 @@ void touch_init(){
 
     // Configure touch panel
     esp_lcd_touch_config_t tp_cfg = {
-        .x_max = RGB_LCD_H_RES,          // Screen width
-        .y_max = RGB_LCD_V_RES,          // Screen height
+        .x_max = RGB_LCD_H_RES,       // Screen width
+        .y_max = RGB_LCD_V_RES,       // Screen height
         .rst_gpio_num = GPIO_NUM_NC,  // Reset pin (or GPIO_NUM_NC)
         .int_gpio_num = GPIO_NUM_3,   // Interrupt pin (or GPIO_NUM_NC)
         .levels = {
@@ -52,11 +50,11 @@ void display_init(){
     // Call library function to handle allocation and setup
     ESP_ERROR_CHECK(rgblcd_panel_init(frame_buffer_count, &panel_handle));
 
-    //https://docs.espressif.com/projects/esp-iot-solution/en/latest/display/tools/esp_lvgl_adapter.html
-    // Step 1: Initialize the adapter
+    // https://docs.espressif.com/projects/esp-iot-solution/en/latest/display/tools/esp_lvgl_adapter.html
+    // Initialize the adapter
     esp_lv_adapter_config_t cfg = ESP_LV_ADAPTER_DEFAULT_CONFIG();
     ESP_ERROR_CHECK(esp_lv_adapter_init(&cfg));
-    // Register the display (choose macro by interface)
+    // Register the display
     esp_lv_adapter_display_config_t disp_cfg = ESP_LV_ADAPTER_DISPLAY_RGB_DEFAULT_CONFIG(
         panel_handle,    // LCD panel handle
         panel_io,        // LCD panel IO handle (can be NULL for some interfaces)
@@ -69,8 +67,6 @@ void display_init(){
     lv_display_t *disp = esp_lv_adapter_register_display(&disp_cfg);
     assert(disp != NULL);
     // Register input device
-    // Create touch handle using esp_lcd_touch API (implementation omitted here)
-    // esp_lcd_touch_handle_t touch_handle = /* ... */;
     esp_lv_adapter_touch_config_t touch_cfg = ESP_LV_ADAPTER_TOUCH_DEFAULT_CONFIG(disp, touch_handle);
     lv_indev_t *touch = esp_lv_adapter_register_touch(&touch_cfg);
     assert(touch != NULL);

@@ -1,6 +1,6 @@
 #include "state.h"
 
-// Inside state.c (Hidden from the rest of the application)
+// System State Subjects
 typedef struct {
     // -----Ruuvi-----
     struct {
@@ -85,6 +85,7 @@ typedef struct {
             lv_subject_t longitude;
             lv_subject_t longitude_text;
         } boat;
+        // Environment
         struct {
             lv_subject_t temperature_inside;
             lv_subject_t temperature_inside_text;
@@ -166,9 +167,9 @@ typedef struct {
     } system;
 } system_state_t;
 
-static system_state_t system_state; // The single source of truth
+static system_state_t system_state;
 
-//link the externals to the state struct
+// Link the externals to the state struct as consts so they can't be changed
 // -----Ruuvi-----
     // Ruuvi Tag 1
     lv_subject_t * const state_ruuvi_tag_1_temperature = &system_state.ruuvi.tag_1.temperature;
@@ -903,6 +904,12 @@ void state_set_victron_dc2dc_power(float value){
     snprintf(temp, sizeof(temp), "%dW", (int)value);
     lv_subject_set_string(&system_state.victron.dc2dc.power_text, temp);
 }
+// -----System-----
+void state_set_system_wifi_status_text(const char * value){
+    lv_subject_set_string(&system_state.system.wifi_status_text, value);
+}
+
+//keeping this as it's useful code
 
 //void state_set_victron_start_battery_voltage(int value) 
 //{
@@ -922,8 +929,3 @@ void state_set_victron_dc2dc_power(float value){
     // Finally, update the UI value
     //lv_subject_set_int(&system_state.victron.start_battery.voltage, value);
 //}
-
-// -----System-----
-void state_set_system_wifi_status_text(const char * value){
-    lv_subject_set_string(&system_state.system.wifi_status_text, value);
-}
