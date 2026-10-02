@@ -1,8 +1,18 @@
 #include "screen_environment.h"
 
 void screen_environment_layout(lv_obj_t *screen_environment) {
+    // Top row container
+    lv_obj_t * row_top_container = lv_obj_create(screen_environment);
+    lv_obj_remove_style_all(row_top_container);
+    lv_obj_set_height(row_top_container, 350);
+    lv_obj_set_width(row_top_container, lv_pct(100));
+    lv_obj_set_y( row_top_container, 28 );
+    lv_obj_set_layout(row_top_container, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(row_top_container, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(row_top_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
     // Left Container
-    lv_obj_t *container_left = lv_obj_create(screen_environment);
+    lv_obj_t *container_left = lv_obj_create(row_top_container);
     lv_obj_remove_style_all(container_left); // Remove background/borders for a clean look
     lv_obj_set_size(container_left, 280, 300);
     lv_obj_align(container_left, LV_ALIGN_CENTER, -150, 0);
@@ -65,7 +75,7 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_obj_align(title_inside_label, LV_ALIGN_BOTTOM_MID, 0, 0);
 
     // Right Container
-    lv_obj_t *container_right = lv_obj_create(screen_environment);
+    lv_obj_t *container_right = lv_obj_create(row_top_container);
     lv_obj_remove_style_all(container_right); // Remove background/borders for a clean look
     lv_obj_set_size(container_right, 280, 300);
     lv_obj_align(container_right, LV_ALIGN_CENTER, 150, 0);
@@ -125,4 +135,119 @@ void screen_environment_layout(lv_obj_t *screen_environment) {
     lv_label_set_text(title_outside_label, "Outdoor");
     lv_obj_set_style_text_font(title_outside_label, &lv_font_montserrat_24, 0); 
     lv_obj_align(title_outside_label, LV_ALIGN_BOTTOM_MID, 0, 0);
+
+    // Bottom row container
+    lv_obj_t * row_bottom_container = lv_obj_create(screen_environment);
+    lv_obj_remove_style_all(row_bottom_container);
+    lv_obj_set_height(row_bottom_container, 100);
+    lv_obj_set_width(row_bottom_container, lv_pct(100));
+    lv_obj_set_y( row_bottom_container, 378 );
+    lv_obj_set_layout(row_bottom_container, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(row_bottom_container, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(row_bottom_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    // Container for labels
+    lv_obj_t * label_container_pressure = lv_obj_create(row_bottom_container);
+    lv_obj_remove_style_all(label_container_pressure);
+    lv_obj_set_layout(label_container_pressure, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(label_container_pressure, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(label_container_pressure, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_align(label_container_pressure, LV_ALIGN_CENTER, 0, 0);
+
+        // Air 1 Pressure Label
+        lv_obj_t *air1_pressure_title = lv_label_create(label_container_pressure);
+        lv_obj_set_style_text_color(air1_pressure_title, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_pressure_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_pressure_title, &lv_font_montserrat_14, 0);
+        lv_label_set_text(air1_pressure_title, "Pressure");
+        // Air 1 Pressure Label
+        lv_obj_t *air1_pressure_label = lv_label_create(label_container_pressure);
+        lv_obj_set_style_text_color(air1_pressure_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_pressure_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_pressure_label, &lv_font_montserrat_24, 0);
+        lv_label_bind_text(air1_pressure_label, state_ruuvi_air_1_pressure_text, NULL);
+
+    // Container for labels
+    lv_obj_t * label_container_pm2_5 = lv_obj_create(row_bottom_container);
+    lv_obj_remove_style_all(label_container_pm2_5);
+    lv_obj_set_layout(label_container_pm2_5, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(label_container_pm2_5, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(label_container_pm2_5, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_align(label_container_pm2_5, LV_ALIGN_CENTER, 0, 0);
+
+        // Air 1 Pressure Label
+        lv_obj_t *air1_pm2_5_title = lv_label_create(label_container_pm2_5);
+        lv_obj_set_style_text_color(air1_pm2_5_title, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_pm2_5_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_pm2_5_title, &lv_font_montserrat_14, 0);
+        lv_label_set_text(air1_pm2_5_title, "PM2.5");
+        // Air 1 Pressure Label
+        lv_obj_t *air1_pm2_5_label = lv_label_create(label_container_pm2_5);
+        lv_obj_set_style_text_color(air1_pm2_5_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_pm2_5_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_pm2_5_label, &lv_font_montserrat_24, 0);
+        lv_label_bind_text(air1_pm2_5_label, state_ruuvi_air_1_pm2_5_text, NULL);
+
+    // Container for labels
+    lv_obj_t * label_container_c02 = lv_obj_create(row_bottom_container);
+    lv_obj_remove_style_all(label_container_c02);
+    lv_obj_set_layout(label_container_c02, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(label_container_c02, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(label_container_c02, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_align(label_container_c02, LV_ALIGN_CENTER, 0, 0);
+
+        // Air 1 Pressure Label
+        lv_obj_t *air1_co2_title = lv_label_create(label_container_c02);
+        lv_obj_set_style_text_color(air1_co2_title, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_co2_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_co2_title, &lv_font_montserrat_14, 0);
+        lv_label_set_text(air1_co2_title, "CO2");
+        // Air 1 Pressure Label
+        lv_obj_t *air1_co2_label = lv_label_create(label_container_c02);
+        lv_obj_set_style_text_color(air1_co2_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_co2_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_co2_label, &lv_font_montserrat_24, 0);
+        lv_label_bind_text(air1_co2_label, state_ruuvi_air_1_co2_text, NULL);
+
+    // Container for labels
+    lv_obj_t * label_container_voc = lv_obj_create(row_bottom_container);
+    lv_obj_remove_style_all(label_container_voc);
+    lv_obj_set_layout(label_container_voc, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(label_container_voc, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(label_container_voc, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_align(label_container_voc, LV_ALIGN_CENTER, 0, 0);
+
+        // Air 1 Pressure Label
+        lv_obj_t *air1_voc_title = lv_label_create(label_container_voc);
+        lv_obj_set_style_text_color(air1_voc_title, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_voc_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_voc_title, &lv_font_montserrat_14, 0);
+        lv_label_set_text(air1_voc_title, "VOC");
+        // Air 1 Pressure Label
+        lv_obj_t *air1_voc_label = lv_label_create(label_container_voc);
+        lv_obj_set_style_text_color(air1_voc_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_voc_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_voc_label, &lv_font_montserrat_24, 0);
+        lv_label_bind_text(air1_voc_label, state_ruuvi_air_1_voc_text, NULL);
+
+    // Container for labels
+    lv_obj_t * label_container_nox = lv_obj_create(row_bottom_container);
+    lv_obj_remove_style_all(label_container_nox);
+    lv_obj_set_layout(label_container_nox, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(label_container_nox, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(label_container_nox, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_align(label_container_nox, LV_ALIGN_CENTER, 0, 0);
+
+        // Air 1 Pressure Label
+        lv_obj_t *air1_nox_title = lv_label_create(label_container_nox);
+        lv_obj_set_style_text_color(air1_nox_title, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_nox_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_nox_title, &lv_font_montserrat_14, 0);
+        lv_label_set_text(air1_nox_title, "NOX");
+        // Air 1 Pressure Label
+        lv_obj_t *air1_nox_label = lv_label_create(label_container_nox);
+        lv_obj_set_style_text_color(air1_nox_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_text_align(air1_nox_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(air1_nox_label, &lv_font_montserrat_24, 0);
+        lv_label_bind_text(air1_nox_label, state_ruuvi_air_1_nox_text, NULL);
 }

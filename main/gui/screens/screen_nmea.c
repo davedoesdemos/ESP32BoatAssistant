@@ -45,7 +45,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_remove_style_all(row0_container);
         lv_obj_set_layout(row0_container, LV_LAYOUT_FLEX);
         lv_obj_set_flex_flow(row0_container, LV_FLEX_FLOW_ROW);
-        lv_obj_set_flex_align(row0_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+        lv_obj_set_flex_align(row0_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         lv_obj_set_width(row0_container, lv_pct(100));
 
         create_data_box(row0_container, "Depth", state_nmea_boat_depth_text, 0xF7F7F7);
@@ -58,7 +58,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_remove_style_all(row1_container);
         lv_obj_set_layout(row1_container, LV_LAYOUT_FLEX);
         lv_obj_set_flex_flow(row1_container, LV_FLEX_FLOW_ROW);
-        lv_obj_set_flex_align(row1_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+        lv_obj_set_flex_align(row1_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         lv_obj_set_width(row1_container, lv_pct(100));
 
         create_data_box(row1_container, "TWS", state_nmea_wind_true_speed_text, 0xF7F7F7);
@@ -71,7 +71,7 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_remove_style_all(row2_container);
         lv_obj_set_layout(row2_container, LV_LAYOUT_FLEX);
         lv_obj_set_flex_flow(row2_container, LV_FLEX_FLOW_ROW);
-        lv_obj_set_flex_align(row2_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
+        lv_obj_set_flex_align(row2_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         lv_obj_set_width(row2_container, lv_pct(100));
 
 
