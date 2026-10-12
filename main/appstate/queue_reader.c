@@ -195,10 +195,23 @@ static void queue_reader_cb(lv_timer_t * timer)
             case TOPIC_VICTRON_DIESELTANK_CAPACITY:
                 state_set_victron_dieseltank_capacity((int)round(packet.value.value_float));
                 break;
+            // Inverter
+            case TOPIC_VICTRON_INVERTER_AC_VOLTAGE:
+                state_set_victron_inverter_ac_voltage((int)round(packet.value.value_float));
+                break;
+            case TOPIC_VICTRON_INVERTER_AC_CURRENT:
+                state_set_victron_inverter_ac_current(packet.value.value_float);
+                break;
+            case TOPIC_VICTRON_INVERTER_DC_VOLTAGE:
+                state_set_victron_inverter_dc_voltage((int)round(packet.value.value_float));
+                break;
 // -----System-----
             case TOPIC_SYSTEM_WIFI_CONNECTED:
                 break;
             case TOPIC_SYSTEM_WIFI_STATUS:
+                break;
+            case TOPIC_SYSTEM_MEMORY_FREE:
+                state_set_system_memory_free(packet.value.value_int);
                 break;
 // -----Default-----
             default:

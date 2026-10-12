@@ -19,6 +19,19 @@ typedef struct {
     float battery_v;
 } ruuvi_df5_t;
 
+typedef struct {
+    float temperature;
+    float humidity;
+    float pressure;
+    float pm2_5;
+    uint16_t co2;
+    uint16_t voc;
+    uint16_t nox;
+    float luminosity;
+    uint8_t seq_num;
+    // Format 6 also embeds the bottom 3 bytes of the MAC address here
+} ruuvi_df6_t;
+
 //https://docs.ruuvi.com/communication/bluetooth-advertisements/data-format-e1
 typedef struct {
     uint64_t tagid;

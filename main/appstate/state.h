@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "stdio.h"
 #include <esp_log.h>
+#include <math.h>
 
 // Subject pointers for binding
 // -----Ruuvi-----
@@ -134,9 +135,20 @@
     extern lv_subject_t * const state_victron_dieseltank_remaining_hours_text;
     extern lv_subject_t * const state_victron_dieseltank_remaining_miles;
     extern lv_subject_t * const state_victron_dieseltank_remaining_miles_text;
+    // Inverter
+    extern lv_subject_t * const state_victron_inverter_ac_voltage;
+    extern lv_subject_t * const state_victron_inverter_ac_voltage_text;
+    extern lv_subject_t * const state_victron_inverter_ac_current;
+    extern lv_subject_t * const state_victron_inverter_ac_current_text;
+    extern lv_subject_t * const state_victron_inverter_ac_power;
+    extern lv_subject_t * const state_victron_inverter_ac_power_text;
+    extern lv_subject_t * const state_victron_inverter_dc_voltage;
+    extern lv_subject_t * const state_victron_inverter_dc_voltage_text;
 // -----System-----
     extern lv_subject_t * const state_system_wifi_connected;
     extern lv_subject_t * const state_system_wifi_status_text;
+    extern lv_subject_t * const state_system_memory_free;
+    extern lv_subject_t * const state_system_memory_free_text;
 
 void state_init(void);
 
@@ -208,7 +220,12 @@ void state_init(void);
     void state_set_victron_dieseltank_level_percent(int32_t value);
     void state_set_victron_dieseltank_level_litres(int32_t value);
     void state_set_victron_dieseltank_capacity(int32_t value);
+    // Inverter
+    void state_set_victron_inverter_ac_voltage(int32_t value);
+    void state_set_victron_inverter_ac_current(float value);
+    void state_set_victron_inverter_dc_voltage(int32_t value);
 // -----System-----
 void state_set_system_wifi_status_text(const char * status);
+void state_set_system_memory_free(int value);
 
 #endif //STATE_H

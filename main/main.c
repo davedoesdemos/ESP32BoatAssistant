@@ -22,6 +22,8 @@ void app_main(void)
 {
     // Create global message queue
     msg_queue = xQueueCreate(20, sizeof(telemetry_packet_t));
+    telemetry_packet_t packet; //packet for the queue
+    size_t free_mem;
 
     // Initialise Non-Volatile Storage and reset if there is a problem
     esp_err_t ret = nvs_flash_init();
@@ -70,4 +72,13 @@ void app_main(void)
     lv_timer_create(backlight_check_timer_cb, 200, NULL);
     // Global Queue Reader 
     queue_reader_init(msg_queue);
+    while (1){
+        // Total free heap size
+        free_mem = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+        //printf("Free memory: %d bytes\n", free_mem);
+        packet.id = TOPIC_SYSTEM_MEMORY_FREE;
+        packet.value.value_int = free_mem;
+        xQueueSend(msg_queue, &packet, 0);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
 }

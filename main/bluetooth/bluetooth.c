@@ -19,6 +19,33 @@ void parse_ruuvi_df5(const uint8_t* payload, ruuvi_df5_t* data) {
     data->battery_v = (vbat_raw / 1000.0f) + 1.6f;
 }
 
+void parse_ruuvi_df6(const uint8_t* payload, ruuvi_df6_t* data) {
+    int16_t temp_raw = (payload[1] << 8) | payload[2];
+    data->temperature = (temp_raw == 0x8000) ? 0.0f : temp_raw * 0.005f;
+
+    uint16_t hum_raw = (payload[3] << 8) | payload[4];
+    data->humidity = (hum_raw == 0xFFFF) ? 0.0f : hum_raw * 0.0025f;
+
+    uint16_t press_raw = (payload[5] << 8) | payload[6];
+    data->pressure = (press_raw == 0xFFFF) ? 0.0f : (press_raw + 50000) / 100.0f;
+
+    // PM2.5 is at bytes 7-8 in Format 6!
+    uint16_t pm25_raw = (payload[7] << 8) | payload[8];
+    data->pm2_5 = (pm25_raw == 0xFFFF) ? 0.0f : pm25_raw * 0.1f;
+
+    data->co2 = (payload[9] << 8) | payload[10];
+
+    uint8_t flags = payload[14]; 
+    data->voc = (payload[11] << 1) | ((flags >> 6) & 0x01);
+    data->nox = (payload[12] << 1) | ((flags >> 7) & 0x01);
+
+    // Luminosity is 16-bit in Format 6 (bytes 15-16) instead of 24-bit
+    uint16_t lux_raw = (payload[15] << 8) | payload[16];
+    data->luminosity = (lux_raw == 0xFFFF) ? 0.0f : lux_raw * 1.0f; // Note: Format 6 use may differ based on scaling
+
+    data->seq_num = payload[13]; // Sequence is a single byte at offset 14 in format 6
+}
+
 // Parses Ruuvi Air Data Format E1/6
 void parse_ruuvi_e1(const uint8_t* payload, ruuvi_e1_t* data) {
     int16_t temp_raw = (payload[1] << 8) | payload[2];
@@ -114,8 +141,8 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg) {
                 }
                 // Air Quality Sensor (Accepts both Format 0x06 and 0xE1)
                 else if ((format == 0x06 || format == 0xE1) && (fields.mfg_data_len - 2) >= 20) {
-                    ruuvi_e1_t air;
-                    parse_ruuvi_e1(payload, &air);
+                    ruuvi_df6_t air;
+                    parse_ruuvi_df6(payload, &air);
                     uint64_t tag_id = ((uint64_t)desc.addr.val[5] << 40) |
                         ((uint64_t)desc.addr.val[4] << 32) |
                         ((uint64_t)desc.addr.val[3] << 24) |
@@ -125,13 +152,13 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg) {
                     switch (tag_id) {
                         case 0xeb807f705dc3ULL: // AnamCara Air
                             packet.id = TOPIC_RUUVI_AIR_1_TEMPERATURE;
-                            packet.value.value_int = (int32_t)air.temperature;
+                            packet.value.value_int = (int32_t)round(air.temperature);
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_HUMIDITY;
-                            packet.value.value_int = (int32_t)air.humidity;
+                            packet.value.value_int = (int32_t)round(air.humidity);
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_PRESSURE;
-                            packet.value.value_int = (int32_t)air.pressure;
+                            packet.value.value_int = (int32_t)round(air.pressure);
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_CO2;
                             packet.value.value_int = (int32_t)air.co2;
@@ -140,7 +167,7 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg) {
                             packet.value.value_int = (int32_t)air.nox;
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_PM2_5;
-                            packet.value.value_int = (int32_t)air.pm2_5;
+                            packet.value.value_int = (int32_t)round(air.pm2_5);
                             xQueueSend(msg_queue, &packet, 0);
                             packet.id = TOPIC_RUUVI_AIR_1_VOC;
                             packet.value.value_int = (int32_t)air.voc;

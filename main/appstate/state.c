@@ -162,11 +162,24 @@ typedef struct {
             lv_subject_t remaining_miles;
             lv_subject_t remaining_miles_text;
         } dieseltank;
+        // Inverter
+        struct {
+            lv_subject_t ac_voltage;
+            lv_subject_t ac_voltage_text;
+            lv_subject_t ac_current;
+            lv_subject_t ac_current_text;
+            lv_subject_t ac_power;
+            lv_subject_t ac_power_text;
+            lv_subject_t dc_voltage;
+            lv_subject_t dc_voltage_text;
+        } inverter;
     } victron;
     // -----System-----
     struct {
         lv_subject_t wifi_connected;
         lv_subject_t wifi_status_text;
+        lv_subject_t memory_free;
+        lv_subject_t memory_free_text;
     } system;
 } system_state_t;
 
@@ -299,9 +312,20 @@ static system_state_t system_state;
     lv_subject_t * const state_victron_dieseltank_remaining_hours_text = &system_state.victron.dieseltank.remaining_hours_text;
     lv_subject_t * const state_victron_dieseltank_remaining_miles = &system_state.victron.dieseltank.remaining_miles;
     lv_subject_t * const state_victron_dieseltank_remaining_miles_text = &system_state.victron.dieseltank.remaining_miles_text;
+    // Inverter
+    lv_subject_t * const state_victron_inverter_ac_voltage = &system_state.victron.inverter.ac_voltage;
+    lv_subject_t * const state_victron_inverter_ac_voltage_text = &system_state.victron.inverter.ac_voltage_text;
+    lv_subject_t * const state_victron_inverter_ac_current = &system_state.victron.inverter.ac_current;
+    lv_subject_t * const state_victron_inverter_ac_current_text = &system_state.victron.inverter.ac_current_text;
+    lv_subject_t * const state_victron_inverter_ac_power = &system_state.victron.inverter.ac_power;
+    lv_subject_t * const state_victron_inverter_ac_power_text = &system_state.victron.inverter.ac_power_text;
+    lv_subject_t * const state_victron_inverter_dc_voltage = &system_state.victron.inverter.dc_voltage;
+    lv_subject_t * const state_victron_inverter_dc_voltage_text = &system_state.victron.inverter.dc_voltage_text;
 // -----System-----
     lv_subject_t * const state_system_wifi_connected = &system_state.system.wifi_connected;
     lv_subject_t * const state_system_wifi_status_text = &system_state.system.wifi_status_text;
+    lv_subject_t * const state_system_memory_free = &system_state.system.memory_free;
+    lv_subject_t * const state_system_memory_free_text = &system_state.system.memory_free_text;
 
 //char buffers for text states
 // -----Ruuvi-----
@@ -430,9 +454,20 @@ static system_state_t system_state;
     static char state_victron_dieseltank_remaining_hours_text_prev_buf[16] = "---";
     static char state_victron_dieseltank_remaining_miles_text_buf[16] = "---";
     static char state_victron_dieseltank_remaining_miles_text_prev_buf[16] = "---";
+    // Inverter
+    static char state_victron_inverter_ac_voltage_text_buf[16] = "---";
+    static char state_victron_inverter_ac_voltage_text_prev_buf[16] = "---";
+    static char state_victron_inverter_ac_current_text_buf[16] = "---";
+    static char state_victron_inverter_ac_current_text_prev_buf[16] = "---";
+    static char state_victron_inverter_ac_power_text_buf[16] = "---";
+    static char state_victron_inverter_ac_power_text_prev_buf[16] = "---";
+    static char state_victron_inverter_dc_voltage_text_buf[16] = "---";
+    static char state_victron_inverter_dc_voltage_text_prev_buf[16] = "---";
 // -----System-----
 static char state_system_wifi_status_text_buf[30] = "Not Connected";
 static char state_system_wifi_status_text_prev_buf[30] = "Not Connected";
+static char state_system_memory_free_text_buf[30] = "0 Bytes";
+static char state_system_memory_free_text_prev_buf[30] = "0 Bytes";
 
 void state_init(void) {
     // Initialize the actual subjects embedded inside the private struct
@@ -562,9 +597,20 @@ void state_init(void) {
         lv_subject_init_string(&system_state.victron.dieseltank.remaining_hours_text, state_victron_dieseltank_remaining_hours_text_buf, state_victron_dieseltank_remaining_hours_text_prev_buf, sizeof(state_victron_dieseltank_remaining_hours_text_buf), "---");
         lv_subject_init_int(&system_state.victron.dieseltank.remaining_miles, 0);
         lv_subject_init_string(&system_state.victron.dieseltank.remaining_miles_text, state_victron_dieseltank_remaining_miles_text_buf, state_victron_dieseltank_remaining_miles_text_prev_buf, sizeof(state_victron_dieseltank_remaining_miles_text_buf), "---");
+        // Inverter
+        lv_subject_init_int(&system_state.victron.inverter.ac_voltage, 0);
+        lv_subject_init_string(&system_state.victron.inverter.ac_voltage_text, state_victron_inverter_ac_voltage_text_buf, state_victron_inverter_ac_voltage_text_prev_buf, sizeof(state_victron_inverter_ac_voltage_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.inverter.ac_current, 0);
+        lv_subject_init_string(&system_state.victron.inverter.ac_current_text, state_victron_inverter_ac_current_text_buf, state_victron_inverter_ac_current_text_prev_buf, sizeof(state_victron_inverter_ac_current_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.inverter.ac_power, 0);
+        lv_subject_init_string(&system_state.victron.inverter.ac_power_text, state_victron_inverter_ac_power_text_buf, state_victron_inverter_ac_power_text_prev_buf, sizeof(state_victron_inverter_ac_power_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.inverter.dc_voltage, 0);
+        lv_subject_init_string(&system_state.victron.inverter.dc_voltage_text, state_victron_inverter_dc_voltage_text_buf, state_victron_inverter_dc_voltage_text_prev_buf, sizeof(state_victron_inverter_dc_voltage_text_buf), "---");
 // -----System-----
     lv_subject_init_int(&system_state.system.wifi_connected,       0);
     lv_subject_init_string(&system_state.system.wifi_status_text, state_system_wifi_status_text_buf, state_system_wifi_status_text_prev_buf, sizeof(state_system_wifi_status_text_buf), "Not Connected");
+    lv_subject_init_int(&system_state.system.memory_free,       0);
+    lv_subject_init_string(&system_state.system.memory_free_text, state_system_memory_free_text_buf, state_system_memory_free_text_prev_buf, sizeof(state_system_memory_free_text_buf), "0 Bytes");
 }
 
 // -----Ruuvi-----
@@ -628,13 +674,13 @@ void state_set_ruuvi_air_1_pressure(int32_t value){
 void state_set_ruuvi_air_1_pm2_5(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.pm2_5, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d", (int)value);
+    snprintf(temp, sizeof(temp), "%dug/m3", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.pm2_5_text, temp);
 }
 void state_set_ruuvi_air_1_co2(int32_t value){
     lv_subject_set_int(&system_state.ruuvi.air_1.co2, value);
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d", (int)value);
+    snprintf(temp, sizeof(temp), "%dppm", (int)value);
     lv_subject_set_string(&system_state.ruuvi.air_1.co2_text, temp);
 }
 void state_set_ruuvi_air_1_voc(int32_t value){
@@ -907,9 +953,38 @@ void state_set_victron_dieseltank_capacity(int32_t value) {
     snprintf(temp, sizeof(temp), "%dl", (int)value);
     lv_subject_set_string(&system_state.victron.dieseltank.capacity_text, temp);
 }
+// Inverter
+void state_set_victron_inverter_ac_voltage(int32_t value) {
+    lv_subject_set_int(&system_state.victron.inverter.ac_voltage, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
+    lv_subject_set_string(&system_state.victron.inverter.ac_voltage_text, temp);
+}
+void state_set_victron_inverter_ac_current(float value) {
+    lv_subject_set_int(&system_state.victron.inverter.ac_current, (int)round(value));
+    char temp[16];
+    int ac_power = (int)round(lv_subject_get_int(&system_state.victron.inverter.ac_voltage) * value);
+    lv_subject_set_int(&system_state.victron.inverter.ac_power, ac_power);
+    snprintf(temp, sizeof(temp), "%dA", (int)value);
+    lv_subject_set_string(&system_state.victron.inverter.ac_current_text, temp);
+    snprintf(temp, sizeof(temp), "-%dW", (int)ac_power);
+    lv_subject_set_string(&system_state.victron.inverter.ac_power_text, temp);
+}
+void state_set_victron_inverter_dc_voltage(int32_t value) {
+    lv_subject_set_int(&system_state.victron.inverter.dc_voltage, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%dV", (int)value);
+    lv_subject_set_string(&system_state.victron.inverter.dc_voltage_text, temp);
+}
 // -----System-----
 void state_set_system_wifi_status_text(const char * value){
     lv_subject_set_string(&system_state.system.wifi_status_text, value);
+}
+void state_set_system_memory_free(int value){
+    lv_subject_set_int(&system_state.system.memory_free, value);
+    char temp[16];
+    snprintf(temp, sizeof(temp), "%d KB", (int)round(value / 1024));
+    lv_subject_set_string(&system_state.system.memory_free_text, temp);
 }
 
 //keeping this as it's useful code

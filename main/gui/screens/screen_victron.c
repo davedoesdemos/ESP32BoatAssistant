@@ -157,6 +157,7 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             lv_obj_set_flex_flow(label_container_house_battery, LV_FLEX_FLOW_COLUMN);
             lv_obj_set_flex_align(label_container_house_battery, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
             lv_obj_align(label_container_house_battery, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_size(label_container_house_battery, 200, 200);
             
             // House Battery SOC
             lv_obj_t *house_battery_soc_label = lv_label_create(label_container_house_battery);
@@ -175,6 +176,34 @@ void screen_victron_layout(lv_obj_t *screen_victron) {
             lv_obj_set_style_text_font(house_battery_power_label, &lv_font_montserrat_24, 0);
 
             lv_label_bind_text(house_battery_power_label, state_victron_house_battery_power_text, NULL);
+
+            // Inverter Label
+            lv_obj_t *inverter_label = lv_label_create(label_container_house_battery);
+            lv_obj_set_style_text_color(inverter_label, lv_color_hex(0x000000), 0);
+            lv_label_set_text(inverter_label, "Inverter");
+            lv_obj_set_style_text_align(inverter_label, LV_TEXT_ALIGN_CENTER, 0);
+            lv_obj_align(inverter_label, LV_ALIGN_CENTER, 0, 0);
+            lv_obj_set_style_text_font(inverter_label, &lv_font_montserrat_14, 0);
+
+            // Bar: Inverter (Size: 150x150)
+            lv_obj_t *inverter_bar = lv_bar_create(label_container_house_battery);
+            lv_obj_set_size(inverter_bar, lv_pct(100), 40);
+            lv_obj_set_style_pad_all(inverter_bar, 0, LV_PART_MAIN);
+            lv_bar_set_range(inverter_bar, 0, 500);
+
+            lv_bar_bind_value(inverter_bar, state_victron_inverter_ac_power);
+
+            lv_obj_set_style_bg_color(inverter_bar, lv_palette_main(LV_PALETTE_RED), LV_PART_INDICATOR);
+            lv_obj_remove_flag(inverter_bar, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
+
+                // Inverter Power Label
+                lv_obj_t *inverter_power_label = lv_label_create(inverter_bar);
+                lv_obj_set_style_text_color(inverter_power_label, lv_color_hex(0x000000), 0);
+                lv_obj_set_style_text_align(inverter_power_label, LV_TEXT_ALIGN_CENTER, 0);
+                lv_obj_align(inverter_power_label, LV_ALIGN_CENTER, 0, 0);
+                lv_obj_set_style_text_font(inverter_power_label, &lv_font_montserrat_24, 0); 
+
+                lv_label_bind_text(inverter_power_label, state_victron_inverter_ac_power_text, NULL);
 
         // column 2
         lv_obj_t * column2_container = lv_obj_create(row1_container);

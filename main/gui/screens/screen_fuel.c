@@ -10,6 +10,7 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
     lv_obj_set_flex_align(container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);    
     lv_obj_set_style_bg_opa(container, LV_OPA_COVER, LV_PART_MAIN);
     lv_obj_set_style_bg_color(container, lv_color_hex(bg_hex_color), LV_PART_MAIN);
+    lv_obj_set_width(container, lv_pct(100));
         // Create and populate labels
         lv_obj_t * lbl_title = lv_label_create(container);
         lv_label_set_text(lbl_title, title);
@@ -18,7 +19,6 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
         lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_24, 0); 
         
         lv_obj_t * lbl_value = lv_label_create(container);
-        //lv_label_set_text(lbl_value, value);
         lv_obj_set_width(lbl_title, lv_pct(100));
         lv_obj_set_style_text_align(lbl_value, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_34, 0); 
@@ -44,19 +44,21 @@ void screen_fuel_layout(lv_obj_t *screen_fuel) {
         lv_obj_set_flex_flow(column0_container, LV_FLEX_FLOW_COLUMN);
         lv_obj_set_flex_align(column0_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_height(column0_container, lv_pct(100));
+        lv_obj_set_width(column0_container, 200);
 
             // Bar: Fuel (Size: 150x150)
             lv_obj_t *fuel_bar = lv_bar_create(column0_container);
-            lv_obj_set_size(fuel_bar, 80, lv_pct(90));
+            lv_obj_set_size(fuel_bar, 130, lv_pct(95));
             lv_obj_set_style_pad_all(fuel_bar, 0, LV_PART_MAIN);
             lv_bar_set_range(fuel_bar, 0, 100);
 
             lv_bar_bind_value(fuel_bar, state_victron_dieseltank_level_percent);
 
             lv_obj_set_style_bg_color(fuel_bar, lv_palette_main(LV_PALETTE_RED), LV_PART_INDICATOR);
+            lv_obj_set_style_bg_color(fuel_bar, lv_palette_main(LV_PALETTE_RED), LV_PART_MAIN);
             lv_obj_remove_flag(fuel_bar, LV_OBJ_FLAG_CLICKABLE); // Make it read-only (disable dragging)
-            lv_obj_set_style_radius(fuel_bar, 0, LV_PART_MAIN);
-            lv_obj_set_style_radius(fuel_bar, 0, LV_PART_INDICATOR);
+            lv_obj_set_style_radius(fuel_bar, 25, LV_PART_MAIN);
+            lv_obj_set_style_radius(fuel_bar, 25, LV_PART_INDICATOR);
 
         // column 1
         lv_obj_t * column1_container = lv_obj_create(row1_container);
@@ -65,9 +67,10 @@ void screen_fuel_layout(lv_obj_t *screen_fuel) {
         lv_obj_set_flex_flow(column1_container, LV_FLEX_FLOW_COLUMN);
         lv_obj_set_flex_align(column1_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_height(column1_container, lv_pct(100));
+        lv_obj_set_width(column1_container, 200);
 
-            create_data_box(column1_container, "Level", state_victron_dieseltank_level_litres_text, 0xF7F7F7);
-            create_data_box(column1_container, "Percent", state_victron_dieseltank_level_percent_text, 0xF7F7F7);
+            create_data_box(column1_container, "Remaining", state_victron_dieseltank_level_litres_text, 0xF7F7F7);
+            create_data_box(column1_container, "Time", state_victron_dieseltank_remaining_hours_text, 0xF7F7F7);
 
         // column 2
         lv_obj_t * column2_container = lv_obj_create(row1_container);
@@ -76,7 +79,8 @@ void screen_fuel_layout(lv_obj_t *screen_fuel) {
         lv_obj_set_flex_flow(column2_container, LV_FLEX_FLOW_COLUMN);
         lv_obj_set_flex_align(column2_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);
         lv_obj_set_height(column2_container, lv_pct(100));
+        lv_obj_set_width(column2_container, 200);
 
-            create_data_box(column2_container, "Time", state_victron_dieseltank_remaining_hours_text, 0xF7F7F7);
-            create_data_box(column2_container, "Miles", state_victron_dieseltank_remaining_miles_text, 0xF7F7F7);
+            create_data_box(column2_container, "Level", state_victron_dieseltank_level_percent_text, 0xF7F7F7);
+            create_data_box(column2_container, "Range", state_victron_dieseltank_remaining_miles_text, 0xF7F7F7);
 }

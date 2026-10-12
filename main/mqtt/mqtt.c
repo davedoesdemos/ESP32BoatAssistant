@@ -217,6 +217,24 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
+                        case TOPIC_INVERTER_AC_VOLTAGE: {
+                            packet.id = TOPIC_VICTRON_INVERTER_AC_VOLTAGE;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
+                        case TOPIC_INVERTER_AC_CURRENT: {
+                            packet.id = TOPIC_VICTRON_INVERTER_AC_CURRENT;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
+                        case TOPIC_INVERTER_DV_VOLTAGE: {
+                            packet.id = TOPIC_VICTRON_INVERTER_DC_VOLTAGE;
+                            packet.value.value_float = value_node->valuedouble;
+                            xQueueSend(msg_queue, &packet, 0);
+                            break;
+                        }
                         default:
                             break;
                     }

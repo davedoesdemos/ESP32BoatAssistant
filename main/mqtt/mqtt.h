@@ -39,6 +39,10 @@ typedef enum {
     TOPIC_DIESELTANK_LEVEL_PERCENT,
     TOPIC_DIESELTANK_LEVEL_LITRES,
     TOPIC_DIESELTANK_CAPACITY,
+    // Inverter
+    TOPIC_INVERTER_AC_VOLTAGE,
+    TOPIC_INVERTER_AC_CURRENT,
+    TOPIC_INVERTER_DV_VOLTAGE,
     //add topics here, keep the last one
     TOPIC_COUNT             // (Total count)
 } victron_topic_id_t;
@@ -74,7 +78,12 @@ static const char *topic_registry[TOPIC_COUNT] = {
     // Diesel Tank
         [TOPIC_DIESELTANK_LEVEL_PERCENT] = "N/" VRM_ID "/tank/20/Level",
         [TOPIC_DIESELTANK_LEVEL_LITRES] = "N/" VRM_ID "/tank/20/Remaining",
-        [TOPIC_DIESELTANK_CAPACITY] = "N/" VRM_ID "/tank/20/Capacity"
+        [TOPIC_DIESELTANK_CAPACITY] = "N/" VRM_ID "/tank/20/Capacity",
+    // Inverter
+        [TOPIC_INVERTER_AC_VOLTAGE] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/V",
+        [TOPIC_INVERTER_AC_CURRENT] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/I",
+        [TOPIC_INVERTER_DV_VOLTAGE] = "N/" VRM_ID "/inverter/278/Dc/0/Voltage"
+
 };
 
 void mqtt_app_start(void);
