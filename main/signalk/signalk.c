@@ -99,64 +99,68 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
                                         continue;
                                     }
 
-                                    // 3. Extracted numeric processing inside your clean switch block
+                                    // Extracted numeric processing inside your clean switch block
                                     if (cJSON_IsNumber(value_node)) {
                                         switch (matched_id) {
                                             case SIGNALK_TOPIC_NAVIGATION_HEADING: {
                                                 packet.id = TOPIC_NMEA_BOAT_HEADING;
-                                                packet.value.value_float = (float)value_node->valuedouble * (180.0f / 3.14159265f);
-                                                xQueueSend(msg_queue, &packet, 0);
-                                                break;
-                                            }
-                                            case SIGNALK_TOPIC_NAVIGATION_POSITION_LATITUDE: {
-                                                packet.id = TOPIC_NMEA_BOAT_LATITUDE;
-                                                packet.value.value_float = (float)value_node->valuedouble;
-                                                xQueueSend(msg_queue, &packet, 0);
-                                                break;
-                                            }
-                                            case SIGNALK_TOPIC_NAVIGATION_POSITION_LONGITUDE: {
-                                                packet.id = TOPIC_NMEA_BOAT_LONGITUDE;
-                                                packet.value.value_float = (float)value_node->valuedouble;
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_NAVIGATION_SOG: {
-                                                float boat_speed_knots = (float)value_node->valuedouble * 1.94384f; // Convert m/s to knots
                                                 packet.id = TOPIC_NMEA_BOAT_SPEED_OVER_GROUND;
-                                                packet.value.value_float = boat_speed_knots;
+                                                packet.value.value_double = value_node->valuedouble ;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_NAVIGATION_COG: {
                                                 packet.id = TOPIC_NMEA_BOAT_COURSE_OVER_GROUND;
-                                                packet.value.value_float = (float)value_node->valuedouble * (180.0f / 3.14159265f);
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_NAVIGATION_STW: {
                                                 packet.id = TOPIC_NMEA_BOAT_SPEED_THROUGH_WATER;
-                                                packet.value.value_float = (float)value_node->valuedouble;
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_ENVIRONMENT_AWS: {
-                                                float wind_speed_knots = (float)value_node->valuedouble * 1.94384f; // Convert m/s to knots
                                                 packet.id = TOPIC_NMEA_WIND_APPARENT_SPEED;
-                                                packet.value.value_float = wind_speed_knots;
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_ENVIRONMENT_AWD: {
                                                 packet.id = TOPIC_NMEA_WIND_APPARENT_DIRECTION;
-                                                packet.value.value_float = (float)value_node->valuedouble * (180.0f / 3.14159265f);
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
                                                 break;
                                             }
                                             case SIGNALK_TOPIC_ENVIRONMENT_DEPTH: {
-                                                ESP_LOGI(TAG, "Depth Signal K (%.1fm):\n", (float)value_node->valuedouble);
                                                 packet.id = TOPIC_NMEA_BOAT_DEPTH;
-                                                packet.value.value_float = (float)value_node->valuedouble;
+                                                packet.value.value_double = value_node->valuedouble;
                                                 xQueueSend(msg_queue, &packet, 0);
+                                                break;
+                                            }
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                    else {
+                                        switch (matched_id) {
+                                            case SIGNALK_TOPIC_NAVIGATION_POSITION: {
+                                                cJSON *lat_node = cJSON_GetObjectItemCaseSensitive(value_node, "latitude");
+                                                cJSON *lon_node = cJSON_GetObjectItemCaseSensitive(value_node, "longitude");
+                                                if (cJSON_IsNumber(lat_node) && cJSON_IsNumber(lon_node)) {
+                                                    packet.id = TOPIC_NMEA_BOAT_LATITUDE;
+                                                    packet.value.value_double = lat_node->valuedouble;
+                                                    xQueueSend(msg_queue, &packet, 0);
+                                                    packet.id = TOPIC_NMEA_BOAT_LONGITUDE;
+                                                    packet.value.value_double = lon_node->valuedouble;
+                                                    xQueueSend(msg_queue, &packet, 0);
+                                                }
                                                 break;
                                             }
                                             default:
@@ -167,11 +171,8 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
                             }
                         }
                     
-
                         // --- THE DATA IS READY FOR USE HERE ---
                         //ESP_LOGI(TAG, "Complete Message Received (%d bytes)", data->payload_len);
-                        
-
                         cJSON_Delete(root);
                         // Clean up memory after processing the packet
                         free(rx_buffer);

@@ -60,16 +60,16 @@ static void queue_reader_cb(lv_timer_t * timer)
 // -----NMEA2k-----
             // Wind
             case TOPIC_NMEA_WIND_TRUE_SPEED:
-                state_set_nmea_wind_true_speed((int)round(packet.value.value_float));
+                state_set_nmea_wind_true_speed(packet.value.value_double);
                 break;
             case TOPIC_NMEA_WIND_TRUE_DIRECTION:
-                state_set_nmea_wind_true_direction((int)round(packet.value.value_float));
+                state_set_nmea_wind_true_direction(packet.value.value_double);
                 break;
             case TOPIC_NMEA_WIND_APPARENT_SPEED:
-                state_set_nmea_wind_apparent_speed((int)round(packet.value.value_float));
+                state_set_nmea_wind_apparent_speed(packet.value.value_double);
                 break;
             case TOPIC_NMEA_WIND_APPARENT_DIRECTION:
-                state_set_nmea_wind_apparent_direction((int)round(packet.value.value_float));
+                state_set_nmea_wind_apparent_direction(packet.value.value_double);
                 break;
             // Diesel Tank
             case TOPIC_NMEA_DIESELTANK_LEVEL_PERCENT:
@@ -82,28 +82,28 @@ static void queue_reader_cb(lv_timer_t * timer)
                 //state_set_nmea_dieseltank_capacity((int)round(packet.value.value_float));
             // Boat
             case TOPIC_NMEA_BOAT_HEADING:
-                state_set_nmea_boat_heading((int)round(packet.value.value_float));
+                state_set_nmea_boat_heading(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_COURSE_OVER_GROUND:
-                state_set_nmea_boat_course_over_ground((int)round(packet.value.value_float));
+                state_set_nmea_boat_course_over_ground(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_SPEED_OVER_GROUND:
-                state_set_nmea_boat_speed_over_ground((int)round(packet.value.value_float));
+                state_set_nmea_boat_speed_over_ground(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_SPEED_THROUGH_WATER:
-                state_set_nmea_boat_speed_through_water((int)round(packet.value.value_float));
+                state_set_nmea_boat_speed_through_water(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_DEPTH:
-                state_set_nmea_boat_depth(packet.value.value_float);
+                state_set_nmea_boat_depth(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_DEPTH_OFFSET:
                 state_set_nmea_boat_depth_offset(packet.value.value_int);
                 break;
             case TOPIC_NMEA_BOAT_LATITUDE:
-                state_set_nmea_boat_latitude(packet.value.value_int);
+                state_set_nmea_boat_latitude(packet.value.value_double);
                 break;
             case TOPIC_NMEA_BOAT_LONGITUDE:
-                state_set_nmea_boat_longitude(packet.value.value_int);
+                state_set_nmea_boat_longitude(packet.value.value_double);
                 break;
             // Environment
             case TOPIC_NMEA_ENVIRONMENT_TEMPERATURE_INSIDE:

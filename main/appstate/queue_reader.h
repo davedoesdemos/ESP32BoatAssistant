@@ -99,6 +99,7 @@ typedef struct {
     telemetry_id_t id;
     union {
         float value_float;
+        double value_double;
         int value_int;
         char value_string[16];
     } value;

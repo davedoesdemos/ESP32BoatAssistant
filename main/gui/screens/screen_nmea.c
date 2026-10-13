@@ -29,6 +29,35 @@ static lv_obj_t * create_data_box(lv_obj_t * parent, const char * title, lv_subj
 
     return container;
 }
+static lv_obj_t * create_data_box_smalltext(lv_obj_t * parent, const char * title, lv_subject_t * subject_value, uint32_t bg_hex_color) {
+    // Create and reset container
+    lv_obj_t * container = lv_obj_create(parent);
+    lv_obj_remove_style_all(container);
+
+    lv_obj_set_layout(container, LV_LAYOUT_FLEX);
+    lv_obj_set_flex_flow(container, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_flex_align(container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START);    
+    //lv_obj_set_width(container, lv_pct(100));
+    lv_obj_set_style_bg_opa(container, LV_OPA_COVER, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(container, lv_color_hex(bg_hex_color), LV_PART_MAIN);
+        // Create and populate labels
+        lv_obj_t * lbl_title = lv_label_create(container);
+        lv_label_set_text(lbl_title, title);
+        lv_obj_set_width(lbl_title, lv_pct(100));
+        lv_obj_set_style_text_align(lbl_title, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_24, 0); 
+        
+        lv_obj_t * lbl_value = lv_label_create(container);
+        //lv_label_set_text(lbl_value, value);
+        lv_obj_set_width(lbl_title, lv_pct(100));
+        lv_obj_set_style_text_align(lbl_value, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_font(lbl_value, &lv_font_montserrat_14, 0); 
+
+        lv_label_bind_text(lbl_value, subject_value, NULL);
+
+
+    return container;
+}
 
 void screen_nmea_layout(lv_obj_t *screen_nmea){
     // Layout Column for three rows of 4 labels
@@ -61,8 +90,8 @@ void screen_nmea_layout(lv_obj_t *screen_nmea){
         lv_obj_set_flex_align(row1_container, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
         lv_obj_set_width(row1_container, lv_pct(100));
 
-        create_data_box(row1_container, "TWS", state_nmea_wind_true_speed_text, 0xF7F7F7);
-        create_data_box(row1_container, "TWD", state_nmea_wind_true_direction_text, 0xF7F7F7);
+        create_data_box_smalltext(row1_container, "Lat", state_nmea_boat_latitude_text, 0xF7F7F7);
+        create_data_box_smalltext(row1_container, "Lon", state_nmea_boat_longitude_text, 0xF7F7F7);
         create_data_box(row1_container, "AWS", state_nmea_wind_apparent_speed_text, 0xF7F7F7);
         create_data_box(row1_container, "AWD", state_nmea_wind_apparent_direction_text, 0xF7F7F7);
 

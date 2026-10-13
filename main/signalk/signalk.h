@@ -17,11 +17,7 @@ static const char *SIGNALK_SUBSCRIPTION_PLAN =
     "      \"period\": 500"
     "    },"
     "    {"
-    "      \"path\": \"navigation.position.latitude\","
-    "      \"period\": 500"
-    "    },"
-    "    {"
-    "      \"path\": \"navigation.position.longitude\","
+    "      \"path\": \"navigation.position\","
     "      \"period\": 500"
     "    },"
     "    {"
@@ -56,8 +52,7 @@ typedef enum {
 // -----SignalK-----
     //Vessel
     SIGNALK_TOPIC_NAVIGATION_HEADING,
-    SIGNALK_TOPIC_NAVIGATION_POSITION_LATITUDE,
-    SIGNALK_TOPIC_NAVIGATION_POSITION_LONGITUDE,
+    SIGNALK_TOPIC_NAVIGATION_POSITION,
     SIGNALK_TOPIC_NAVIGATION_SOG,
     SIGNALK_TOPIC_NAVIGATION_COG,
     SIGNALK_TOPIC_NAVIGATION_STW,
@@ -72,8 +67,7 @@ typedef enum {
 static const char *signalk_topic_registry[SIGNALK_TOPIC_COUNT] = {
     // Vessel
         [SIGNALK_TOPIC_NAVIGATION_HEADING] = "navigation.headingMagnetic",
-        [SIGNALK_TOPIC_NAVIGATION_POSITION_LATITUDE] = "navigation.position.latitude",
-        [SIGNALK_TOPIC_NAVIGATION_POSITION_LONGITUDE] = "navigation.position.longitude",
+        [SIGNALK_TOPIC_NAVIGATION_POSITION] = "navigation.position",
         [SIGNALK_TOPIC_NAVIGATION_SOG] = "navigation.speedOverGround",
         [SIGNALK_TOPIC_NAVIGATION_COG] = "navigation.courseOverGroundTrue",
         [SIGNALK_TOPIC_NAVIGATION_STW] = "navigation.speedThroughWater",

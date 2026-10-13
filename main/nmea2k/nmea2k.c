@@ -192,20 +192,18 @@ void nmea_process_to_queue(){
                         // Process Course Over Ground (if available)
                         if (raw_cog != 0xFFFF) {
                             float cog_rad = raw_cog * 0.0001f;
-                            float cog_deg = cog_rad * (180.0f / 3.14159265f); // Convert to degrees if needed
 
                             packet.id = TOPIC_NMEA_BOAT_COURSE_OVER_GROUND;
-                            packet.value.value_float = cog_deg; 
+                            packet.value.value_double = cog_rad; 
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);
                         }
 
                         // Process Speed Over Ground (if available)
                         if (raw_sog != 0xFFFF) {
                             float sog_ms = raw_sog * 0.01f;
-                            float sog_knots = sog_ms * 1.94384f; // Convert m/s to knots for marine display
 
                             packet.id = TOPIC_NMEA_BOAT_SPEED_OVER_GROUND;
-                            packet.value.value_float = sog_knots; 
+                            packet.value.value_double = sog_ms; 
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);
                         }
                         break;
@@ -218,19 +216,16 @@ void nmea_process_to_queue(){
                         // Wind Reference sits in bits 0-2 of byte 5
                         uint8_t reference  = message.data[5] & 0x07; 
 
-                        float wind_speed_knots = 0.0f;
-                        float wind_dir_deg = 0.0f;
+                        double speed_ms = 0.0f;
+                        double dir_rad = 0.0f;
 
                         // Process Wind Speed (if available)
                         if (raw_speed != 0xFFFF) {
-                            float speed_ms = raw_speed * 0.01f;
-                            wind_speed_knots = speed_ms * 1.94384f; // Convert m/s to knots
+                            speed_ms = raw_speed * 0.01f;
                         }
-
                         // Process Wind Direction (if available)
                         if (raw_dir != 0xFFFF) {
-                            float dir_rad = raw_dir * 0.0001f;
-                            wind_dir_deg = dir_rad * (180.0f / 3.14159265f); // Convert to degrees
+                            dir_rad = raw_dir * 0.0001f;
                         }
 
                         // Route to the correct UI target based on the reference type
@@ -238,10 +233,10 @@ void nmea_process_to_queue(){
                             switch (reference) {
                                 case 0: // Apparent Wind
                                     packet.id = TOPIC_NMEA_WIND_APPARENT_SPEED;
-                                    packet.value.value_float = wind_speed_knots;
+                                    packet.value.value_double = speed_ms;
                                     xQueueSend(msg_queue, &packet, portMAX_DELAY);
                                     packet.id = TOPIC_NMEA_WIND_APPARENT_DIRECTION;
-                                    packet.value.value_float = wind_dir_deg;
+                                    packet.value.value_double = dir_rad;
                                     xQueueSend(msg_queue, &packet, portMAX_DELAY);
                                     break;
 
@@ -249,10 +244,10 @@ void nmea_process_to_queue(){
                                 case 2: // True Wind (referenced to true North / ground)
                                 case 3: // True Wind (referenced to magnetic North)
                                     packet.id = TOPIC_NMEA_WIND_TRUE_SPEED;
-                                    packet.value.value_float = wind_speed_knots;
+                                    packet.value.value_double = speed_ms;
                                     xQueueSend(msg_queue, &packet, portMAX_DELAY);
                                     packet.id = TOPIC_NMEA_WIND_TRUE_DIRECTION;
-                                    packet.value.value_float = wind_dir_deg;
+                                    packet.value.value_double = dir_rad;
                                     xQueueSend(msg_queue, &packet, portMAX_DELAY);
                                     break;
                                 default:
@@ -272,9 +267,9 @@ void nmea_process_to_queue(){
                             // depth unavailable
                              break; 
                         } else {
-                            float actual_depth_m = (raw_depth * 0.01); // offset applied in state.c 
+                            double actual_depth_m = (raw_depth * 0.01); // offset applied in state.c 
                             packet.id = TOPIC_NMEA_BOAT_DEPTH;
-                            packet.value.value_float = actual_depth_m;
+                            packet.value.value_double = actual_depth_m;
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);
                         }
                         break;

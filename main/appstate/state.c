@@ -475,6 +475,31 @@ static char state_system_wifi_status_text_prev_buf[30] = "Not Connected";
 static char state_system_memory_free_text_buf[30] = "0 Bytes";
 static char state_system_memory_free_text_prev_buf[30] = "0 Bytes";
 
+void format_latitude(char *buffer, size_t buffer_size, double decimal_lat) {
+    char direction = (decimal_lat >= 0.0) ? 'N' : 'S';
+    double abs_lat = fabs(decimal_lat);
+    int degrees = (int)abs_lat;
+    double minutes = (abs_lat - degrees) * 60.0;
+    snprintf(buffer, buffer_size, "%d° %.3f' %c", degrees, minutes, direction);
+}
+
+void format_longitude(char *buffer, size_t buffer_size, double decimal_lon) {
+    char direction = (decimal_lon >= 0.0) ? 'E' : 'W';
+    double abs_lon = fabs(decimal_lon);
+    int degrees = (int)abs_lon;
+    double minutes = (abs_lon - degrees) * 60.0;
+    // 2. Format string. %03d adds leading zeros to keep the degrees 3-digits wide.
+    snprintf(buffer, buffer_size, "%03d° %.3f' %c", degrees, minutes, direction);
+}
+
+double radians_to_degrees(double radians) {
+    return radians * (180.0 / M_PI);
+}
+
+double ms_to_knots(double ms) {
+    return ms * 1.94384f;
+}
+
 void state_init(void) {
     // Initialize the actual subjects embedded inside the private struct
     // -----Ruuvi-----
@@ -705,56 +730,57 @@ void state_set_ruuvi_air_1_nox(int32_t value){
 }
 // -----NMEA2K-----
 // Wind
-void state_set_nmea_wind_true_speed(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.wind.true_speed, value);
+void state_set_nmea_wind_true_speed(double value) {
+    lv_subject_set_int(&system_state.nmea.wind.true_speed, (int)round(ms_to_knots(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkt", (int)value);
+    snprintf(temp, sizeof(temp), "%.1fkt", ms_to_knots(value));
     lv_subject_set_string(&system_state.nmea.wind.true_speed_text, temp);
 }
-void state_set_nmea_wind_true_direction(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.wind.true_direction, value);
+void state_set_nmea_wind_true_direction(double value) {
+    lv_subject_set_int(&system_state.nmea.wind.true_direction, (int)round(radians_to_degrees(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)round(radians_to_degrees(value)));
     lv_subject_set_string(&system_state.nmea.wind.true_direction_text, temp);
 }
-void state_set_nmea_wind_apparent_speed(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.wind.apparent_speed, value);
+void state_set_nmea_wind_apparent_speed(double value) {
+    lv_subject_set_int(&system_state.nmea.wind.apparent_speed, (int)round(ms_to_knots(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkt", (int)value);
+    snprintf(temp, sizeof(temp), "%.1fkt", ms_to_knots(value));
     lv_subject_set_string(&system_state.nmea.wind.apparent_speed_text, temp);
 }
-void state_set_nmea_wind_apparent_direction(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.wind.apparent_direction, (int)value);
+void state_set_nmea_wind_apparent_direction(double value) {
+    lv_subject_set_int(&system_state.nmea.wind.apparent_direction, (int)round(radians_to_degrees(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)round(radians_to_degrees(value)));
     lv_subject_set_string(&system_state.nmea.wind.apparent_direction_text, temp);
 }
 // Boat
-void state_set_nmea_boat_heading(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.heading, value);
+void state_set_nmea_boat_heading(double value) {
+    double heading = radians_to_degrees(value);
+    lv_subject_set_int(&system_state.nmea.boat.heading, (int)round(value));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°", (int)value);
+    snprintf(temp, sizeof(temp), "%d°", (int)heading);
     lv_subject_set_string(&system_state.nmea.boat.heading_text, temp);
 }
-void state_set_nmea_boat_course_over_ground(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.course_over_ground, value);
+void state_set_nmea_boat_course_over_ground(double value) {
+    lv_subject_set_int(&system_state.nmea.boat.course_over_ground, (int)round(radians_to_degrees(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d°", (int)value);
+    snprintf(temp, sizeof(temp), "%.1f°", radians_to_degrees(value));
     lv_subject_set_string(&system_state.nmea.boat.course_over_ground_text, temp);
 }
-void state_set_nmea_boat_speed_over_ground(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.speed_over_ground, value);
+void state_set_nmea_boat_speed_over_ground(double value) {
+    lv_subject_set_int(&system_state.nmea.boat.speed_over_ground, (int)round(ms_to_knots(value)));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkt", (int)value);
+    snprintf(temp, sizeof(temp), "%.1fkt", ms_to_knots(value));
     lv_subject_set_string(&system_state.nmea.boat.speed_over_ground_text, temp);
 }
-void state_set_nmea_boat_speed_through_water(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.speed_through_water, value);
+void state_set_nmea_boat_speed_through_water(double value) {
+    lv_subject_set_int(&system_state.nmea.boat.speed_through_water, ms_to_knots(value));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dkt", (int)value);
+    snprintf(temp, sizeof(temp), "%.1fkt", ms_to_knots(value));
     lv_subject_set_string(&system_state.nmea.boat.speed_through_water_text, temp);
 }
-void state_set_nmea_boat_depth(float value) {
+void state_set_nmea_boat_depth(double value) {
     int offset = lv_subject_get_int(&system_state.nmea.boat.depth_offset);
     float real_depth = value + (offset / 100.0f);
     lv_subject_set_int(&system_state.nmea.boat.depth, (int)round(real_depth));
@@ -768,16 +794,16 @@ void state_set_nmea_boat_depth_offset(int32_t value) {
     snprintf(temp, sizeof(temp), "%dm", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.depth_offset_text, temp);
 }
-void state_set_nmea_boat_latitude(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.latitude, value);
+void state_set_nmea_boat_latitude(double value) {
+    lv_subject_set_int(&system_state.nmea.boat.latitude, (int)round(value * 1000));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d", (int)value);
+    format_latitude(temp, sizeof(temp), value);
     lv_subject_set_string(&system_state.nmea.boat.latitude_text, temp);
 }
-void state_set_nmea_boat_longitude(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.longitude, value);
+void state_set_nmea_boat_longitude(double value) {
+    lv_subject_set_int(&system_state.nmea.boat.longitude, (int)round(value * 1000));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%d", (int)value);
+    format_longitude(temp, sizeof(temp), value);
     lv_subject_set_string(&system_state.nmea.boat.longitude_text, temp);
 }
 // Environment

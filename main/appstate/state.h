@@ -154,6 +154,10 @@
     extern lv_subject_t * const state_system_memory_free;
     extern lv_subject_t * const state_system_memory_free_text;
 
+void format_latitude(char *buffer, size_t buffer_size, double decimal_lat);
+void format_longitude(char *buffer, size_t buffer_size, double decimal_lon);
+double radians_to_degrees(double radians);
+double ms_to_knots(double ms);
 void state_init(void);
 
 // -----Ruuvi-----
@@ -175,19 +179,19 @@ void state_init(void);
     void state_set_ruuvi_air_1_nox(int32_t value);
 // -----NMEA2K-----
     // Wind
-    void state_set_nmea_wind_true_speed(int32_t value);
-    void state_set_nmea_wind_true_direction(int32_t value);
-    void state_set_nmea_wind_apparent_speed(int32_t value);
-    void state_set_nmea_wind_apparent_direction(int32_t value);
+    void state_set_nmea_wind_true_speed(double value);
+    void state_set_nmea_wind_true_direction(double value);
+    void state_set_nmea_wind_apparent_speed(double value);
+    void state_set_nmea_wind_apparent_direction(double value);
     // Boat
-    void state_set_nmea_boat_heading(int32_t value);
-    void state_set_nmea_boat_course_over_ground(int32_t value);
-    void state_set_nmea_boat_speed_over_ground(int32_t value);
-    void state_set_nmea_boat_speed_through_water(int32_t value);
-    void state_set_nmea_boat_depth(float value);
+    void state_set_nmea_boat_heading(double value);
+    void state_set_nmea_boat_course_over_ground(double value);
+    void state_set_nmea_boat_speed_over_ground(double value);
+    void state_set_nmea_boat_speed_through_water(double value);
+    void state_set_nmea_boat_depth(double value);
     void state_set_nmea_boat_depth_offset(int32_t value);
-    void state_set_nmea_boat_latitude(int32_t value);
-    void state_set_nmea_boat_longitude(int32_t value);
+    void state_set_nmea_boat_latitude(double value);
+    void state_set_nmea_boat_longitude(double value);
     // Environment
     void state_set_nmea_environment_temperature_inside(int32_t value);
     void state_set_nmea_environment_humidity_inside(int32_t value);
