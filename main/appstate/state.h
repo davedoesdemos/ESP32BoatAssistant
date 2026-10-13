@@ -7,6 +7,8 @@
 #include <esp_log.h>
 #include <math.h>
 
+#define NMEA_DEPTH_OFFSET 40 // x100 the actual value
+
 // Subject pointers for binding
 // -----Ruuvi-----
     // Ruuvi Tag 1
@@ -135,6 +137,8 @@
     extern lv_subject_t * const state_victron_dieseltank_remaining_hours_text;
     extern lv_subject_t * const state_victron_dieseltank_remaining_miles;
     extern lv_subject_t * const state_victron_dieseltank_remaining_miles_text;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_heating;
+    extern lv_subject_t * const state_victron_dieseltank_remaining_heating_text;
     // Inverter
     extern lv_subject_t * const state_victron_inverter_ac_voltage;
     extern lv_subject_t * const state_victron_inverter_ac_voltage_text;

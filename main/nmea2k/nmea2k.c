@@ -272,7 +272,7 @@ void nmea_process_to_queue(){
                             // depth unavailable
                              break; 
                         } else {
-                            float actual_depth_m = (raw_depth * 0.01) + DEPTH_OFFSET; 
+                            float actual_depth_m = (raw_depth * 0.01); // offset applied in state.c 
                             packet.id = TOPIC_NMEA_BOAT_DEPTH;
                             packet.value.value_float = actual_depth_m;
                             xQueueSend(msg_queue, &packet, portMAX_DELAY);

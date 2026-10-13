@@ -12,7 +12,6 @@
 // Waveshare 4.3" Native Hardware CAN Pins
 #define CAN_TX_IO_NUM       15
 #define CAN_RX_IO_NUM       16
-#define DEPTH_OFFSET        0.4
 
 const char* get_pgn_label(uint32_t pgn);
 void init_nmea2000_bus(void);

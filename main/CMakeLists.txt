@@ -11,6 +11,7 @@ idf_component_register(
         "wifi/wifistation.c"
         "gui/gui.c"
         "gui/screens/screen_settings.c"
+        "gui/screens/screen_nmea_settings.c"
         "gui/screens/screen_environment.c"
         "gui/screens/screen_victron.c"
         "gui/screens/screen_wifi.c"

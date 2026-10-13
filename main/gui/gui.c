@@ -38,11 +38,14 @@ void screen_init(lv_display_t *disp) {
         lv_obj_align(tileview, LV_ALIGN_CENTER, 0, 0);
 
         // Create tiles to act as screens
-        lv_obj_t *screen_settings = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT| LV_DIR_BOTTOM);
-        lv_obj_t *screen_wifi = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
+        // First row is settings
+        lv_obj_t *screen_nmea_settings = lv_tileview_add_tile(tileview, 0, 0, LV_DIR_RIGHT| LV_DIR_BOTTOM);
+        lv_obj_t *screen_settings = lv_tileview_add_tile(tileview, 1, 0, LV_DIR_LEFT | LV_DIR_RIGHT| LV_DIR_BOTTOM);
+        lv_obj_t *screen_wifi = lv_tileview_add_tile(tileview, 2, 0, LV_DIR_LEFT | LV_DIR_BOTTOM);
+        // Second Row is data screens
         lv_obj_t *screen_nmea = lv_tileview_add_tile(tileview, 0, 1, LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_environment = lv_tileview_add_tile(tileview, 1, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
-        lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT);
+        lv_obj_t *screen_victron = lv_tileview_add_tile(tileview, 2, 1, LV_DIR_LEFT | LV_DIR_RIGHT | LV_DIR_TOP);
         lv_obj_t *screen_fuel = lv_tileview_add_tile(tileview, 3, 1, LV_DIR_LEFT);
         // Set default screen
         lv_tileview_set_tile_by_index(tileview, 1, 1, LV_ANIM_OFF);
@@ -123,6 +126,7 @@ void screen_init(lv_display_t *disp) {
 
         // Lay out all screens
         // First row
+        screen_nmea_settings_layout(screen_nmea_settings);
         screen_settings_layout(screen_settings);
         screen_wifi_layout(screen_wifi);
         // Second row

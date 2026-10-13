@@ -6,6 +6,7 @@
 
 #include "backlight.h"
 #include "expander.h"
+#include "screens/screen_nmea_settings.h"
 #include "screens/screen_settings.h"
 #include "screens/screen_environment.h"
 #include "screens/screen_victron.h"

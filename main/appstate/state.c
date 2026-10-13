@@ -161,6 +161,8 @@ typedef struct {
             lv_subject_t remaining_hours_text;
             lv_subject_t remaining_miles;
             lv_subject_t remaining_miles_text;
+            lv_subject_t remaining_heating;
+            lv_subject_t remaining_heating_text;
         } dieseltank;
         // Inverter
         struct {
@@ -312,6 +314,8 @@ static system_state_t system_state;
     lv_subject_t * const state_victron_dieseltank_remaining_hours_text = &system_state.victron.dieseltank.remaining_hours_text;
     lv_subject_t * const state_victron_dieseltank_remaining_miles = &system_state.victron.dieseltank.remaining_miles;
     lv_subject_t * const state_victron_dieseltank_remaining_miles_text = &system_state.victron.dieseltank.remaining_miles_text;
+    lv_subject_t * const state_victron_dieseltank_remaining_heating = &system_state.victron.dieseltank.remaining_heating;
+    lv_subject_t * const state_victron_dieseltank_remaining_heating_text = &system_state.victron.dieseltank.remaining_heating_text;
     // Inverter
     lv_subject_t * const state_victron_inverter_ac_voltage = &system_state.victron.inverter.ac_voltage;
     lv_subject_t * const state_victron_inverter_ac_voltage_text = &system_state.victron.inverter.ac_voltage_text;
@@ -454,6 +458,8 @@ static system_state_t system_state;
     static char state_victron_dieseltank_remaining_hours_text_prev_buf[16] = "---";
     static char state_victron_dieseltank_remaining_miles_text_buf[16] = "---";
     static char state_victron_dieseltank_remaining_miles_text_prev_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_heating_text_buf[16] = "---";
+    static char state_victron_dieseltank_remaining_heating_text_prev_buf[16] = "---";
     // Inverter
     static char state_victron_inverter_ac_voltage_text_buf[16] = "---";
     static char state_victron_inverter_ac_voltage_text_prev_buf[16] = "---";
@@ -522,7 +528,7 @@ void state_init(void) {
         lv_subject_init_string(&system_state.nmea.boat.speed_through_water_text, state_nmea_boat_speed_through_water_text_buf, state_nmea_boat_speed_through_water_text_prev_buf, sizeof(state_nmea_boat_speed_through_water_text_buf), "---");
         lv_subject_init_int(&system_state.nmea.boat.depth, 0);
         lv_subject_init_string(&system_state.nmea.boat.depth_text, state_nmea_boat_depth_text_buf, state_nmea_boat_depth_text_prev_buf, sizeof(state_nmea_boat_depth_text_buf), "---");
-        lv_subject_init_int(&system_state.nmea.boat.depth_offset, 0);
+        lv_subject_init_int(&system_state.nmea.boat.depth_offset, NMEA_DEPTH_OFFSET);
         lv_subject_init_string(&system_state.nmea.boat.depth_offset_text, state_nmea_boat_depth_offset_text_buf, state_nmea_boat_depth_offset_text_prev_buf, sizeof(state_nmea_boat_depth_offset_text_buf), "---");
         lv_subject_init_int(&system_state.nmea.boat.latitude, 0);
         lv_subject_init_string(&system_state.nmea.boat.latitude_text, state_nmea_boat_latitude_text_buf, state_nmea_boat_latitude_text_prev_buf, sizeof(state_nmea_boat_latitude_text_buf), "---");
@@ -597,6 +603,8 @@ void state_init(void) {
         lv_subject_init_string(&system_state.victron.dieseltank.remaining_hours_text, state_victron_dieseltank_remaining_hours_text_buf, state_victron_dieseltank_remaining_hours_text_prev_buf, sizeof(state_victron_dieseltank_remaining_hours_text_buf), "---");
         lv_subject_init_int(&system_state.victron.dieseltank.remaining_miles, 0);
         lv_subject_init_string(&system_state.victron.dieseltank.remaining_miles_text, state_victron_dieseltank_remaining_miles_text_buf, state_victron_dieseltank_remaining_miles_text_prev_buf, sizeof(state_victron_dieseltank_remaining_miles_text_buf), "---");
+        lv_subject_init_int(&system_state.victron.dieseltank.remaining_heating, 0);
+        lv_subject_init_string(&system_state.victron.dieseltank.remaining_heating_text, state_victron_dieseltank_remaining_heating_text_buf, state_victron_dieseltank_remaining_heating_text_prev_buf, sizeof(state_victron_dieseltank_remaining_heating_text_buf), "---");
         // Inverter
         lv_subject_init_int(&system_state.victron.inverter.ac_voltage, 0);
         lv_subject_init_string(&system_state.victron.inverter.ac_voltage_text, state_victron_inverter_ac_voltage_text_buf, state_victron_inverter_ac_voltage_text_prev_buf, sizeof(state_victron_inverter_ac_voltage_text_buf), "---");
@@ -747,9 +755,11 @@ void state_set_nmea_boat_speed_through_water(int32_t value) {
     lv_subject_set_string(&system_state.nmea.boat.speed_through_water_text, temp);
 }
 void state_set_nmea_boat_depth(float value) {
-    lv_subject_set_int(&system_state.nmea.boat.depth, (int)round(value));
+    int offset = lv_subject_get_int(&system_state.nmea.boat.depth_offset);
+    float real_depth = value + (offset / 100.0f);
+    lv_subject_set_int(&system_state.nmea.boat.depth, (int)round(real_depth));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%.1fm", value);
+    snprintf(temp, sizeof(temp), "%.1fm", real_depth);
     lv_subject_set_string(&system_state.nmea.boat.depth_text, temp);
 }
 void state_set_nmea_boat_depth_offset(int32_t value) {
@@ -937,15 +947,20 @@ void state_set_victron_dieseltank_level_litres(int32_t value) {
     lv_subject_set_int(&system_state.victron.dieseltank.level_litres, value);
     char temp[16];
     int fuel_time = value / 2;
-    lv_subject_set_int(&system_state.victron.dieseltank.remaining_hours, fuel_time);
     int fuel_miles = fuel_time * 5;
+    int heating_time = (int)round(value / 0.3);
+    float heating_days = (value / 0.3) / 24;
+    lv_subject_set_int(&system_state.victron.dieseltank.remaining_hours, fuel_time);
     lv_subject_set_int(&system_state.victron.dieseltank.remaining_miles, fuel_miles);
+    lv_subject_set_int(&system_state.victron.dieseltank.remaining_heating, heating_time);
     snprintf(temp, sizeof(temp), "%dl", (int)value);
     lv_subject_set_string(&system_state.victron.dieseltank.level_litres_text, temp);
     snprintf(temp, sizeof(temp), "%dhrs", fuel_time);
     lv_subject_set_string(&system_state.victron.dieseltank.remaining_hours_text, temp);
     snprintf(temp, sizeof(temp), "%dNM", fuel_miles);
     lv_subject_set_string(&system_state.victron.dieseltank.remaining_miles_text, temp);
+    snprintf(temp, sizeof(temp), "%.1f days", heating_days);
+    lv_subject_set_string(&system_state.victron.dieseltank.remaining_heating_text, temp);
 }
 void state_set_victron_dieseltank_capacity(int32_t value) {
     lv_subject_set_int(&system_state.victron.dieseltank.capacity, value);

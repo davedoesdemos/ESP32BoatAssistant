@@ -29,10 +29,11 @@ static void slider_event_cb(lv_event_t * e)
 }
 
 void screen_settings_layout(lv_obj_t *screen_settings) {
-    lv_obj_t *label3 = lv_label_create(screen_settings);
-    lv_label_set_text(label3, "Backlight Timeout");
-    lv_obj_center(label3);
-    lv_obj_set_y( label3, -40 );
+    lv_obj_t *lbl_timeout = lv_label_create(screen_settings);
+    lv_label_set_text(lbl_timeout, "Backlight Timeout");
+    lv_obj_center(lbl_timeout);
+    lv_obj_set_y( lbl_timeout, -40 );
+    lv_obj_set_style_text_font(lbl_timeout, &lv_font_montserrat_24, 0); 
     lv_obj_t * slider = lv_slider_create(screen_settings);
     lv_obj_set_width(slider, 400);                          /* Set width in pixels */
     lv_obj_center(slider);                                  /* Align perfectly to display center */
@@ -46,4 +47,5 @@ void screen_settings_layout(lv_obj_t *screen_settings) {
     snprintf(buf, sizeof(buf), "%d s", (int)initial_seconds);
     lv_label_set_text(slider_label, buf);
     lv_obj_align_to(slider_label, slider, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    lv_obj_set_style_text_font(slider_label, &lv_font_montserrat_24, 0); 
 }
