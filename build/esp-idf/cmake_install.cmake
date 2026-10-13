@@ -584,6 +584,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_websocket_client/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__cmake_utilities/cmake_install.cmake")
 endif()
 

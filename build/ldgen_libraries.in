@@ -168,10 +168,12 @@ $<TARGET_FILE:idf::espressif__esp_lcd_touch>
 $<TARGET_FILE:__idf_esp_lcd>
 $<TARGET_FILE:idf::espressif__esp_lcd_touch_gt911>
 $<TARGET_FILE:__idf_espressif__esp_lcd_touch>
+$<TARGET_FILE:idf::espressif__esp_websocket_client>
 $<TARGET_FILE:idf::espressif__button>
 $<TARGET_FILE:idf::espressif__zlib>
 $<TARGET_FILE:idf::espressif__libpng>
 $<TARGET_FILE:__idf_espressif__zlib>
+$<TARGET_FILE:png_static>
 $<TARGET_FILE:lvgl_docoder_lib>
 $<TARGET_FILE:idf::espressif__esp_mmap_assets>
 $<TARGET_FILE:idf::espressif__esp_lv_fs>
@@ -186,4 +188,5 @@ $<TARGET_FILE:__idf_espressif__knob>
 $<TARGET_FILE:idf::main>
 $<TARGET_FILE:__idf_espressif__esp_lcd_touch_gt911>
 $<TARGET_FILE:__idf_mqtt>
+$<TARGET_FILE:__idf_espressif__esp_websocket_client>
 $<TARGET_FILE:__idf_espressif__esp_lvgl_adapter>

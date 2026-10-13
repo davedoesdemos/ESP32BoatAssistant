@@ -13,6 +13,7 @@
 #include "gui.h"
 #include "state.h"
 #include "mqtt.h"
+#include "signalk.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"

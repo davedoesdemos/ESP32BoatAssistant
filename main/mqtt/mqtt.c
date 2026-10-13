@@ -29,15 +29,15 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     
     switch ((esp_mqtt_event_id_t)event_id) {
         case MQTT_EVENT_CONNECTED:
-            ESP_LOGI(TAG, "Connected to Cerbo GX Broker!");
+            ESP_LOGI(TAG, "Connected to Cerbo GX Broker");
             
             // Loop through the registry and subscribe to every topic automatically
-            for (int i = 0; i < TOPIC_COUNT; i++) {
-                int msg_id = esp_mqtt_client_subscribe(client, topic_registry[i], 0);
+            for (int i = 0; i < MQTT_TOPIC_COUNT; i++) {
+                int msg_id = esp_mqtt_client_subscribe(client, mqtt_topic_registry[i], 0);
                 if (msg_id != -1) {
-                    ESP_LOGI(TAG, "Successfully subscribed to: %s", topic_registry[i]);
+                    ESP_LOGI(TAG, "Successfully subscribed to: %s", mqtt_topic_registry[i]);
                 } else {
-                    ESP_LOGE(TAG, "Failed to subscribe to: %s", topic_registry[i]);
+                    ESP_LOGE(TAG, "Failed to subscribe to: %s", mqtt_topic_registry[i]);
                 }
             }
             
@@ -47,20 +47,20 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
         case MQTT_EVENT_DATA:
             // Identify which topic this is
-            victron_topic_id_t matched_id = TOPIC_COUNT;
+            victron_topic_id_t matched_id = MQTT_TOPIC_COUNT;
 
-            for (int i = 0; i < TOPIC_COUNT; i++) {
+            for (int i = 0; i < MQTT_TOPIC_COUNT; i++) {
                 // Compare lengths first, then string contents for safety
-                size_t registry_string_len = strlen(topic_registry[i]);
+                size_t registry_string_len = strlen(mqtt_topic_registry[i]);
                 if (event->topic_len ==registry_string_len) {
-                    if (strncmp(event->topic, topic_registry[i], event->topic_len) == 0) {
+                    if (strncmp(event->topic, mqtt_topic_registry[i], event->topic_len) == 0) {
                         matched_id = (victron_topic_id_t)i; // Loop counter becomes the Enum ID
                         break;
                     }
                 }
             }
             // If it's a topic we don't care about, exit early
-            if (matched_id == TOPIC_COUNT) {
+            if (matched_id == MQTT_TOPIC_COUNT) {
                 break;
             }
             // Safely extract and parse the JSON string wrapper
@@ -73,163 +73,163 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
                     // Clean, readable switch statement!
                     switch (matched_id) {
                         // House Battery
-                        case TOPIC_HOUSE_BATTERY_VOLTAGE: {
+                        case MQTT_TOPIC_HOUSE_BATTERY_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_HOUSE_BATTERY_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_HOUSE_BATTERY_CURRENT: {
+                        case MQTT_TOPIC_HOUSE_BATTERY_CURRENT: {
                             packet.id = TOPIC_VICTRON_HOUSE_BATTERY_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_HOUSE_BATTERY_POWER: {
+                        case MQTT_TOPIC_HOUSE_BATTERY_POWER: {
                             packet.id = TOPIC_VICTRON_HOUSE_BATTERY_POWER;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_HOUSE_BATTERY_SOC: {
+                        case MQTT_TOPIC_HOUSE_BATTERY_SOC: {
                             packet.id = TOPIC_VICTRON_HOUSE_BATTERY_SOC;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // Start Battery
-                        case TOPIC_START_BATTERY_VOLTAGE: {
+                        case MQTT_TOPIC_START_BATTERY_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_START_BATTERY_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // IP43 charger
-                        case TOPIC_CHARGER_VOLTAGE: {
+                        case MQTT_TOPIC_CHARGER_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_CHARGER_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_CHARGER_CURRENT: {
+                        case MQTT_TOPIC_CHARGER_CURRENT: {
                             packet.id = TOPIC_VICTRON_CHARGER_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // MPPT1
-                        case TOPIC_MPPT1_DC_VOLTAGE: {
+                        case MQTT_TOPIC_MPPT1_DC_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_MPPT1_DC_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT1_DC_CURRENT: {
+                        case MQTT_TOPIC_MPPT1_DC_CURRENT: {
                             packet.id = TOPIC_VICTRON_MPPT1_DC_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT1_PV_VOLTAGE: {
+                        case MQTT_TOPIC_MPPT1_PV_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_MPPT1_PV_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT1_YIELD_TODAY: {
+                        case MQTT_TOPIC_MPPT1_YIELD_TODAY: {
                             packet.id = TOPIC_VICTRON_MPPT1_YIELD_TODAY;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT1_POWER: {
+                        case MQTT_TOPIC_MPPT1_POWER: {
                             packet.id = TOPIC_VICTRON_MPPT1_POWER;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // MPPT2
-                        case TOPIC_MPPT2_DC_VOLTAGE: {
+                        case MQTT_TOPIC_MPPT2_DC_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_MPPT2_DC_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT2_DC_CURRENT: {
+                        case MQTT_TOPIC_MPPT2_DC_CURRENT: {
                             packet.id = TOPIC_VICTRON_MPPT2_DC_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT2_PV_VOLTAGE: {
+                        case MQTT_TOPIC_MPPT2_PV_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_MPPT2_PV_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT2_YIELD_TODAY: {
+                        case MQTT_TOPIC_MPPT2_YIELD_TODAY: {
                             packet.id = TOPIC_VICTRON_MPPT2_YIELD_TODAY;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_MPPT2_POWER: {
+                        case MQTT_TOPIC_MPPT2_POWER: {
                             packet.id = TOPIC_VICTRON_MPPT2_POWER;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // DC2DC
-                        case TOPIC_DC2DC_VOLTAGE: {
+                        case MQTT_TOPIC_DC2DC_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_DC2DC_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_DC2DC_CURRENT: {
+                        case MQTT_TOPIC_DC2DC_CURRENT: {
                             packet.id = TOPIC_VICTRON_DC2DC_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_DC2DC_POWER: {
+                        case MQTT_TOPIC_DC2DC_POWER: {
                             packet.id = TOPIC_VICTRON_DC2DC_POWER;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
                         // Diesel Tank
-                        case TOPIC_DIESELTANK_LEVEL_PERCENT: {
+                        case MQTT_TOPIC_DIESELTANK_LEVEL_PERCENT: {
                             packet.id = TOPIC_VICTRON_DIESELTANK_LEVEL_PERCENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_DIESELTANK_LEVEL_LITRES: {
+                        case MQTT_TOPIC_DIESELTANK_LEVEL_LITRES: {
                             packet.id = TOPIC_VICTRON_DIESELTANK_LEVEL_LITRES;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_DIESELTANK_CAPACITY: {
+                        case MQTT_TOPIC_DIESELTANK_CAPACITY: {
                             packet.id = TOPIC_VICTRON_DIESELTANK_CAPACITY;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_INVERTER_AC_VOLTAGE: {
+                        case MQTT_TOPIC_INVERTER_AC_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_INVERTER_AC_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_INVERTER_AC_CURRENT: {
+                        case MQTT_TOPIC_INVERTER_AC_CURRENT: {
                             packet.id = TOPIC_VICTRON_INVERTER_AC_CURRENT;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
                             break;
                         }
-                        case TOPIC_INVERTER_DV_VOLTAGE: {
+                        case MQTT_TOPIC_INVERTER_DV_VOLTAGE: {
                             packet.id = TOPIC_VICTRON_INVERTER_DC_VOLTAGE;
                             packet.value.value_float = value_node->valuedouble;
                             xQueueSend(msg_queue, &packet, 0);
@@ -251,6 +251,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             break;
     }
 }
+
 void mqtt_app_start(void) {
     esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = CERBO_ADDRESS, // Cerbo GX IP

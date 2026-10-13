@@ -10,79 +10,79 @@
 typedef enum {
 // -----Victron-----
     // House Battery
-    TOPIC_HOUSE_BATTERY_VOLTAGE,
-    TOPIC_HOUSE_BATTERY_CURRENT,
-    TOPIC_HOUSE_BATTERY_POWER,
-    TOPIC_HOUSE_BATTERY_SOC,
+    MQTT_TOPIC_HOUSE_BATTERY_VOLTAGE,
+    MQTT_TOPIC_HOUSE_BATTERY_CURRENT,
+    MQTT_TOPIC_HOUSE_BATTERY_POWER,
+    MQTT_TOPIC_HOUSE_BATTERY_SOC,
     // Start Battery
-    TOPIC_START_BATTERY_VOLTAGE,
+    MQTT_TOPIC_START_BATTERY_VOLTAGE,
     // IP43 charger
-    TOPIC_CHARGER_VOLTAGE,
-    TOPIC_CHARGER_CURRENT,
+    MQTT_TOPIC_CHARGER_VOLTAGE,
+    MQTT_TOPIC_CHARGER_CURRENT,
     // MPPT1
-    TOPIC_MPPT1_DC_VOLTAGE,
-    TOPIC_MPPT1_DC_CURRENT,
-    TOPIC_MPPT1_PV_VOLTAGE,
-    TOPIC_MPPT1_YIELD_TODAY,
-    TOPIC_MPPT1_POWER,
+    MQTT_TOPIC_MPPT1_DC_VOLTAGE,
+    MQTT_TOPIC_MPPT1_DC_CURRENT,
+    MQTT_TOPIC_MPPT1_PV_VOLTAGE,
+    MQTT_TOPIC_MPPT1_YIELD_TODAY,
+    MQTT_TOPIC_MPPT1_POWER,
     // MPPT2
-    TOPIC_MPPT2_DC_VOLTAGE,
-    TOPIC_MPPT2_DC_CURRENT,
-    TOPIC_MPPT2_PV_VOLTAGE,
-    TOPIC_MPPT2_YIELD_TODAY,
-    TOPIC_MPPT2_POWER,
+    MQTT_TOPIC_MPPT2_DC_VOLTAGE,
+    MQTT_TOPIC_MPPT2_DC_CURRENT,
+    MQTT_TOPIC_MPPT2_PV_VOLTAGE,
+    MQTT_TOPIC_MPPT2_YIELD_TODAY,
+    MQTT_TOPIC_MPPT2_POWER,
     // DC2DC
-    TOPIC_DC2DC_VOLTAGE,
-    TOPIC_DC2DC_CURRENT,
-    TOPIC_DC2DC_POWER,
+    MQTT_TOPIC_DC2DC_VOLTAGE,
+    MQTT_TOPIC_DC2DC_CURRENT,
+    MQTT_TOPIC_DC2DC_POWER,
     // Diesel Tank
-    TOPIC_DIESELTANK_LEVEL_PERCENT,
-    TOPIC_DIESELTANK_LEVEL_LITRES,
-    TOPIC_DIESELTANK_CAPACITY,
+    MQTT_TOPIC_DIESELTANK_LEVEL_PERCENT,
+    MQTT_TOPIC_DIESELTANK_LEVEL_LITRES,
+    MQTT_TOPIC_DIESELTANK_CAPACITY,
     // Inverter
-    TOPIC_INVERTER_AC_VOLTAGE,
-    TOPIC_INVERTER_AC_CURRENT,
-    TOPIC_INVERTER_DV_VOLTAGE,
+    MQTT_TOPIC_INVERTER_AC_VOLTAGE,
+    MQTT_TOPIC_INVERTER_AC_CURRENT,
+    MQTT_TOPIC_INVERTER_DV_VOLTAGE,
     //add topics here, keep the last one
-    TOPIC_COUNT             // (Total count)
+    MQTT_TOPIC_COUNT             // (Total count)
 } victron_topic_id_t;
 
 // Hardcode the complete strings directly into your registry array
-static const char *topic_registry[TOPIC_COUNT] = {
+static const char *mqtt_topic_registry[MQTT_TOPIC_COUNT] = {
     // House Battery
-        [TOPIC_HOUSE_BATTERY_VOLTAGE] = "N/" VRM_ID "/battery/277/Dc/0/Voltage",
-        [TOPIC_HOUSE_BATTERY_CURRENT] = "N/" VRM_ID "/battery/277/Dc/0/Current",
-        [TOPIC_HOUSE_BATTERY_POWER] = "N/" VRM_ID "/battery/277/Dc/0/Power",
-        [TOPIC_HOUSE_BATTERY_SOC] = "N/" VRM_ID "/battery/277/Soc",
+        [MQTT_TOPIC_HOUSE_BATTERY_VOLTAGE] = "N/" VRM_ID "/battery/277/Dc/0/Voltage",
+        [MQTT_TOPIC_HOUSE_BATTERY_CURRENT] = "N/" VRM_ID "/battery/277/Dc/0/Current",
+        [MQTT_TOPIC_HOUSE_BATTERY_POWER] = "N/" VRM_ID "/battery/277/Dc/0/Power",
+        [MQTT_TOPIC_HOUSE_BATTERY_SOC] = "N/" VRM_ID "/battery/277/Soc",
     // Start Battery
-        [TOPIC_START_BATTERY_VOLTAGE] = "N/" VRM_ID "/battery/277/Dc/1/Voltage",
+        [MQTT_TOPIC_START_BATTERY_VOLTAGE] = "N/" VRM_ID "/battery/277/Dc/1/Voltage",
     // IP43 charger
-        [TOPIC_CHARGER_VOLTAGE] = "N/" VRM_ID "/charger/280/Dc/0/Voltage",
-        [TOPIC_CHARGER_CURRENT] = "N/" VRM_ID "/charger/280/Dc/0/Current",
+        [MQTT_TOPIC_CHARGER_VOLTAGE] = "N/" VRM_ID "/charger/280/Dc/0/Voltage",
+        [MQTT_TOPIC_CHARGER_CURRENT] = "N/" VRM_ID "/charger/280/Dc/0/Current",
     // MPPT1
-        [TOPIC_MPPT1_DC_VOLTAGE] = "N/" VRM_ID "/solarcharger/278/Dc/0/Voltage",
-        [TOPIC_MPPT1_DC_CURRENT] = "N/" VRM_ID "/solarcharger/278/Dc/0/Current",
-        [TOPIC_MPPT1_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/278/Pv/V",
-        [TOPIC_MPPT1_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/278/History/Daily/0/Yield",
-        [TOPIC_MPPT1_POWER] = "N/" VRM_ID "/solarcharger/278/Yield/Power",
+        [MQTT_TOPIC_MPPT1_DC_VOLTAGE] = "N/" VRM_ID "/solarcharger/278/Dc/0/Voltage",
+        [MQTT_TOPIC_MPPT1_DC_CURRENT] = "N/" VRM_ID "/solarcharger/278/Dc/0/Current",
+        [MQTT_TOPIC_MPPT1_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/278/Pv/V",
+        [MQTT_TOPIC_MPPT1_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/278/History/Daily/0/Yield",
+        [MQTT_TOPIC_MPPT1_POWER] = "N/" VRM_ID "/solarcharger/278/Yield/Power",
     // MPPT2
-        [TOPIC_MPPT2_DC_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Dc/0/Voltage",
-        [TOPIC_MPPT2_DC_CURRENT] = "N/" VRM_ID "/solarcharger/290/Dc/0/Current",
-        [TOPIC_MPPT2_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Pv/V",
-        [TOPIC_MPPT2_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/290/History/Daily/0/Yield",
-        [TOPIC_MPPT2_POWER] = "N/" VRM_ID "/solarcharger/290/Yield/Power",
+        [MQTT_TOPIC_MPPT2_DC_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Dc/0/Voltage",
+        [MQTT_TOPIC_MPPT2_DC_CURRENT] = "N/" VRM_ID "/solarcharger/290/Dc/0/Current",
+        [MQTT_TOPIC_MPPT2_PV_VOLTAGE] = "N/" VRM_ID "/solarcharger/290/Pv/V",
+        [MQTT_TOPIC_MPPT2_YIELD_TODAY] = "N/" VRM_ID "/solarcharger/290/History/Daily/0/Yield",
+        [MQTT_TOPIC_MPPT2_POWER] = "N/" VRM_ID "/solarcharger/290/Yield/Power",
     // OrionXS
-        [TOPIC_DC2DC_VOLTAGE] = "N/" VRM_ID "/alternator/279/Dc/0/Voltage",
-        [TOPIC_DC2DC_CURRENT] = "N/" VRM_ID "/alternator/279/Dc/0/Current",
-        [TOPIC_DC2DC_POWER] = "N/" VRM_ID "/alternator/279/Dc/0/Power",
+        [MQTT_TOPIC_DC2DC_VOLTAGE] = "N/" VRM_ID "/alternator/279/Dc/0/Voltage",
+        [MQTT_TOPIC_DC2DC_CURRENT] = "N/" VRM_ID "/alternator/279/Dc/0/Current",
+        [MQTT_TOPIC_DC2DC_POWER] = "N/" VRM_ID "/alternator/279/Dc/0/Power",
     // Diesel Tank
-        [TOPIC_DIESELTANK_LEVEL_PERCENT] = "N/" VRM_ID "/tank/20/Level",
-        [TOPIC_DIESELTANK_LEVEL_LITRES] = "N/" VRM_ID "/tank/20/Remaining",
-        [TOPIC_DIESELTANK_CAPACITY] = "N/" VRM_ID "/tank/20/Capacity",
+        [MQTT_TOPIC_DIESELTANK_LEVEL_PERCENT] = "N/" VRM_ID "/tank/20/Level",
+        [MQTT_TOPIC_DIESELTANK_LEVEL_LITRES] = "N/" VRM_ID "/tank/20/Remaining",
+        [MQTT_TOPIC_DIESELTANK_CAPACITY] = "N/" VRM_ID "/tank/20/Capacity",
     // Inverter
-        [TOPIC_INVERTER_AC_VOLTAGE] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/V",
-        [TOPIC_INVERTER_AC_CURRENT] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/I",
-        [TOPIC_INVERTER_DV_VOLTAGE] = "N/" VRM_ID "/inverter/278/Dc/0/Voltage"
+        [MQTT_TOPIC_INVERTER_AC_VOLTAGE] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/V",
+        [MQTT_TOPIC_INVERTER_AC_CURRENT] = "N/" VRM_ID "/inverter/278/Ac/Out/L1/I",
+        [MQTT_TOPIC_INVERTER_DV_VOLTAGE] = "N/" VRM_ID "/inverter/278/Dc/0/Voltage"
 
 };
 

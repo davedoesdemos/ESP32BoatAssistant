@@ -180,7 +180,7 @@ void state_init(void);
     void state_set_nmea_boat_course_over_ground(int32_t value);
     void state_set_nmea_boat_speed_over_ground(int32_t value);
     void state_set_nmea_boat_speed_through_water(int32_t value);
-    void state_set_nmea_boat_depth(int32_t value);
+    void state_set_nmea_boat_depth(float value);
     void state_set_nmea_boat_depth_offset(int32_t value);
     void state_set_nmea_boat_latitude(int32_t value);
     void state_set_nmea_boat_longitude(int32_t value);

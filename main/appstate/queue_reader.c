@@ -94,7 +94,7 @@ static void queue_reader_cb(lv_timer_t * timer)
                 state_set_nmea_boat_speed_through_water((int)round(packet.value.value_float));
                 break;
             case TOPIC_NMEA_BOAT_DEPTH:
-                state_set_nmea_boat_depth((int)round(packet.value.value_float));
+                state_set_nmea_boat_depth(packet.value.value_float);
                 break;
             case TOPIC_NMEA_BOAT_DEPTH_OFFSET:
                 state_set_nmea_boat_depth_offset(packet.value.value_int);

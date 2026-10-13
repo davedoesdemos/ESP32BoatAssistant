@@ -168,10 +168,12 @@
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/esp_lcd/libesp_lcd.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lcd_touch_gt911/libespressif__esp_lcd_touch_gt911.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lcd_touch/libespressif__esp_lcd_touch.a
+/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_websocket_client/libespressif__esp_websocket_client.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__button/libespressif__button.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__zlib/libespressif__zlib.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__libpng/libespressif__libpng.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__zlib/libespressif__zlib.a
+/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__libpng/libpng/liblibpng16_static.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lv_decoder/liblvgl_docoder_lib.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_mmap_assets/libespressif__esp_mmap_assets.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lv_fs/libespressif__esp_lv_fs.a
@@ -186,4 +188,5 @@
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/main/libmain.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lcd_touch_gt911/libespressif__esp_lcd_touch_gt911.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/mqtt/libmqtt.a
+/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_websocket_client/libespressif__esp_websocket_client.a
 /Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__esp_lvgl_adapter/libespressif__esp_lvgl_adapter.a

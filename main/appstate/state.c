@@ -746,10 +746,10 @@ void state_set_nmea_boat_speed_through_water(int32_t value) {
     snprintf(temp, sizeof(temp), "%dkt", (int)value);
     lv_subject_set_string(&system_state.nmea.boat.speed_through_water_text, temp);
 }
-void state_set_nmea_boat_depth(int32_t value) {
-    lv_subject_set_int(&system_state.nmea.boat.depth, value);
+void state_set_nmea_boat_depth(float value) {
+    lv_subject_set_int(&system_state.nmea.boat.depth, (int)round(value));
     char temp[16];
-    snprintf(temp, sizeof(temp), "%dm", (int)value);
+    snprintf(temp, sizeof(temp), "%.1fm", value);
     lv_subject_set_string(&system_state.nmea.boat.depth_text, temp);
 }
 void state_set_nmea_boat_depth_offset(int32_t value) {

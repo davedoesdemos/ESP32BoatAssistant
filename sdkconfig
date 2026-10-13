@@ -2731,6 +2731,13 @@ CONFIG_MMAP_FILE_NAME_LENGTH=16
 # end of mmap file support format
 
 #
+# ESP WebSocket client
+#
+# CONFIG_ESP_WS_CLIENT_ENABLE_DYNAMIC_BUFFER is not set
+# CONFIG_ESP_WS_CLIENT_SEPARATE_TX_LOCK is not set
+# end of ESP WebSocket client
+
+#
 # IOT Knob
 #
 CONFIG_KNOB_PERIOD_TIME_MS=3
@@ -2738,6 +2745,12 @@ CONFIG_KNOB_DEBOUNCE_TICKS=2
 CONFIG_KNOB_HIGH_LIMIT=1000
 CONFIG_KNOB_LOW_LIMIT=-1000
 # end of IOT Knob
+
+#
+# libpng
+#
+CONFIG_LIBPNG_PREFER_PSRAM=y
+# end of libpng
 
 #
 # LVGL

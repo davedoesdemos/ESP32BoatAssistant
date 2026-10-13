@@ -17,6 +17,7 @@ idf_component_register(
         "gui/screens/screen_nmea.c"
         "gui/screens/screen_fuel.c"
         "mqtt/mqtt.c"
+        "signalk/signalk.c"
         "i2c/i2c.c"
         "rgblcd43b/rgblcd43b"
         "nmea2k/nmea2k.c"
@@ -31,6 +32,7 @@ idf_component_register(
         "gui"
         "gui/screens"
         "mqtt"
+        "signalk"
         "i2c"
         "rgblcd43b"
         "nmea2k"
@@ -47,5 +49,6 @@ idf_component_register(
         nvs_flash
         esp_driver_twai
         mqtt
+        esp_websocket_client
         json
     )

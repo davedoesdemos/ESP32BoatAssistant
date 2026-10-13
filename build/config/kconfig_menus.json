@@ -37914,6 +37914,45 @@
                     {
                         "children": [],
                         "depends_on": null,
+                        "help": "Enable this option will reallocated buffer when send or receive data and free them when end of use.\nThis can save about 2 KB memory when no websocket data send and receive.",
+                        "id": "ESP_WS_CLIENT_ENABLE_DYNAMIC_BUFFER",
+                        "name": "ESP_WS_CLIENT_ENABLE_DYNAMIC_BUFFER",
+                        "range": null,
+                        "title": "Enable websocket client dynamic buffer for send and receive data",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "ESP_WS_CLIENT_SEPARATE_TX_LOCK",
+                                "help": "Timeout for acquiring the TX lock when using separate TX lock.",
+                                "id": "ESP_WS_CLIENT_TX_LOCK_TIMEOUT_MS",
+                                "name": "ESP_WS_CLIENT_TX_LOCK_TIMEOUT_MS",
+                                "range": null,
+                                "title": "TX lock timeout in milliseconds",
+                                "type": "int"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Enable this option will use separate lock for send and receive data.\nThis can avoid the lock contention when send and receive data at the same time.",
+                        "id": "ESP_WS_CLIENT_SEPARATE_TX_LOCK",
+                        "name": "ESP_WS_CLIENT_SEPARATE_TX_LOCK",
+                        "range": null,
+                        "title": "Enable separate tx lock for send and receive data",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-websocket-client",
+                "title": "ESP WebSocket client",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
                         "help": "\"Knob scan interval\"",
                         "id": "KNOB_PERIOD_TIME_MS",
                         "name": "KNOB_PERIOD_TIME_MS",
@@ -37967,6 +38006,24 @@
                 "depends_on": null,
                 "id": "component-config-iot-knob",
                 "title": "IOT Knob",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": "SPIRAM",
+                        "help": "Route libpng's allocations to PSRAM first. Internal 8-bit RAM is\nused as a fallback when PSRAM is not initialized or cannot satisfy\nan allocation.\n\nWithout this option libpng calls malloc(). With\nCONFIG_SPIRAM_USE_CAPS_ALLOC, malloc() never returns PSRAM; with\nCONFIG_SPIRAM_USE_MALLOC, only requests above\nCONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL do. Enabling this option is\ntherefore the only way to move libpng's working buffers out of\ninternal RAM in either configuration.\n\nPSRAM is slower than internal RAM, so decoding and encoding run\nslower with this option enabled.",
+                        "id": "LIBPNG_PREFER_PSRAM",
+                        "name": "LIBPNG_PREFER_PSRAM",
+                        "range": null,
+                        "title": "Prefer PSRAM for libpng allocations",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-libpng",
+                "title": "libpng",
                 "type": "menu"
             },
             {

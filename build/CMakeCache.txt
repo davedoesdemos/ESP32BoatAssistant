@@ -14,9 +14,6 @@
 # EXTERNAL cache entries
 ########################
 
-//No help, variable specified on the command line.
-CCACHE_ENABLE:UNINITIALIZED=0
-
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/Users/lustyd/.espressif/tools/xtensa-esp-elf/esp-14.2.0_20260121/xtensa-esp-elf/bin/xtensa-esp32s3-elf-addr2line
 
@@ -313,6 +310,10 @@ CPACK_SOURCE_7Z:BOOL=ON
 //Enable to build ZIP source packages
 CPACK_SOURCE_ZIP:BOOL=ON
 
+//DFA file containing customized build configuration settings for
+// libpng
+DFA_XTRA:FILEPATH=
+
 //Disable package configuration, target export and installation
 DISABLE_PACKAGE_CONFIG_AND_INSTALL:BOOL=ON
 
@@ -399,8 +400,28 @@ PKG_CONFIG_ARGN:STRING=
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
 
-//No help, variable specified on the command line.
-PYTHON:UNINITIALIZED=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3
+//[Deprecated; please use ZLIB_ROOT]
+PNG_BUILD_ZLIB:BOOL=OFF
+
+//Postfix to append to library file names under the Debug configuration
+PNG_DEBUG_POSTFIX:STRING=d
+
+//[Deprecated; please use PNG_TOOLS]
+PNG_EXECUTABLES:BOOL=ON
+
+//Build libpng as a framework bundle (not available on this platform)
+PNG_FRAMEWORK:BOOL=OFF
+
+PNG_LIBCONF_HEADER:FILEPATH=/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__libpng/libpng/scripts/pnglibconf.h.prebuilt
+
+//libpng library target provided by the espressif__libpng component
+PNG_LIBRARY:STRING=idf::espressif__libpng
+
+//png.h location provided by the espressif__libpng component
+PNG_PNG_INCLUDE_DIR:PATH=/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__libpng/libpng
+
+//Prefix to prepend to the API function names
+PNG_PREFIX:STRING=
 
 //No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
@@ -434,6 +455,15 @@ freetype_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 freetype_SOURCE_DIR:STATIC=/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__freetype/freetype
+
+//Value Computed by CMake
+libpng_BINARY_DIR:STATIC=/Users/lustyd/Documents/repos/ESP32BoatAssistant/build/esp-idf/espressif__libpng/libpng
+
+//Value Computed by CMake
+libpng_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+libpng_SOURCE_DIR:STATIC=/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__libpng/libpng
 
 //Value Computed by CMake
 lvgl_BINARY_DIR:STATIC=/Users/lustyd/Documents/repos/ESP32BoatAssistant/build
@@ -613,7 +643,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=144
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=146
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -671,7 +701,7 @@ FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[/usr/bin/git][v2.50.1 (Apple Git-155)
 //Details about finding PNG
 FIND_PACKAGE_MESSAGE_DETAILS_PNG:INTERNAL=[idf::espressif__libpng][/Users/lustyd/Documents/repos/ESP32BoatAssistant/managed_components/espressif__libpng/libpng][v1.6.58()]
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3][found components: Interpreter ][v3.14.6()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python][found components: Interpreter ][v3.14.6()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding ZLIB
@@ -682,16 +712,20 @@ GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
 PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PNG_LIBRARY
+PNG_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: PNG_PNG_INCLUDE_DIR
+PNG_PNG_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
 //Compiler reason failure
 _Python3_Compiler_REASON_FAILURE:INTERNAL=
 //Development reason failure
 _Python3_Development_REASON_FAILURE:INTERNAL=
-_Python3_EXECUTABLE:INTERNAL=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python3
+_Python3_EXECUTABLE:INTERNAL=/Users/lustyd/.espressif/tools/python/v5.5.5/venv/bin/python
 //Python3 Properties
 _Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;14;6;32;64;<none>;;abi3;/opt/homebrew/opt/python@3.14/Frameworks/Python.framework/Versions/3.14/lib/python3.14;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14/site-packages;/Users/lustyd/.espressif/tools/python/v5.5.5/venv/lib/python3.14/site-packages
-_Python3_INTERPRETER_SIGNATURE:INTERNAL=e59ef2717836eb79a58e1b4fcc2f3b73
+_Python3_INTERPRETER_SIGNATURE:INTERNAL=d0d03755f687ce072ec5eed81f3816cf
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=
 

@@ -14,6 +14,7 @@
 #include "state.h"
 #include "queue_reader.h"
 #include "bluetooth.h"
+#include "signalk.h"
 
 // Logging
 static const char *TAG = "Boat Assistant: Main";
@@ -40,6 +41,8 @@ void app_main(void)
     touch_reset();
     touch_init();
     wifi_global_init();
+    // mqtt starts from wifistation.c
+    // Signalk starts from wifistation.c
     display_init();
     screen_init(disp);
     init_nmea2000_bus();
